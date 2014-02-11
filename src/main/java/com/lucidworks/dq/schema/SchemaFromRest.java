@@ -43,28 +43,41 @@ public class SchemaFromRest extends SchemaBase implements Schema {
   public SchemaFromRest() throws MalformedURLException, SolrServerException {
 	this( DEFAULT_URL );
   }
+
+  // Can't do:
+  // public SchemaFromRest( String host )
+  // because it conflicts with  SchemaFromRest( String serverUrl )
+
   public SchemaFromRest( String host, String port ) throws SolrServerException {
-	  this( host, port, DEFAULT_COLL );
+	this( host, port, DEFAULT_COLL );
   }
   public SchemaFromRest( String host, int port ) throws SolrServerException {
-	  this( host, port, DEFAULT_COLL );
+	this( host, port, DEFAULT_COLL );
   }
   public SchemaFromRest( String host, int port, String collection ) throws SolrServerException {
-	  this( host, ""+port, collection );
+	this( host, ""+port, collection );
   }
   public SchemaFromRest( String host, String port, String collection ) throws SolrServerException {
-	  String url = "http://" + host + ":" + port + "/solr/" + collection;
-	  init( url );
+	String url = "http://" + host + ":" + port + "/solr/" + collection;
+	init( url );
   }
 
   public SchemaFromRest( URL serverUrl ) throws SolrServerException {
-	  init( serverUrl.toExternalForm() );
+	init( serverUrl.toExternalForm() );
   }
   public SchemaFromRest( String serverUrl ) throws MalformedURLException, SolrServerException {
-	  init( serverUrl );
+	init( serverUrl );
   }
+  public SchemaFromRest( HttpSolrServer solrServer ) throws MalformedURLException, SolrServerException {
+	init( solrServer );
+  }
+
   void init( String serverUrl ) throws SolrServerException {
-	server = new HttpSolrServer( serverUrl );
+	HttpSolrServer solrServer = new HttpSolrServer( serverUrl );
+	init( solrServer );
+  }
+  void init( HttpSolrServer server ) throws SolrServerException {
+	this.server = server;
 	SolrQuery q = new SolrQuery();
 	// https://cwiki.apache.org/confluence/display/solr/Schema+API
 	q.setRequestHandler("/schema"); 

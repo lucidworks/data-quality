@@ -1,15 +1,29 @@
 package com.lucidworks.dq.diff;
 
+import java.io.File;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Set;
+
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
+import org.apache.commons.cli.PosixParser;
+import org.apache.solr.client.solrj.impl.HttpSolrServer;
 
 import com.lucidworks.dq.schema.Schema;
 import com.lucidworks.dq.schema.SchemaFromRest;
 import com.lucidworks.dq.schema.SchemaFromXml;
 import com.lucidworks.dq.util.SetUtils;
+import com.lucidworks.dq.util.SolrUtils;
 
 public class DiffSchema {
+  static String HELP_WHAT_IS_IT = "Compare schemas between two cores/collections.";
+  static String HELP_USAGE = "DiffSchema";
+  // final static Logger log = LoggerFactory.getLogger( TermStats.class );
+  static Options options;
 
   public static String generateReport( Schema schemaA, Schema schemaB, String labelA, String labelB ) throws Exception {
     StringWriter sw = new StringWriter();
@@ -150,12 +164,146 @@ public class DiffSchema {
 	  
   }
 
-  public static void main( String[] args ) throws Exception {
-	// Default 4.6.1 schema
-	Schema schemaA = new SchemaFromXml();
-	String labelA = "Default Solr 4.6.1 Schema";
-	Schema schemaB = new SchemaFromRest( HOST0, PORT0, COLL0 );
-	String labelB = "Apollo demo plus local changes";
+  static void helpAndExit() {
+	helpAndExit( null, 1 );
+  }
+  static void helpAndExit( String optionalError, int errorCode ) {
+    HelpFormatter formatter = new HelpFormatter();
+    if ( null==optionalError ) {
+      // log.info( HELP_WHAT_IS_IT );
+      System.out.println( HELP_WHAT_IS_IT );
+	}
+	else {
+	  // log.error( optionalError );
+	  System.err.println( optionalError );
+	}
+	formatter.printHelp( HELP_USAGE, options, true );
+	System.exit( errorCode );
+  }
+
+  public static void main( String[] argv ) throws Exception {
+	options = new Options();
+
+	options.addOption( "u", "url_a", true, "URL for first Solr, OR set host, port and possibly collection" );
+	options.addOption( "h", "host_a", true, "IP address for first Solr, default=localhost" );
+	options.addOption( "p", "port_a", true, "Port for first Solr, default=8983" );
+	options.addOption( "c", "collection_a", true, "Collection/Core for first Solr, Eg: collection1" );
+	options.addOption( "f", "file_a", true, "Path to schema.xml file for first Solr" );
+	options.addOption( "d", "default_a", false, "Use Solr's default schema.xml for the first one." );
+
+	options.addOption( "U", "url_b", true, "URL for second Solr, OR set host, port and possibly collection" );
+	options.addOption( "H", "host_b", true, "IP address for second Solr, default=localhost" );
+	options.addOption( "P", "port_b", true, "Port for second Solr, default=8983" );
+	options.addOption( "C", "collection_b", true, "Collection/Core for second Solr, Eg: collection1" );
+	options.addOption( "F", "file_b", true, "Path to schema.xml file for second Solr" );
+	options.addOption( "D", "default_b", false, "Use Solr's default schema.xml for the second one." );
+
+    if ( argv.length < 1 ) {
+      helpAndExit();
+    }
+    CommandLine cmd = null;
+    try {
+      CommandLineParser parser = new PosixParser();
+      // CommandLineParser parser = new DefaultParser();
+      cmd = parser.parse( options, argv );
+    }
+    catch( ParseException exp ) {
+      helpAndExit( "Parsing command line failed. Reason: " + exp.getMessage(), 2 );
+    }
+    // Already using -h for host, don't really need help, just run with no options
+    //if ( cmd.hasOption("help") ) {
+    //  helpAndExit();
+    //}
+
+    // Schema A
+    String fullUrlA = cmd.getOptionValue( "url_a" );
+    String hostA = cmd.getOptionValue( "host_a" );
+    String portA = cmd.getOptionValue( "port_a" );
+    String collA = cmd.getOptionValue( "collection_a" );
+    String fileA = cmd.getOptionValue( "file_a" );
+    boolean useDefaultA = false;
+    if( cmd.hasOption("default_a") ) {
+      useDefaultA = true;
+    }
+    // Option Count
+    int countA = null!=fullUrlA ? 1 : 0;
+    countA += null!=hostA ? 1 : 0;
+    countA += null!=fileA ? 1 : 0;
+    countA += useDefaultA ? 1 : 0;
+    if ( countA < 1 ) {
+      helpAndExit( "Must specifify one of: url, host, file or default, for first Solr", 3 );
+    }
+    if ( countA > 1 ) {
+      helpAndExit( "Must not specifify more than one of: url, host, file or default, for first Solr", 4 );
+    }
+    // Schema schemaA = new SchemaFromXml();
+    // String labelA = "Default Solr 4.6.1 Schema";
+    Schema schemaA = null;
+    String labelA = null;
+    if ( null!=fullUrlA ) {
+      HttpSolrServer solrA = SolrUtils.getServer( fullUrlA );
+      labelA = solrA.getBaseURL();
+      schemaA = new SchemaFromRest( solrA );
+    }
+    else if ( null!=hostA ) {
+      // util handles null values
+      HttpSolrServer solrA = SolrUtils.getServer( hostA, portA, collA );
+      labelA = solrA.getBaseURL();
+      schemaA = new SchemaFromRest( solrA );
+    }
+    else if ( null!=fileA ) {
+      labelA = "XML File: " + fileA;
+      schemaA = new SchemaFromXml( new File(fileA) );
+    }
+    else if ( useDefaultA ) {
+      labelA = "Default Solr 4.6.1 Schema";
+      schemaA = new SchemaFromXml();
+    }
+	  
+    // Schema B
+    String fullUrlB = cmd.getOptionValue( "url_b" );
+    String hostB = cmd.getOptionValue( "host_b" );
+    String portB = cmd.getOptionValue( "port_b" );
+    String collB = cmd.getOptionValue( "collection_b" );
+    String fileB = cmd.getOptionValue( "file_b" );
+    boolean useDefaultB = false;
+    if( cmd.hasOption("default_b") ) {
+      useDefaultB = true;
+    }
+    // Option Count
+    int countB = null!=fullUrlB ? 1 : 0;
+    countB += null!=hostB ? 1 : 0;
+    countB += null!=fileB ? 1 : 0;
+    countB += useDefaultB ? 1 : 0;
+    if ( countB < 1 ) {
+      helpAndExit( "Must specifify one of: url, host, file or default, for second Solr", 3 );
+    }
+    if ( countB > 1 ) {
+      helpAndExit( "Must not specifify more than one of: url, host, file or default, for second Solr", 4 );
+    }
+    // Schema schemaB = new SchemaFromRest( HOST0, PORT0, COLL0 );
+    // String labelB = "Apollo demo plus local changes";
+    Schema schemaB = null;
+    String labelB = null;
+    if ( null!=fullUrlB ) {
+      HttpSolrServer solrB = SolrUtils.getServer( fullUrlB );
+      labelB = solrB.getBaseURL();
+      schemaB = new SchemaFromRest( solrB );
+    }
+    else if ( null!=hostB ) {
+      // util handles null values
+      HttpSolrServer solrB = SolrUtils.getServer( hostB, portB, collB );
+      labelB = solrB.getBaseURL();
+      schemaB = new SchemaFromRest( solrB );
+    }
+    else if ( null!=fileB ) {
+      labelB = "XML File: " + fileB;
+      schemaB = new SchemaFromXml( new File(fileB) );
+    }
+    else if ( useDefaultB ) {
+      labelB = "Default Solr 4.6.1 Schema";
+      schemaB = new SchemaFromXml();
+    }
 
 	String reportA = schemaA.generateReport();
 	String reportB = schemaB.generateReport();
