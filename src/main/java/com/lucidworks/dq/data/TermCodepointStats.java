@@ -20,12 +20,12 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.Vector;
 
-
-
-
-
-
-
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
+import org.apache.commons.cli.PosixParser;
 
 
 // x import org.apache.commons.lang.CharUtils;
@@ -37,7 +37,7 @@ import com.lucidworks.dq.util.SolrUtils;
 import com.lucidworks.dq.util.StatsUtils;
 import com.lucidworks.dq.util.CharUtils;
 
-// Using composition, not inheritence, from EmptyFieldStats
+// Using composition, not inheritance, from EmptyFieldStats
 public class TermCodepointStats {
 
   static String HOST = "localhost";
@@ -45,6 +45,11 @@ public class TermCodepointStats {
   // static String COLL = "collection1";
   static String COLL = "demo_shard1_replica1";
   
+  static String HELP_WHAT_IS_IT = "Look for potentially corrupted tokens.  Assumption is corrupted data is more random and will therefore tend to span more Unicode classes.";
+  static String HELP_USAGE = "TermCodepointStats";
+  // final static Logger log = LoggerFactory.getLogger( TermCodepointStats.class );
+  static Options options;
+
   // Object we're leveraging
   EmptyFieldStats fieldStats;
 
@@ -65,7 +70,7 @@ public class TermCodepointStats {
   public TermCodepointStats( HttpSolrServer server, Collection<String> targetFields ) throws SolrServerException {
 	// this.server = server;
 	this.fieldStats = new EmptyFieldStats( server );
-	if ( null == targetFields ) {
+	if ( null == targetFields || targetFields.isEmpty() ) {
 	  targetFields = fieldStats.getFieldsWithIndexedValues();
 	}
 	this.targetFieldNames = new LinkedHashSet<>( targetFields );
@@ -326,13 +331,80 @@ public class TermCodepointStats {
 //		  out.println( "\t\t\t..." );			
 //		}
 //	  }
-  
+
+  static void helpAndExit() {
+	helpAndExit( null, 1 );
+  }
+  static void helpAndExit( String optionalError, int errorCode ) {
+    HelpFormatter formatter = new HelpFormatter();
+    if ( null==optionalError ) {
+      // log.info( HELP_WHAT_IS_IT );
+      System.out.println( HELP_WHAT_IS_IT );
+	}
+	else {
+	  // log.error( optionalError );
+	  System.err.println( optionalError );
+	}
+	formatter.printHelp( HELP_USAGE, options, true );
+	System.exit( errorCode );
+  }
+
   public static void main( String [] argv ) throws Exception {
-	HttpSolrServer s = SolrUtils.getServer( HOST, PORT, COLL );
-	// TermCodepointStats tcp = new TermCodepointStats( s );
-	List<String> fieldNames = Arrays.asList( new String[]{"categoryNames", "class", "color", "department", "genre", "mpaaRating"} );
-	TermCodepointStats tcp = new TermCodepointStats( s, fieldNames );
-	String report = tcp.generateReport( s.getBaseURL() );
+    // here
+	options = new Options();
+	options.addOption( "u", "url", true, "URL for Solr, OR set host, port and possibly collection" );
+	options.addOption( "h", "host", true, "IP address for Solr, default=localhost" );
+	options.addOption( "p", "port", true, "Port for Solr, default=8983" );
+	options.addOption( "c", "collection", true, "Collection/Core for Solr, Eg: collection1" );
+	// options.addOption( "i", "ids", false, "Include IDs of docs with empty fields. WARNING: may create large report" );
+	options.addOption( "f", "fields", true, "Fields to analyze, Eg: fields=name,category, default is all fields" );
+	if ( argv.length < 1 ) {
+	  helpAndExit();
+	}
+	CommandLine cmd = null;
+	try {
+	  CommandLineParser parser = new PosixParser();
+	  // CommandLineParser parser = new DefaultParser();
+	  cmd = parser.parse( options, argv );
+	}
+	catch( ParseException exp ) {
+	  helpAndExit( "Parsing command line failed. Reason: " + exp.getMessage(), 2 );
+	}
+	// Already using -h for host, don't really need help, just run with no options
+	//if ( cmd.hasOption("help") ) {
+	//  helpAndExit();
+	//}
+	String fullUrl = cmd.getOptionValue( "url" );
+	String host = cmd.getOptionValue( "host" );
+	String port = cmd.getOptionValue( "port" );
+	String coll = cmd.getOptionValue( "collection" );
+	if ( null==fullUrl && null==host ) {
+	  helpAndExit( "Must specifify at least url or host", 3 );
+	}
+	if ( null!=fullUrl && null!=host ) {
+	  helpAndExit( "Must not specifify both url and host", 4 );
+	}
+    String fieldsStr = cmd.getOptionValue( "fields" );
+	// List<String> fieldNames = Arrays.asList( new String[]{"categoryNames", "class", "color", "department", "genre", "mpaaRating"} );
+    Set<String> fieldNames = null;
+    if ( null!=fieldsStr ) {
+    	fieldNames = SetUtils.splitCsv( fieldsStr );
+    }
+
+    // Init
+	// HttpSolrServer solr = SolrUtils.getServer( HOST, PORT, COLL );
+    HttpSolrServer solr;
+    if ( null!=fullUrl ) {
+      solr = SolrUtils.getServer( fullUrl );
+    }
+    else {
+      // Utils handle null values
+      solr = SolrUtils.getServer( host, port, coll );    
+    }
+    System.out.println( "Solr = " + solr.getBaseURL() );
+	TermCodepointStats tcp = new TermCodepointStats( solr, fieldNames );
+
+	String report = tcp.generateReport( solr.getBaseURL() );
 	System.out.println( report );
   }
 }
