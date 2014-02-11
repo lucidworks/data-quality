@@ -61,7 +61,19 @@ public class SolrUtils {
 	  return getServer( url );
   }
   public static HttpSolrServer getServer( String host, String port, String collection ) {
-	  String url = "http://" + host + ":" + port + "/solr/" + collection;
+	  if ( null==host ) {
+		host = DEFAULT_HOST;
+	  }
+	  if ( null==port ) {
+		port = "" + DEFAULT_PORT;		  
+	  }
+	  String url = null;
+	  if ( null==collection ) {
+        url = "http://" + host + ":" + port + "/solr";
+	  }
+	  else {
+        url = "http://" + host + ":" + port + "/solr/" + collection;		  
+	  }
 	  return getServer( url );
   }
   
@@ -159,6 +171,29 @@ public class SolrUtils {
 		  queryStr = fieldName + ":*";
 		  return getDocCountForQuery( server, queryStr );		  
 	  }
+  }
+  public static Set<String> getEmptyFieldKeys( HttpSolrServer server, String fieldName ) throws SolrServerException {
+	  // NullPointerException for location
+	  // com.spatial4j.core.io.ParseUtils.parsePoint(ParseUtils.java:42)
+	  String queryStr = "-" + fieldName + ":[* TO *]";
+	  Set<String> out = new LinkedHashSet<>();
+	  SolrQuery q = new SolrQuery( "*:*" );
+	  q.addField( ID_FIELD );
+	  q.setRows( ALL_ROWS );
+	  QueryResponse res = server.query( q );
+	  for ( SolrDocument doc : res.getResults() ) {
+		  String id = (String) doc.get( ID_FIELD );
+		  out.add( id );
+	  }
+	  return out;
+//	  try {
+//		  return getDocCountForQuery( server, queryStr );
+//	  }
+//	  catch( Exception e ) {
+//		  // TODO: will this wildcard expand to all terms?
+//		  queryStr = fieldName + ":*";
+//		  return getDocCountForQuery( server, queryStr );		  
+//	  }
   }
   public static long getDocCountForQuery( HttpSolrServer server, String query ) throws SolrServerException {
 	  SolrQuery q = new SolrQuery( query );

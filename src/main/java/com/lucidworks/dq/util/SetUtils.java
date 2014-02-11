@@ -24,6 +24,19 @@ public class SetUtils {
 	}
 	return new String( out );
   }
+  
+  // Handy for comma separated field names list, etc
+  public static Set<String> splitCsv( String inStr ) {
+	String[] fieldsAry = inStr.split( ",\\s*" );
+	// maintains order of insertion
+	Set<String> out = new LinkedHashSet<>();
+	for ( String f : fieldsAry ) {
+	  if ( ! f.trim().isEmpty() ) {
+		out.add( f.trim() );
+	  }
+	}
+	return out;
+  }
 
   public static boolean sameAndInSameOrder( Set<String> idsA, Set<String> idsB ) {
 	  // Bunch of edge cases
