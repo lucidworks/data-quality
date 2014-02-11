@@ -4,14 +4,17 @@ Data Quality
 Preliminary DQ / Data Quality prototype
 
 ## Individual Solr Cores / Collections:
-* EmptyFieldStats
-* TermStats
-* TermCodepointStats
+* EmptyFieldStats - generally which fields are populated, including percentages
+* TermStats - token length, and terms > 3 standard deviations from that
+* TermCodepointStats - look for potentially corrupted tokens by looking for strings that span the most Unicode classes
 
 ## Differences Between Cores / Collections:
-* DiffIds
-* DiffSchema
-* DiffEmptyFieldStats
+* DiffIds - documents that are only in A or B
+* DiffSchema - compares fields, types, dynamic field patterns, etc.
+* DiffEmptyFieldStats - compare population of collections
+
+## Sample Reports
+See ```src/main/resources/sample-reports/```
 
 ## Running
 

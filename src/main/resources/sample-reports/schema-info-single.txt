@@ -1,0 +1,76 @@
+Notes:
+* It can view schemas from running systems (via REST) or local XML files.
+  (though some fields blank depending on source)
+
+========== Individual Reports ==========
+
+---------- Schama A: Default Solr 4.6.1 Schema ----------
+Schema Name: example
+Schema Version: 1.5
+Key Field: id
+Default Operator: null
+Similarity Class Name: org.apache.solr.search.similarities.DefaultSimilarityFactory
+Default Search Field: null
+
+Fields: [_version_, _root_, id, sku, name, manu, cat, features, includes, weight, price, popularity, inStock, store, title, subject, description, comments, author, keywords, category, resourcename, url, content_type, last_modified, links, content, text, text_rev, manu_exact, payloads]
+
+Dynamic field Patterns: [*_i, *_is, *_s, *_ss, *_l, *_ls, *_t, *_txt, *_en, *_b, *_bs, *_f, *_fs, *_d, *_ds, *_coordinate, *_dt, *_dts, *_p, *_ti, *_tl, *_tf, *_td, *_tdt, *_pi, *_c, ignored_*, attr_*, random_*]
+
+Types: [string, boolean, int, float, long, double, tint, tfloat, tlong, tdouble, date, tdate, binary, pint, plong, pfloat, pdouble, pdate, random, text_ws, text_general, text_en, text_en_splitting, text_en_splitting_tight, text_general_rev, alphaOnlySort, phonetic, payloads, lowercase, descendent_path, ancestor_path, ignored, point, location, location_rpt, currency, text_ar, text_bg, text_ca, text_cjk, text_cz, text_da, text_de, text_el, text_es, text_eu, text_fa, text_fi, text_fr, text_ga, text_gl, text_hi, text_hu, text_hy, text_id, text_it, text_ja, text_lv, text_nl, text_no, text_pt, text_ro, text_ru, text_sv, text_th, text_tr]
+
+Copy Sources: [cat, name, manu, features, includes, price, title, author, description, keywords, content, content_type, resourcename, url]
+    From: 'cat' To [text]
+    From: 'name' To [text]
+    From: 'manu' To [text, manu_exact]
+    From: 'features' To [text]
+    From: 'includes' To [text]
+    From: 'price' To [price_c]
+    From: 'title' To [text]
+    From: 'author' To [text, author_s]
+    From: 'description' To [text]
+    From: 'keywords' To [text]
+    From: 'content' To [text]
+    From: 'content_type' To [text]
+    From: 'resourcename' To [text]
+    From: 'url' To [text]
+Copy Destinations: [text, manu_exact, price_c, author_s]
+    Dest: 'text' From [cat, name, manu, features, includes, title, author, description, keywords, content, content_type, resourcename, url]
+    Dest: 'manu_exact' From [manu]
+    Dest: 'price_c' From [price]
+    Dest: 'author_s' From [author]
+
+---------- Schema B: Apollo demo plus local changes ----------
+Schema Name: example
+Schema Version: 1.5
+Key Field: id
+Default Operator: (not-available)
+Similarity Class Name: (not-available)
+Default Search Field: (not-available)
+
+Fields: [_root_, _version_, accessories, albumLabel, albumTitle, artistName, author, bundledIn, cast, cat, category, categoryIds, categoryNames, categoryPath, class, color, comments, condition, content, content_type, crew, customerReviewAverage, customerReviewCount, department, depthCategoryIds, depthCategoryNames, description, details, features, format, frequentlyPurchasedWith, genre, hardGoodType, id, image, inStock, includes, keywords, last_modified, lengthInMinutes, links, longDescription, manu, manu_exact, manufacturer, mpaaRating, name, payloads, plot, popularity, price, product_id, regularPrice, relatedProducts, releaseDate, resourcename, salePrice, salesRankLongTerm, salesRankMediumTerm, salesRankShortTerm, shippingWeight, shortDescription, sku, softwareGrade, startDate, store, store_id, studio, subclass, subject, text, text_rev, title, type, url, weight]
+
+Dynamic field Patterns: [*_coordinate, ignored_*, random_*, attr_*, *_txt, *_dts, *_tdt, *_is, *_ss, *_ls, *_en, *_bs, *_fs, *_ds, *_dt, *_ti, *_tl, *_tf, *_td, *_pi, *_i, *_s, *_l, *_t, *_b, *_f, *_d, *_p, *_c]
+
+Types: [alphaOnlySort, ancestor_path, binary, boolean, currency, date, descendent_path, double, float, ignored, int, location, location_rpt, long, lowercase, payloads, pdate, pdouble, pfloat, phonetic, pint, plong, point, random, string, tdate, tdouble, text_ar, text_bg, text_ca, text_cjk, text_cz, text_da, text_de, text_el, text_en, text_en_splitting, text_en_splitting_tight, text_es, text_eu, text_fa, text_fi, text_fr, text_ga, text_general, text_general_rev, text_gl, text_hi, text_hu, text_hy, text_id, text_it, text_ja, text_lv, text_nl, text_no, text_pt, text_ro, text_ru, text_sv, text_th, text_tr, text_ws, tfloat, tint, tlong]
+
+Copy Sources: [author, cat, content, content_type, description, features, id, includes, keywords, manu, name, resourcename, title, url, price]
+    From: 'author' To [text, author_s]
+    From: 'cat' To [text]
+    From: 'content' To [text]
+    From: 'content_type' To [text]
+    From: 'description' To [text]
+    From: 'features' To [text]
+    From: 'id' To [text]
+    From: 'includes' To [text]
+    From: 'keywords' To [text]
+    From: 'manu' To [manu_exact, text]
+    From: 'name' To [text]
+    From: 'resourcename' To [text]
+    From: 'title' To [text]
+    From: 'url' To [text]
+    From: 'price' To [price_c]
+Copy Destinations: [text, manu_exact, price_c, author_s]
+    Dest: 'text' From [author, cat, content, content_type, description, features, id, includes, keywords, manu, name, resourcename, title, url]
+    Dest: 'manu_exact' From [manu]
+    Dest: 'price_c' From [price]
+    Dest: 'author_s' From [author]

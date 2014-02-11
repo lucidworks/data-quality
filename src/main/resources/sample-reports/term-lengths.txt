@@ -1,0 +1,340 @@
+Unique Term Length Stats by Field, min/max/avg/std (terms include deleted docs):
+    _version_: 19 / 19 / 19.0 / 0.0   (1,476,194 entries)
+        Expected Length Range, raw: 19 to 19 (inclusive)
+        Expected Length Range, clamped: 19 to 19 (inclusive)
+    accessories: 6 / 7 / 7.0 / 0.06   (2,878 entries)
+        Expected Length Range, raw: 6 to 8 (inclusive)
+        Expected Length Range, clamped: 6 to 7 (inclusive)
+    albumLabel: 1 / 35 / 14.1 / 5.89   (42,158 entries)
+        Expected Length Range, raw: -4 to 32 (inclusive)
+        Expected Length Range, clamped: 1 to 32 (inclusive)
+        Unusually Long Terms:
+            67: BCI Music (Brentwood Communication), len=35
+            87: Warner Elektra Atlantic Corp. (Japa, len=35
+            117: Columbia River Entertainment Group, len=34
+            122: Warner Bros. Records (Record Label), len=35
+            267: Musical Productions Inc./MP Online, len=34
+            ...
+    albumTitle: 1 / 46 / 7.38 / 2.58   (130,597 entries)
+        Expected Length Range, raw: -1 to 16 (inclusive)
+        Expected Length Range, clamped: 1 to 16 (inclusive)
+        Unusually Long Terms:
+            15,026: kindertotenlieder, len=17
+            18,564: labcabincalifornia, len=18
+            18,869: reinterpretations, len=17
+            19,499: davidsbundlertanze, len=18
+            21,546: musicforthemorningafter, len=23
+            ...
+    artistName: 1 / 29 / 6.94 / 2.21   (120,424 entries)
+        Expected Length Range, raw: 0 to 14 (inclusive)
+        Expected Length Range, clamped: 1 to 14 (inclusive)
+        Unusually Long Terms:
+            5,679: sinfonieorchester, len=17
+            5,889: barockorchester, len=15
+            10,387: kammerorchester, len=15
+            11,871: radiophilharmonie, len=17
+            12,168: internacionales, len=15
+            ...
+    bundledIn: 13 / 16 / 15.51 / 0.55   (13,545 entries)
+        Expected Length Range, raw: 13 to 18 (inclusive)
+        Expected Length Range, clamped: 13 to 16 (inclusive)
+    cast: 1 / 23 / 6.89 / 1.93   (160,525 entries)
+        Expected Length Range, raw: 1 to 13 (inclusive)
+        Expected Length Range, clamped: 1 to 13 (inclusive)
+        Unusually Long Terms:
+            3,169: superintendent, len=14
+            3,359: schwarzenegger, len=14
+            7,197: representative, len=14
+            7,265: communications, len=14
+            9,513: philharmoniker, len=14
+            ...
+    categoryIds: 8 / 18 / 14.59 / 3.99   (3,875 entries)
+        Expected Length Range, raw: 2 to 27 (inclusive)
+        Expected Length Range, clamped: 8 to 18 (inclusive)
+    categoryNames: 2 / 54 / 16.84 / 7.39   (3,209 entries)
+        Expected Length Range, raw: -6 to 39 (inclusive)
+        Expected Length Range, clamped: 2 to 39 (inclusive)
+        Unusually Long Terms:
+            682: Slow Cookers, Crock Pots & Roaster Ovens, len=40
+            823: Steamers, Rice Cookers and Pressure Cookers, len=43
+            1,568: Satellite TV Cables, Splitters & Switches, len=41
+            2,047: Pre-Order Windows Vista-Loaded Desktops & Notebooks, len=51
+            2,134: Car Security & Remote Start Installation, len=40
+            ...
+    class: 3 / 20 / 14.53 / 4.24   (260 entries)
+        Expected Length Range, raw: 1 to 28 (inclusive)
+        Expected Length Range, clamped: 3 to 20 (inclusive)
+    color: 2 / 40 / 13.61 / 5.17   (3,302 entries)
+        Expected Length Range, raw: -2 to 30 (inclusive)
+        Expected Length Range, clamped: 2 to 30 (inclusive)
+        Unusually Long Terms:
+            57: Stainless-Steel (Special Order), len=31
+            392: Monochromatic Satina Stainless-Look, len=35
+            678: Silver Metallic (Special Order), len=31
+            711: Biscuit-on-Biscuit (Special Order), len=34
+            868: Stainless-steel with black accents, len=34
+            ...
+    condition: 3 / 11 / 7.0 / 4.0   (2 entries)
+        Expected Length Range, raw: -5 to 19 (inclusive)
+        Expected Length Range, clamped: 3 to 11 (inclusive)
+    crew: 1 / 18 / 6.81 / 1.9   (105,802 entries)
+        Expected Length Range, raw: 1 to 13 (inclusive)
+        Expected Length Range, clamped: 1 to 13 (inclusive)
+        Unusually Long Terms:
+            5: cinematographer, len=15
+            373: cinematography, len=14
+            534: transportation, len=14
+            5,573: prestwoodsmith, len=14
+            9,806: lautenschlager, len=14
+            ...
+    customerReviewAverage: 3 / 3 / 3.0 / 0.0   (41 entries)
+        Expected Length Range, raw: 3 to 3 (inclusive)
+        Expected Length Range, clamped: 3 to 3 (inclusive)
+    customerReviewCount: 1 / 4 / 2.7 / 0.53   (345 entries)
+        Expected Length Range, raw: 1 to 5 (inclusive)
+        Expected Length Range, clamped: 1 to 4 (inclusive)
+    department: 3 / 20 / 12.43 / 5.91   (14 entries)
+        Expected Length Range, raw: -6 to 31 (inclusive)
+        Expected Length Range, clamped: 3 to 20 (inclusive)
+    depthCategoryIds: 10 / 20 / 16.58 / 3.99   (3,884 entries)
+        Expected Length Range, raw: 4 to 29 (inclusive)
+        Expected Length Range, clamped: 10 to 20 (inclusive)
+    depthCategoryNames: 4 / 56 / 18.47 / 7.37   (3,576 entries)
+        Expected Length Range, raw: -4 to 41 (inclusive)
+        Expected Length Range, clamped: 4 to 41 (inclusive)
+        Unusually Long Terms:
+            711: 4/Slow Cookers, Crock Pots & Roaster Ovens, len=42
+            851: 4/Steamers, Rice Cookers and Pressure Cookers, len=45
+            1,685: 6/Satellite TV Cables, Splitters & Switches, len=43
+            2,185: 4/Pre-Order Windows Vista-Loaded Desktops & Notebooks, len=53
+            2,310: 4/Car Security & Remote Start Installation, len=42
+            ...
+    description: 1 / 35 / 6.28 / 2.77   (9,227 entries)
+        Expected Length Range, raw: -3 to 15 (inclusive)
+        Expected Length Range, clamped: 1 to 15 (inclusive)
+        Unusually Long Terms:
+            432: pcmcat22200050005, len=17
+            523: javascript:opencontextsensitivelink, len=35
+            1,144: javascript:popup, len=16
+            1,474: javascript:popuprawurl, len=22
+            1,562: syndicate.tentoe.com, len=20
+            ...
+    details: 1 / 22 / 5.63 / 2.37   (23,304 entries)
+        Expected Length Range, raw: -2 to 13 (inclusive)
+        Expected Length Range, clamped: 1 to 13 (inclusive)
+        Unusually Long Terms:
+            1,035: multimediacard, len=14
+            1,352: transparencies, len=14
+            1,808: configurations, len=14
+            2,449: photoimpression, len=15
+            2,631: antireflective, len=14
+            ...
+    features: 1 / 32 / 6.68 / 2.61   (76,583 entries)
+        Expected Length Range, raw: -2 to 15 (inclusive)
+        Expected Length Range, clamped: 1 to 15 (inclusive)
+        Unusually Long Terms:
+            3,213: microarchitecture, len=17
+            5,668: electromechanical, len=17
+            5,961: multidirectional, len=16
+            6,891: videoconferencing, len=17
+            7,575: dehumidification, len=16
+            ...
+    format: 1 / 19 / 9.63 / 4.62   (52 entries)
+        Expected Length Range, raw: -5 to 24 (inclusive)
+        Expected Length Range, clamped: 1 to 19 (inclusive)
+    frequentlyPurchasedWith: 5 / 8 / 7.03 / 0.22   (24,708 entries)
+        Expected Length Range, raw: 6 to 8 (inclusive)
+        Expected Length Range, clamped: 6 to 8 (inclusive)
+        Unusually Short Terms:
+            1,857: 43900, len=5
+            13,651: 48530, len=5
+    genre: 2 / 29 / 10.33 / 5.21   (259 entries)
+        Expected Length Range, raw: -6 to 26 (inclusive)
+        Expected Length Range, clamped: 2 to 26 (inclusive)
+        Unusually Long Terms:
+            23: General Soundtracks & Shows, len=27
+            189: Concerts Operas and Musicals, len=28
+            242: Dance Theatre and Visual Arts, len=29
+    hardGoodType: 8 / 16 / 11.83 / 2.79   (6 entries)
+        Expected Length Range, raw: 3 to 21 (inclusive)
+        Expected Length Range, clamped: 8 to 16 (inclusive)
+    id: 4 / 16 / 7.69 / 1.04   (1,275,077 entries)
+        Expected Length Range, raw: 4 to 11 (inclusive)
+        Expected Length Range, clamped: 4 to 11 (inclusive)
+        Unusually Long Terms:
+            184,800: 9999100000050000, len=16
+            184,801: 9999100000050001, len=16
+            184,802: 9999100000050002, len=16
+            184,803: 9999100000050003, len=16
+            184,804: 9999100000050004, len=16
+            ...
+    image: 63 / 102 / 70.19 / 2.41   (771,010 entries)
+        Expected Length Range, raw: 62 to 78 (inclusive)
+        Expected Length Range, clamped: 63 to 78 (inclusive)
+        Unusually Long Terms:
+            2: http://images.bestbuy.com/BestBuy_US/images/products/nonsku/default_music_l.jpg, len=79
+            3: http://images.bestbuy.com/BestBuy_US/images/products/nonsku/default_movies_l.jpg, len=80
+            4: http://images.bestbuy.com/BestBuy_US/images/products/nonsku/default_hardlines_l.jpg, len=83
+            5: http://images.bestbuy.com/BestBuy_US/images/products/nonsku/default_hardlines_pd.jpg, len=84
+            6: http://images.bestbuy.com/BestBuy_US/images/products/nonsku/default_hardlines_m.gif, len=83
+            ...
+    lengthInMinutes: 1 / 5 / 3.39 / 0.61   (1,792 entries)
+        Expected Length Range, raw: 1 to 6 (inclusive)
+        Expected Length Range, clamped: 1 to 5 (inclusive)
+    longDescription: 1 / 55 / 7.3 / 3.06   (75,998 entries)
+        Expected Length Range, raw: -2 to 17 (inclusive)
+        Expected Length Range, clamped: 1 to 17 (inclusive)
+        Unusually Long Terms:
+            4,573: synopsisexperience, len=18
+            4,894: experiences.windows, len=19
+            6,559: products.netflixpandora, len=23
+            7,416: connection.windows, len=18
+            7,772: wirelessmicrophones, len=19
+            ...
+    manufacturer: 1 / 79 / 13.84 / 6.0   (45,770 entries)
+        Expected Length Range, raw: -5 to 32 (inclusive)
+        Expected Length Range, clamped: 1 to 32 (inclusive)
+        Unusually Long Terms:
+            75: BCI Music (Brentwood Communication), len=35
+            96: Warner Elektra Atlantic Corp. (Japa, len=35
+            131: Columbia River Entertainment Group, len=34
+            137: Warner Bros. Records (Record Label), len=35
+            302: Musical Productions Inc./MP Online, len=34
+            ...
+    mpaaRating: 1 / 7 / 3.43 / 1.59   (14 entries)
+        Expected Length Range, raw: -2 to 9 (inclusive)
+        Expected Length Range, clamped: 1 to 7 (inclusive)
+    name: 1 / 46 / 7.29 / 2.57   (163,316 entries)
+        Expected Length Range, raw: -1 to 16 (inclusive)
+        Expected Length Range, clamped: 1 to 16 (inclusive)
+        Unusually Long Terms:
+            22,239: kindertotenlieder, len=17
+            25,480: naturallyspeaking, len=17
+            27,799: davidsbundlertanze, len=18
+            28,196: labcabincalifornia, len=18
+            28,554: reinterpretations, len=17
+            ...
+    plot: 1 / 34 / 7.72 / 2.72   (182,183 entries)
+        Expected Length Range, raw: -1 to 16 (inclusive)
+        Expected Length Range, clamped: 1 to 16 (inclusive)
+        Unusually Long Terms:
+            8,285: misunderstandings, len=17
+            8,602: includes:dragonball, len=19
+            9,452: characterizations, len=17
+            10,124: extraterrestrials, len=17
+            12,153: uncharacteristically, len=20
+            ...
+    product_id: 1 / 5 / 4.8 / 0.46   (54,363 entries)
+        Expected Length Range, raw: 3 to 7 (inclusive)
+        Expected Length Range, clamped: 3 to 5 (inclusive)
+        Unusually Short Terms:
+            2: 1, len=1
+            3: 10, len=2
+            1,113: 11, len=2
+            2,224: 12, len=2
+            3,335: 13, len=2
+            ...
+    regularPrice: 3 / 8 / 5.94 / 0.86   (4,709 entries)
+        Expected Length Range, raw: 3 to 9 (inclusive)
+        Expected Length Range, clamped: 3 to 8 (inclusive)
+    relatedProducts: 4 / 8 / 7.0 / 0.04   (14,257 entries)
+        Expected Length Range, raw: 6 to 8 (inclusive)
+        Expected Length Range, clamped: 6 to 8 (inclusive)
+        Unusually Short Terms:
+            10,724: 3212, len=4
+    releaseDate: 20 / 20 / 20.0 / 0.0   (8,211 entries)
+        Expected Length Range, raw: 20 to 20 (inclusive)
+        Expected Length Range, clamped: 20 to 20 (inclusive)
+    salePrice: 3 / 8 / 5.95 / 0.85   (4,911 entries)
+        Expected Length Range, raw: 3 to 9 (inclusive)
+        Expected Length Range, clamped: 3 to 8 (inclusive)
+    salesRankLongTerm: 1 / 6 / 5.63 / 0.56   (281,712 entries)
+        Expected Length Range, raw: 3 to 8 (inclusive)
+        Expected Length Range, clamped: 3 to 6 (inclusive)
+        Unusually Short Terms:
+            2: 4, len=1
+            3: 70, len=2
+            29,929: 2, len=1
+            29,930: 3, len=1
+            29,931: 5, len=1
+            ...
+    salesRankMediumTerm: 1 / 6 / 5.18 / 0.58   (131,228 entries)
+        Expected Length Range, raw: 3 to 7 (inclusive)
+        Expected Length Range, clamped: 3 to 6 (inclusive)
+        Unusually Short Terms:
+            18,506: 2, len=1
+            18,507: 3, len=1
+            18,508: 4, len=1
+            18,509: 5, len=1
+            18,510: 6, len=1
+            ...
+    salesRankShortTerm: 1 / 6 / 5.04 / 0.5   (112,483 entries)
+        Expected Length Range, raw: 3 to 7 (inclusive)
+        Expected Length Range, clamped: 3 to 6 (inclusive)
+        Unusually Short Terms:
+            17,874: 2, len=1
+            17,875: 3, len=1
+            17,876: 4, len=1
+            17,877: 5, len=1
+            17,878: 6, len=1
+            ...
+    shortDescription: 1 / 35 / 6.81 / 2.94   (35,885 entries)
+        Expected Length Range, raw: -3 to 16 (inclusive)
+        Expected Length Range, clamped: 1 to 16 (inclusive)
+        Unusually Long Terms:
+            2,146: refurbishedenergy, len=17
+            2,378: assortmentandroid, len=17
+            2,657: refurbishedwindows, len=18
+            3,156: electromechanical, len=17
+            3,550: assortmentblackberry, len=20
+            ...
+    softwareGrade: 1 / 30 / 12.37 / 6.2   (97 entries)
+        Expected Length Range, raw: -7 to 31 (inclusive)
+        Expected Length Range, clamped: 1 to 30 (inclusive)
+    startDate: 20 / 20 / 20.0 / 0.0   (8,710 entries)
+        Expected Length Range, raw: 20 to 20 (inclusive)
+        Expected Length Range, clamped: 20 to 20 (inclusive)
+    store_id: 1 / 1 / 1.0 / 0.0   (1 entries)
+        Expected Length Range, raw: 1 to 1 (inclusive)
+        Expected Length Range, clamped: 1 to 1 (inclusive)
+    studio: 2 / 37 / 13.71 / 4.36   (4,856 entries)
+        Expected Length Range, raw: 0 to 27 (inclusive)
+        Expected Length Range, clamped: 2 to 27 (inclusive)
+        Unusually Long Terms:
+            815: Buena Vista Home Entertainment, len=30
+            1,371: BCI, a Navarre Corporation Company, len=34
+            1,628: Sony Bmg Music Entertainment, len=28
+            2,248: Sony Music Entertainment Inc., len=29
+            3,475: BCI, A Navarre Corporation Company, len=34
+            ...
+    subclass: 1 / 20 / 5.66 / 2.59   (1,273 entries)
+        Expected Length Range, raw: -3 to 14 (inclusive)
+        Expected Length Range, clamped: 1 to 14 (inclusive)
+        Unusually Long Terms:
+            591: computersftware, len=15
+            769: computersoftwareposa, len=20
+            925: photovideoactivebox, len=19
+    text: 1 / 46 / 7.63 / 1.38   (1,479,550 entries)
+        Expected Length Range, raw: 3 to 12 (inclusive)
+        Expected Length Range, clamped: 3 to 12 (inclusive)
+        Unusually Short Terms:
+            2: cd, len=2
+            5: of, len=2
+            8: in, len=2
+            10: a, len=1
+            11: to, len=2
+            ...
+        Unusually Long Terms:
+            389: automatically, len=13
+            595: multimediacard, len=14
+            598: compatibility, len=13
+            867: entertainment, len=13
+            1,165: environmental, len=13
+            ...
+    type: 4 / 8 / 6.29 / 1.58   (7 entries)
+        Expected Length Range, raw: 1 to 12 (inclusive)
+        Expected Length Range, clamped: 4 to 8 (inclusive)
+    weight: 3 / 8 / 4.71 / 1.08   (1,965 entries)
+        Expected Length Range, raw: 1 to 8 (inclusive)
+        Expected Length Range, clamped: 3 to 8 (inclusive)
+

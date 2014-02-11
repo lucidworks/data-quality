@@ -1,0 +1,60 @@
+Notes:
+* Fields include both declared and dynamic fields.
+* This is based on fields with indexed values (vs. stored values)
+* Stats do NOT include deleted docs.
+
+- - - actual report - - -
+
+Total Active Docs: 1,275,077
+
+All Fields: [_root_, _version_, accessories, albumLabel, albumTitle, artistName, author, bundledIn, cast, cat, category, categoryIds, categoryNames, categoryPath, class, color, comments, condition, content, content_type, crew, customerReviewAverage, customerReviewCount, department, depthCategoryIds, depthCategoryNames, description, details, features, format, frequentlyPurchasedWith, genre, hardGoodType, id, image, inStock, includes, keywords, last_modified, lengthInMinutes, links, longDescription, manu, manu_exact, manufacturer, mpaaRating, name, payloads, plot, popularity, price, product_id, regularPrice, relatedProducts, releaseDate, resourcename, salePrice, salesRankLongTerm, salesRankMediumTerm, salesRankShortTerm, shippingWeight, shortDescription, sku, softwareGrade, startDate, store, store_id, studio, subclass, subject, text, text_rev, title, type, url, weight]
+
+Populated at 100%: [_version_, id, regularPrice, salePrice, store_id, text, type]
+
+No Indexed Values / 0%: [_root_, author, cat, category, categoryPath, comments, content, content_type, inStock, includes, keywords, last_modified, links, manu, manu_exact, payloads, popularity, price, resourcename, shippingWeight, sku, store, subject, text_rev, title, url]
+
+Partially Populated Fields / Percentages:
+    accessories: 11,460 (0.9%)
+    albumLabel: 876,821 (68.77%)
+    albumTitle: 876,845 (68.77%)
+    artistName: 871,477 (68.35%)
+    bundledIn: 7,148 (0.56%)
+    cast: 132,231 (10.37%)
+    categoryIds: 1,262,671 (99.03%)
+    categoryNames: 1,262,671 (99.03%)
+    class: 1,258,757 (98.72%)
+    color: 47,567 (3.73%)
+    condition: 103,036 (8.08%)
+    crew: 118,603 (9.3%)
+    customerReviewAverage: 67,489 (5.29%)
+    customerReviewCount: 67,489 (5.29%)
+    department: 1,258,757 (98.72%)
+    depthCategoryIds: 1,262,671 (99.03%)
+    depthCategoryNames: 1,262,671 (99.03%)
+    description: 7,499 (0.59%)
+    details: 101,235 (7.94%)
+    features: 116,881 (9.17%)
+    format: 1,147,134 (89.97%)
+    frequentlyPurchasedWith: 23,950 (1.88%)
+    genre: 1,133,752 (88.92%)
+    hardGoodType: 103,036 (8.08%)
+    image: 1,273,774 (99.9%)
+    lengthInMinutes: 197,204 (15.47%)
+    longDescription: 136,234 (10.68%)
+    manufacturer: 997,494 (78.23%)
+    mpaaRating: 123,899 (9.72%)
+    name: 1,274,453 (99.95%)
+    plot: 204,358 (16.03%)
+    product_id: 54,363 (4.26%)
+    relatedProducts: 36,994 (2.9%)
+    releaseDate: 1,162,200 (91.15%)
+    salesRankLongTerm: 281,712 (22.09%)
+    salesRankMediumTerm: 131,228 (10.29%)
+    salesRankShortTerm: 112,483 (8.82%)
+    shortDescription: 120,163 (9.42%)
+    softwareGrade: 417 (0.03%)
+    startDate: 1,273,615 (99.89%)
+    studio: 256,401 (20.11%)
+    subclass: 1,258,757 (98.72%)
+    weight: 67,072 (5.26%)
+

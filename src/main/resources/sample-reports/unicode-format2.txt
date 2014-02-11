@@ -1,0 +1,536 @@
+Total Active Docs: 1,275,077
+
+All Fields: [_root_, _version_, accessories, albumLabel, albumTitle, artistName, author, bundledIn, cast, cat, category, categoryIds, categoryNames, categoryPath, class, color, comments, condition, content, content_type, crew, customerReviewAverage, customerReviewCount, department, depthCategoryIds, depthCategoryNames, description, details, features, format, frequentlyPurchasedWith, genre, hardGoodType, id, image, inStock, includes, keywords, last_modified, lengthInMinutes, links, longDescription, manu, manu_exact, manufacturer, mpaaRating, name, payloads, plot, popularity, price, product_id, regularPrice, relatedProducts, releaseDate, resourcename, salePrice, salesRankLongTerm, salesRankMediumTerm, salesRankShortTerm, shippingWeight, shortDescription, sku, softwareGrade, startDate, store, store_id, studio, subclass, subject, text, text_rev, title, type, url, weight]
+
+Fields with Terms: [categoryNames, class, color, department, genre, mpaaRating]
+
+Target Fields to Analyze: [categoryNames, class, color, department, genre, mpaaRating]
+
+Unicode Term Categories, for each Field (terms include deleted docs):
+
+Field: categoryNames
+    Character Classes: [Connector, UPPER, lower]
+        z_search_World
+        z_search_Reggae
+        z_search_Comedy
+        z_search_Rock
+        EL_Misc
+            ... (6 terms)
+    Character Classes: [Connector, UPPER, lower, space]
+        VG_Bundle_Xbox with Music Mixer
+            (showing all 1 terms)
+    Character Classes: [Currency, Dash1, Digit]
+        $300-$600
+            (showing all 1 terms)
+    Character Classes: [Currency, Dash1, Digit, UPPER, lower, space]
+        Save $100 - 250 on Select Computers
+            (showing all 1 terms)
+    Character Classes: [Currency, Dash1, Digit, space]
+        $200 - $299
+        $1000 - $1999
+        $500 - $749
+        $200 - $499
+        $2000 - $2999
+            ... (14 terms)
+    Character Classes: [Currency, Digit, UPPER, lower, space]
+        Software Under $10
+        $1000 and Up
+        Under $199
+        $1300 and Up
+        Under $25
+            ... (9 terms)
+    Character Classes: [Dash1, Digit, OtherPunct, UPPER, lower, space]
+        30" - 39" Televisions
+        21" -  29" Televisions
+        5" - 20"  Televisions
+        Up to 20" Flat-Panel Televisions
+        40" and up Flat-Panel Televisions
+            ... (11 terms)
+    Character Classes: [Dash1, Digit, OtherPunct, space]
+        21" - 29"
+        30" - 39"
+        15" - 15.4"
+        14" - 14.1"
+        40" - 49"
+            (showing all 5 terms)
+    Character Classes: [Dash1, Digit, UPPER]
+        PSP-3000
+            (showing all 1 terms)
+    Character Classes: [Dash1, Digit, UPPER, lower, space]
+        2-Way Speakers
+        2-Channel Amps
+        AMD Athlon 64 X2 Dual-Core Desktops
+        3-Way Speakers
+        2-3 Megapixels
+            ... (17 terms)
+    Character Classes: [Dash1, Math, UPPER, lower, space]
+        |Flat-Panel TVs
+        |Set-Top Boxes
+            (showing all 2 terms)
+    Character Classes: [Dash1, OtherPunct, UPPER]
+        CD-R/RW
+        DVD-R/RW
+            (showing all 2 terms)
+    Character Classes: [Dash1, OtherPunct, UPPER, lower]
+        Sensors/add-ons
+            (showing all 1 terms)
+    Character Classes: [Dash1, OtherPunct, UPPER, lower, space]
+        Rap & Hip-Hop
+        Desktop & All-in-One Computers
+        Blu-ray & DVD Players
+        E-Reader Covers & Cases
+        Over-Ear & On-Ear Headphones
+            ... (28 terms)
+    Character Classes: [Dash1, UPPER]
+        DVD-RAM
+            (showing all 1 terms)
+    Character Classes: [Dash1, UPPER, lower]
+        E-Readers
+        Hewlett-Packard
+        Anti-Virus
+        Hands-Free
+        D-Link
+            ... (13 terms)
+    Character Classes: [Dash1, UPPER, lower, space]
+        All Flat-Panel TVs
+        Side-by-Side Refrigerators
+        Built-in Dishwashers
+        Game Guides - Video Games
+        Top-Freezer Refrigerators
+            ... (130 terms)
+    Character Classes: [Dash2, UPPER, lower, space]
+        Pioneer — Shop for Home
+            (showing all 1 terms)
+    Character Classes: [Digit, LetterSymbol, OtherSym, UPPER, lower, space]
+        Intel® Core™2 Duo Processors
+            (showing all 1 terms)
+    Character Classes: [Digit, Math, OtherPunct, UPPER, lower, space]
+        20+" LCD Monitors
+        30"+ Televisions
+        |17" Monitors
+            (showing all 3 terms)
+    Character Classes: [Digit, Math, UPPER, lower, space]
+        |MP3 Players
+        16+ Years
+        8+ Megapixels
+            (showing all 3 terms)
+    Character Classes: [Digit, OtherPunct, UPPER, lower, space]
+        Audio & MP3
+        iPod & MP3 Players
+        iPod & MP3 Player Accessories
+        iPod & MP3 Speakers, Docks & Radios
+        iPod & MP3 Player Chargers
+            ... (54 terms)
+    Character Classes: [Digit, OtherPunct, lower]
+        '60s
+        '70s
+        '80s
+        '50s
+            (showing all 4 terms)
+    Character Classes: [Digit, UPPER]
+        MP3
+            (showing all 1 terms)
+    Character Classes: [Digit, UPPER, lower]
+        Testcategory1
+            (showing all 1 terms)
+    Character Classes: [Digit, UPPER, lower, space]
+        PlayStation 2
+        Xbox 360
+        PS2 Games
+        Xbox 360 Games
+        PlayStation 3
+            ... (67 terms)
+    Character Classes: [Digit, UPPER, space]
+        E3 2005
+            (showing all 1 terms)
+    Character Classes: [Digit, lower]
+        90s
+        test1
+            (showing all 2 terms)
+    Character Classes: [LetterSymbol, UPPER, lower, space]
+        iPad Appcessories™ Products
+        iPod Appcessories™ Products
+        iPhone Appcessories™ Products
+            (showing all 3 terms)
+    Character Classes: [Math, OtherPunct, UPPER]
+        DVD+R/RW
+            (showing all 1 terms)
+    Character Classes: [Math, OtherPunct, UPPER, lower, space]
+        |Cameras & Camcorders
+        |Washers & Dryers
+        |Computer & Photo Accessories
+        |DVD Players & VCRs , DVD Players & VCRs
+        |Car Audio & Video
+            ... (9 terms)
+    Character Classes: [Math, UPPER]
+        DVD+R
+            (showing all 1 terms)
+    Character Classes: [Math, UPPER, lower]
+        |Notebooks
+        |Processors
+        |Desktops
+        |Computers
+        |Televisions
+            ... (14 terms)
+    Character Classes: [Math, UPPER, lower, space]
+        |Brand Stores
+        |Computer Products
+        |Portable Audio
+        |Clock Radio
+        |Home Theater
+            ... (25 terms)
+    Character Classes: [OtherPunct, UPPER, lower]
+        Electronic/Dance
+        Children's
+        Gangsta/Hardcore
+        Hardcore/Punk
+        Comedy/Spoken
+            ... (16 terms)
+    Character Classes: [OtherPunct, UPPER, lower, space]
+        Movies & Music
+        Movies & TV Shows
+        Computers & Tablets
+        Cameras & Camcorders
+        Gospel & Christian
+            ... (580 terms)
+    Character Classes: [Start, Stop, UPPER, lower, space]
+        Battery Backup (UPS)
+        Internet Phone Service (VoIP)
+        Tanmay Sandbox (CSEE Cat Name)
+        Texas Christian Horned Frogs (TCU)
+        MiniDiscs (MD)
+            (showing all 5 terms)
+    Character Classes: [UPPER]
+        PSP
+        AMD
+        XBOX
+        SIRIUS
+        XM
+            ... (17 terms)
+    Character Classes: [UPPER, lower]
+        Music
+        Pop
+        Jazz
+        Latin
+        Rock
+            ... (477 terms)
+    Character Classes: [UPPER, lower, space]
+        Best Buy
+        Other Genres
+        Heavy Metal
+        Hard Rock
+        Video Games
+            ... (1677 terms)
+    Character Classes: [lower]
+        test
+            (showing all 1 terms)
+    Character Classes: [lower, space]
+        instore coupons
+        bundle test
+            (showing all 2 terms)
+
+Field: class
+    Character Classes: [Dash1, Digit, OtherPunct, UPPER, space]
+        MID FPTV 32-45"
+        SMALL FPTV 0-31"
+            (showing all 2 terms)
+    Character Classes: [Dash1, Digit, UPPER, space]
+        HEADPHONES-MP3 SPKRS
+        MP-3 DEVICES
+        MP3-IPOD WARRANTY
+            (showing all 3 terms)
+    Character Classes: [Dash1, UPPER]
+        AMPS-EFFECTS
+        SET-TOP-BOXES
+        CABLE-VOD
+            (showing all 3 terms)
+    Character Classes: [Dash1, UPPER, space]
+        PRE-RECORDED CASS
+        CD-DVDRW DRIVES
+        T-MOBILE HARDWARE
+        GADGET-EREADER BTP
+        DIG ENT NON-REVENUE
+            ... (7 terms)
+    Character Classes: [Digit, Math, OtherPunct, UPPER, space]
+        LARGE FPTV 46"+
+            (showing all 1 terms)
+    Character Classes: [Digit, UPPER, space]
+        MP3 ACCESSORIES
+        3D MOVIES
+        OPEN36 MARCH FY12
+        OPEN344 MARCH FY12
+        OPEN308 JULY FY12
+            ... (11 terms)
+    Character Classes: [OtherPunct, UPPER]
+        CARDS/COMPONENTS
+            (showing all 1 terms)
+    Character Classes: [OtherPunct, UPPER, space]
+        MOBILE COMP. ACCESS.
+        INK & PAPER
+        STORAGE & CD ACCESS
+        AT&T HARDWARE
+        AUDIO & VIDEO CABLES
+            ... (12 terms)
+    Character Classes: [UPPER]
+        KITCHEN
+        PRODUCTIVITY
+        PREMIUMS
+        LAUNDRY
+        GUITARS
+            ... (41 terms)
+    Character Classes: [UPPER, space]
+        COMPACT DISC
+        DVD SOFTWARE
+        BLU RAY MOVIES
+        VIDEO GAME SOFTWARE
+        LICENSED MERCHANDISE
+            ... (179 terms)
+
+Field: color
+    Character Classes: [Com-L1Sup-OtherP, UPPER, lower]
+        Satina¿
+            (showing all 1 terms)
+    Character Classes: [Com-L1Sup-OtherP, UPPER, lower, space]
+        Titanium¿ color
+            (showing all 1 terms)
+    Character Classes: [Dash1, Digit, UPPER, lower, space]
+        3-Tone Sunburst
+        2-Tone Sunburst
+        3-Color Sunburst
+        2-Color Sunburst
+        3-Tone Sunburst Satin
+            ... (7 terms)
+    Character Classes: [Dash1, OtherPunct, UPPER, lower]
+        Black/Stainless-Steel
+        Stainless-Steel/Black
+        White/Stainless-Steel
+        Black/Tri-Color
+        Other/White-on-White
+            ... (23 terms)
+    Character Classes: [Dash1, OtherPunct, UPPER, lower, space]
+        Brushed Stainless-Steel/Black
+        Black/Brushed Stainless-Steel
+        Black/ Stainless-Steel
+        Stainless-Steel/ Black
+        Black Look/Panel-Ready
+            ... (13 terms)
+    Character Classes: [Dash1, Start, Stop, UPPER, lower, space]
+        Stainless-Steel (Special Order)
+        White-on-White (Special Order)
+        Black-on-Black (Special Order)
+        Biscuit-on-Biscuit (Special Order)
+        Black-on-Stainless (Special Order)
+            ... (13 terms)
+    Character Classes: [Dash1, UPPER, lower]
+        Stainless-Steel
+        White-on-White
+        Black-on-Black
+        Bisque-on-Bisque
+        Biscuit-on-Biscuit
+            ... (42 terms)
+    Character Classes: [Dash1, UPPER, lower, space]
+        Monochromatic Stainless-Steel
+        Brushed Stainless-Steel
+        High-Gloss Black
+        See-Thru Black
+        Satina Stainless-Look
+            ... (61 terms)
+    Character Classes: [Dash1, lower, space]
+        dark-slate-gray leather
+        medium-dark-pewter cloth
+        medium-gray cloth
+            (showing all 3 terms)
+    Character Classes: [Digit, OtherPunct, UPPER, lower]
+        Cr&#232;me
+            (showing all 1 terms)
+    Character Classes: [Digit, OtherPunct, UPPER, lower, space]
+        Titanium&#153; color
+        Cr&#232;me with black trim
+            (showing all 2 terms)
+    Character Classes: [Digit, OtherPunct, lower, space]
+        4 oz.
+            (showing all 1 terms)
+    Character Classes: [Digit, UPPER]
+        3TS
+        2TS
+            (showing all 2 terms)
+    Character Classes: [Digit, UPPER, lower, space]
+        3D Black
+        7 Color
+            (showing all 2 terms)
+    Character Classes: [Lat-L1Sup-lower, UPPER, lower]
+        Crème
+            (showing all 1 terms)
+    Character Classes: [Lat-L1Sup-lower, UPPER, lower, space]
+        Black Matté
+        Vintage Crème
+            (showing all 2 terms)
+    Character Classes: [OtherPunct, UPPER, lower]
+        Black/Silver
+        Silver/Black
+        Black/Gray
+        Black/Red
+        Black/White
+            ... (626 terms)
+    Character Classes: [OtherPunct, UPPER, lower, space]
+        Black/ Silver
+        Black/Titanium Color
+        Other/Brushed Aluminum Trim
+        Black/Dark Gray
+        Black/Silver Gray
+            ... (391 terms)
+    Character Classes: [OtherPunct, lower]
+        blue/black
+        silver/gray
+            (showing all 2 terms)
+    Character Classes: [OtherPunct, lower, space]
+        black, gold trim
+            (showing all 1 terms)
+    Character Classes: [QuestionMark, UPPER, lower, space]
+        Titanium? color
+            (showing all 1 terms)
+    Character Classes: [Start, Stop, UPPER, lower, space]
+        Black (Special Order)
+        White (Special Order)
+        Bisque (Special Order)
+        Cameo White (Special Order)
+        Biscuit (Special Order)
+            ... (21 terms)
+    Character Classes: [Start, Stop, UPPER, space]
+        (PRODUCT) RED
+            (showing all 1 terms)
+    Character Classes: [UPPER]
+        NA
+        TBS
+        LX
+            (showing all 3 terms)
+    Character Classes: [UPPER, lower]
+        Black
+        White
+        Silver
+        Red
+        Blue
+            ... (341 terms)
+    Character Classes: [UPPER, lower, space]
+        White on white
+        Gloss Black
+        Charcoal Gray
+        Pearl White
+        Matte Black
+            ... (1725 terms)
+    Character Classes: [lower]
+        blue
+        gray
+        multicolor
+        quartz
+        red
+            ... (7 terms)
+    Character Classes: [lower, space]
+        taupe vinyl
+        charcoal leather
+        graphite cloth
+        gray leather
+        medium neutral cloth
+            ... (8 terms)
+
+Field: department
+    Character Classes: [OtherPunct, UPPER]
+        PHOTO/COMMODITIES
+            (showing all 1 terms)
+    Character Classes: [OtherPunct, UPPER, space]
+        VIDEO/COMPACT DISC
+            (showing all 1 terms)
+    Character Classes: [UPPER]
+        APPLIANCE
+        COMPUTERS
+        AUDIO
+        ACCESSORIES
+        VIDEO
+            ... (7 terms)
+    Character Classes: [UPPER, space]
+        INTERACTIVE SOFTWARE
+        MOBILE AUDIO
+        DIGITAL COMMUNICATIO
+        COMPUTER SOFTWARE
+        MAGNOLIA HOME THEATR
+            (showing all 5 terms)
+
+Field: genre
+    Character Classes: [Dash1, OtherPunct, UPPER, lower, space]
+        Rap & Hip-Hop
+            (showing all 1 terms)
+    Character Classes: [Dash1, UPPER, lower]
+        Sci-Fi
+            (showing all 1 terms)
+    Character Classes: [Dash1, UPPER, lower, space]
+        General Sci-Fi
+            (showing all 1 terms)
+    Character Classes: [Digit, OtherPunct, lower]
+        '60s
+        '70s
+        '80s
+        '50s
+            (showing all 4 terms)
+    Character Classes: [Digit, UPPER, lower, space]
+        2 Tone Ska
+            (showing all 1 terms)
+    Character Classes: [Digit, lower]
+        90s
+            (showing all 1 terms)
+    Character Classes: [OtherPunct, UPPER, lower]
+        Electronic/Dance
+        Children's
+        Gangsta/Hardcore
+        Hardcore/Punk
+        Comedy/Spoken
+            ... (10 terms)
+    Character Classes: [OtherPunct, UPPER, lower, space]
+        Gospel & Christian
+        General Soundtracks & Shows
+        R&B & Soul
+        Contemp. Christian
+        General R&B & Soul
+            ... (18 terms)
+    Character Classes: [UPPER]
+        TV
+            (showing all 1 terms)
+    Character Classes: [UPPER, lower]
+        Pop
+        Drama
+        Jazz
+        Latin
+        Alternative
+            ... (133 terms)
+    Character Classes: [UPPER, lower, space]
+        Other Genres
+        Music DVDs
+        Heavy Metal
+        Hard Rock
+        Action and Adventure
+            ... (87 terms)
+    Character Classes: [UPPER, space]
+        NO CATEGORY ASSIGNED
+            (showing all 1 terms)
+
+Field: mpaaRating
+    Character Classes: [Dash1, Digit, UPPER]
+        PG-13
+        NC-17
+            (showing all 2 terms)
+    Character Classes: [Digit, UPPER]
+        TV14
+        TVY7
+            (showing all 2 terms)
+    Character Classes: [OtherPunct, UPPER]
+        N/A
+            (showing all 1 terms)
+    Character Classes: [UPPER]
+        NR
+        R
+        PG
+        G
+        TVPG
+            ... (8 terms)
+    Character Classes: [UPPER, lower]
+        Unrated
+            (showing all 1 terms)

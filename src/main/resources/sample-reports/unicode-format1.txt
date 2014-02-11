@@ -1,0 +1,581 @@
+Fetching ALL terms, this may take a while ...
+Via TermsRequest took 62 ms
+Tabulating retrieved terms ...
+----------- http://localhost:8983/solr/demo_shard1_replica1 -----------
+Total Active Docs: 1,275,077
+
+All Fields: [_root_, _version_, accessories, albumLabel, albumTitle, artistName, author, bundledIn, cast, cat, category, categoryIds, categoryNames, categoryPath, class, color, comments, condition, content, content_type, crew, customerReviewAverage, customerReviewCount, department, depthCategoryIds, depthCategoryNames, description, details, features, format, frequentlyPurchasedWith, genre, hardGoodType, id, image, inStock, includes, keywords, last_modified, lengthInMinutes, links, longDescription, manu, manu_exact, manufacturer, mpaaRating, name, payloads, plot, popularity, price, product_id, regularPrice, relatedProducts, releaseDate, resourcename, salePrice, salesRankLongTerm, salesRankMediumTerm, salesRankShortTerm, shippingWeight, shortDescription, sku, softwareGrade, startDate, store, store_id, studio, subclass, subject, text, text_rev, title, type, url, weight]
+
+Fields with Terms: [categoryNames, class, color, department, genre, mpaaRating]
+
+Target Fields to Analyze: [categoryNames, class, color, department, genre, mpaaRating]
+
+Unicode Term Categories, for each Field (terms include deleted docs):
+
+Field: categoryNames
+    Character Classes: [COMMON-BASIC_LATIN-12_Zs_SPACE_SEPARATOR, COMMON-BASIC_LATIN-20_Pd_DASH_PUNCTUATION, COMMON-BASIC_LATIN-24_Po_OTHER_PUNCTUATION, COMMON-BASIC_LATIN-9_Nd_DECIMAL_DIGIT_NUMBER]
+        21" - 29"
+        30" - 39"
+        15" - 15.4"
+        14" - 14.1"
+        40" - 49"
+        (5 terms)
+    Character Classes: [COMMON-BASIC_LATIN-12_Zs_SPACE_SEPARATOR, COMMON-BASIC_LATIN-20_Pd_DASH_PUNCTUATION, COMMON-BASIC_LATIN-24_Po_OTHER_PUNCTUATION, COMMON-BASIC_LATIN-9_Nd_DECIMAL_DIGIT_NUMBER, LATIN-BASIC_LATIN-1_Lu_UPPERCASE_LETTER, LATIN-BASIC_LATIN-2_Ll_LOWERCASE_LETTER]
+        30" - 39" Televisions
+        21" -  29" Televisions
+        5" - 20"  Televisions
+        Up to 20" Flat-Panel Televisions
+        40" and up Flat-Panel Televisions
+        21" - 29" Flat-Panel Televisions
+        (11 terms)
+    Character Classes: [COMMON-BASIC_LATIN-12_Zs_SPACE_SEPARATOR, COMMON-BASIC_LATIN-20_Pd_DASH_PUNCTUATION, COMMON-BASIC_LATIN-24_Po_OTHER_PUNCTUATION, LATIN-BASIC_LATIN-1_Lu_UPPERCASE_LETTER, LATIN-BASIC_LATIN-2_Ll_LOWERCASE_LETTER]
+        Rap & Hip-Hop
+        Desktop & All-in-One Computers
+        Blu-ray & DVD Players
+        E-Reader Covers & Cases
+        Over-Ear & On-Ear Headphones
+        Internet & E-Mail
+        (28 terms)
+    Character Classes: [COMMON-BASIC_LATIN-12_Zs_SPACE_SEPARATOR, COMMON-BASIC_LATIN-20_Pd_DASH_PUNCTUATION, COMMON-BASIC_LATIN-25_Sm_MATH_SYMBOL, LATIN-BASIC_LATIN-1_Lu_UPPERCASE_LETTER, LATIN-BASIC_LATIN-2_Ll_LOWERCASE_LETTER]
+        |Flat-Panel TVs
+        |Set-Top Boxes
+        (2 terms)
+    Character Classes: [COMMON-BASIC_LATIN-12_Zs_SPACE_SEPARATOR, COMMON-BASIC_LATIN-20_Pd_DASH_PUNCTUATION, COMMON-BASIC_LATIN-26_Sc_CURRENCY_SYMBOL, COMMON-BASIC_LATIN-9_Nd_DECIMAL_DIGIT_NUMBER]
+        $200 - $299
+        $1000 - $1999
+        $500 - $749
+        $200 - $499
+        $2000 - $2999
+        $50 - $99
+        (14 terms)
+    Character Classes: [COMMON-BASIC_LATIN-12_Zs_SPACE_SEPARATOR, COMMON-BASIC_LATIN-20_Pd_DASH_PUNCTUATION, COMMON-BASIC_LATIN-26_Sc_CURRENCY_SYMBOL, COMMON-BASIC_LATIN-9_Nd_DECIMAL_DIGIT_NUMBER, LATIN-BASIC_LATIN-1_Lu_UPPERCASE_LETTER, LATIN-BASIC_LATIN-2_Ll_LOWERCASE_LETTER]
+        Save $100 - 250 on Select Computers
+        (1 terms)
+    Character Classes: [COMMON-BASIC_LATIN-12_Zs_SPACE_SEPARATOR, COMMON-BASIC_LATIN-20_Pd_DASH_PUNCTUATION, COMMON-BASIC_LATIN-9_Nd_DECIMAL_DIGIT_NUMBER, LATIN-BASIC_LATIN-1_Lu_UPPERCASE_LETTER, LATIN-BASIC_LATIN-2_Ll_LOWERCASE_LETTER]
+        2-Way Speakers
+        2-Channel Amps
+        AMD Athlon 64 X2 Dual-Core Desktops
+        3-Way Speakers
+        2-3 Megapixels
+        3D Blu-ray Players
+        (17 terms)
+    Character Classes: [COMMON-BASIC_LATIN-12_Zs_SPACE_SEPARATOR, COMMON-BASIC_LATIN-20_Pd_DASH_PUNCTUATION, LATIN-BASIC_LATIN-1_Lu_UPPERCASE_LETTER, LATIN-BASIC_LATIN-2_Ll_LOWERCASE_LETTER]
+        All Flat-Panel TVs
+        Side-by-Side Refrigerators
+        Built-in Dishwashers
+        Game Guides - Video Games
+        Top-Freezer Refrigerators
+        Over-the-Range Microwaves
+        (130 terms)
+    Character Classes: [COMMON-BASIC_LATIN-12_Zs_SPACE_SEPARATOR, COMMON-BASIC_LATIN-21_Ps_START_PUNCTUATION, COMMON-BASIC_LATIN-22_Pe_END_PUNCTUATION, LATIN-BASIC_LATIN-1_Lu_UPPERCASE_LETTER, LATIN-BASIC_LATIN-2_Ll_LOWERCASE_LETTER]
+        Battery Backup (UPS)
+        Internet Phone Service (VoIP)
+        Tanmay Sandbox (CSEE Cat Name)
+        Texas Christian Horned Frogs (TCU)
+        MiniDiscs (MD)
+        (5 terms)
+    Character Classes: [COMMON-BASIC_LATIN-12_Zs_SPACE_SEPARATOR, COMMON-BASIC_LATIN-23_Pc_CONNECTOR_PUNCTUATION, LATIN-BASIC_LATIN-1_Lu_UPPERCASE_LETTER, LATIN-BASIC_LATIN-2_Ll_LOWERCASE_LETTER]
+        VG_Bundle_Xbox with Music Mixer
+        (1 terms)
+    Character Classes: [COMMON-BASIC_LATIN-12_Zs_SPACE_SEPARATOR, COMMON-BASIC_LATIN-24_Po_OTHER_PUNCTUATION, COMMON-BASIC_LATIN-25_Sm_MATH_SYMBOL, COMMON-BASIC_LATIN-9_Nd_DECIMAL_DIGIT_NUMBER, LATIN-BASIC_LATIN-1_Lu_UPPERCASE_LETTER, LATIN-BASIC_LATIN-2_Ll_LOWERCASE_LETTER]
+        20+" LCD Monitors
+        30"+ Televisions
+        |17" Monitors
+        (3 terms)
+    Character Classes: [COMMON-BASIC_LATIN-12_Zs_SPACE_SEPARATOR, COMMON-BASIC_LATIN-24_Po_OTHER_PUNCTUATION, COMMON-BASIC_LATIN-25_Sm_MATH_SYMBOL, LATIN-BASIC_LATIN-1_Lu_UPPERCASE_LETTER, LATIN-BASIC_LATIN-2_Ll_LOWERCASE_LETTER]
+        |Cameras & Camcorders
+        |Washers & Dryers
+        |Computer & Photo Accessories
+        |DVD Players & VCRs , DVD Players & VCRs
+        |Car Audio & Video
+        |TV, Home Theater & Audio Accessories
+        (9 terms)
+    Character Classes: [COMMON-BASIC_LATIN-12_Zs_SPACE_SEPARATOR, COMMON-BASIC_LATIN-24_Po_OTHER_PUNCTUATION, COMMON-BASIC_LATIN-9_Nd_DECIMAL_DIGIT_NUMBER, LATIN-BASIC_LATIN-1_Lu_UPPERCASE_LETTER, LATIN-BASIC_LATIN-2_Ll_LOWERCASE_LETTER]
+        Audio & MP3
+        iPod & MP3 Players
+        iPod & MP3 Player Accessories
+        iPod & MP3 Speakers, Docks & Radios
+        iPod & MP3 Player Chargers
+        MP3 & Audio
+        (54 terms)
+    Character Classes: [COMMON-BASIC_LATIN-12_Zs_SPACE_SEPARATOR, COMMON-BASIC_LATIN-24_Po_OTHER_PUNCTUATION, LATIN-BASIC_LATIN-1_Lu_UPPERCASE_LETTER, LATIN-BASIC_LATIN-2_Ll_LOWERCASE_LETTER]
+        Movies & Music
+        Movies & TV Shows
+        Computers & Tablets
+        Cameras & Camcorders
+        Gospel & Christian
+        General Soundtracks & Shows
+        (580 terms)
+    Character Classes: [COMMON-BASIC_LATIN-12_Zs_SPACE_SEPARATOR, COMMON-BASIC_LATIN-25_Sm_MATH_SYMBOL, COMMON-BASIC_LATIN-9_Nd_DECIMAL_DIGIT_NUMBER, LATIN-BASIC_LATIN-1_Lu_UPPERCASE_LETTER, LATIN-BASIC_LATIN-2_Ll_LOWERCASE_LETTER]
+        |MP3 Players
+        16+ Years
+        8+ Megapixels
+        (3 terms)
+    Character Classes: [COMMON-BASIC_LATIN-12_Zs_SPACE_SEPARATOR, COMMON-BASIC_LATIN-25_Sm_MATH_SYMBOL, LATIN-BASIC_LATIN-1_Lu_UPPERCASE_LETTER, LATIN-BASIC_LATIN-2_Ll_LOWERCASE_LETTER]
+        |Brand Stores
+        |Computer Products
+        |Portable Audio
+        |Clock Radio
+        |Home Theater
+        |Portable CD
+        (25 terms)
+    Character Classes: [COMMON-BASIC_LATIN-12_Zs_SPACE_SEPARATOR, COMMON-BASIC_LATIN-26_Sc_CURRENCY_SYMBOL, COMMON-BASIC_LATIN-9_Nd_DECIMAL_DIGIT_NUMBER, LATIN-BASIC_LATIN-1_Lu_UPPERCASE_LETTER, LATIN-BASIC_LATIN-2_Ll_LOWERCASE_LETTER]
+        Software Under $10
+        $1000 and Up
+        Under $199
+        $1300 and Up
+        Under $25
+        Under $500
+        (9 terms)
+    Character Classes: [COMMON-BASIC_LATIN-12_Zs_SPACE_SEPARATOR, COMMON-BASIC_LATIN-9_Nd_DECIMAL_DIGIT_NUMBER, COMMON-LATIN_1_SUPPLEMENT-28_So_OTHER_SYMBOL, COMMON-LETTERLIKE_SYMBOLS-28_So_OTHER_SYMBOL, LATIN-BASIC_LATIN-1_Lu_UPPERCASE_LETTER, LATIN-BASIC_LATIN-2_Ll_LOWERCASE_LETTER]
+        Intel® Core™2 Duo Processors
+        (1 terms)
+    Character Classes: [COMMON-BASIC_LATIN-12_Zs_SPACE_SEPARATOR, COMMON-BASIC_LATIN-9_Nd_DECIMAL_DIGIT_NUMBER, LATIN-BASIC_LATIN-1_Lu_UPPERCASE_LETTER]
+        E3 2005
+        (1 terms)
+    Character Classes: [COMMON-BASIC_LATIN-12_Zs_SPACE_SEPARATOR, COMMON-BASIC_LATIN-9_Nd_DECIMAL_DIGIT_NUMBER, LATIN-BASIC_LATIN-1_Lu_UPPERCASE_LETTER, LATIN-BASIC_LATIN-2_Ll_LOWERCASE_LETTER]
+        PlayStation 2
+        Xbox 360
+        PS2 Games
+        Xbox 360 Games
+        PlayStation 3
+        PS3 Games
+        (67 terms)
+    Character Classes: [COMMON-BASIC_LATIN-12_Zs_SPACE_SEPARATOR, COMMON-GENERAL_PUNCTUATION-20_Pd_DASH_PUNCTUATION, LATIN-BASIC_LATIN-1_Lu_UPPERCASE_LETTER, LATIN-BASIC_LATIN-2_Ll_LOWERCASE_LETTER]
+        Pioneer — Shop for Home
+        (1 terms)
+    Character Classes: [COMMON-BASIC_LATIN-12_Zs_SPACE_SEPARATOR, COMMON-LETTERLIKE_SYMBOLS-28_So_OTHER_SYMBOL, LATIN-BASIC_LATIN-1_Lu_UPPERCASE_LETTER, LATIN-BASIC_LATIN-2_Ll_LOWERCASE_LETTER]
+        iPad Appcessories™ Products
+        iPod Appcessories™ Products
+        iPhone Appcessories™ Products
+        (3 terms)
+    Character Classes: [COMMON-BASIC_LATIN-12_Zs_SPACE_SEPARATOR, LATIN-BASIC_LATIN-1_Lu_UPPERCASE_LETTER, LATIN-BASIC_LATIN-2_Ll_LOWERCASE_LETTER]
+        Best Buy
+        Other Genres
+        Heavy Metal
+        Hard Rock
+        Video Games
+        Easy Listening
+        (1677 terms)
+    Character Classes: [COMMON-BASIC_LATIN-12_Zs_SPACE_SEPARATOR, LATIN-BASIC_LATIN-2_Ll_LOWERCASE_LETTER]
+        instore coupons
+        bundle test
+        (2 terms)
+    Character Classes: [COMMON-BASIC_LATIN-20_Pd_DASH_PUNCTUATION, COMMON-BASIC_LATIN-24_Po_OTHER_PUNCTUATION, LATIN-BASIC_LATIN-1_Lu_UPPERCASE_LETTER]
+        CD-R/RW
+        DVD-R/RW
+        (2 terms)
+    Character Classes: [COMMON-BASIC_LATIN-20_Pd_DASH_PUNCTUATION, COMMON-BASIC_LATIN-24_Po_OTHER_PUNCTUATION, LATIN-BASIC_LATIN-1_Lu_UPPERCASE_LETTER, LATIN-BASIC_LATIN-2_Ll_LOWERCASE_LETTER]
+        Sensors/add-ons
+        (1 terms)
+    Character Classes: [COMMON-BASIC_LATIN-20_Pd_DASH_PUNCTUATION, COMMON-BASIC_LATIN-26_Sc_CURRENCY_SYMBOL, COMMON-BASIC_LATIN-9_Nd_DECIMAL_DIGIT_NUMBER]
+        $300-$600
+        (1 terms)
+    Character Classes: [COMMON-BASIC_LATIN-20_Pd_DASH_PUNCTUATION, COMMON-BASIC_LATIN-9_Nd_DECIMAL_DIGIT_NUMBER, LATIN-BASIC_LATIN-1_Lu_UPPERCASE_LETTER]
+        PSP-3000
+        (1 terms)
+    Character Classes: [COMMON-BASIC_LATIN-20_Pd_DASH_PUNCTUATION, LATIN-BASIC_LATIN-1_Lu_UPPERCASE_LETTER]
+        DVD-RAM
+        (1 terms)
+    Character Classes: [COMMON-BASIC_LATIN-20_Pd_DASH_PUNCTUATION, LATIN-BASIC_LATIN-1_Lu_UPPERCASE_LETTER, LATIN-BASIC_LATIN-2_Ll_LOWERCASE_LETTER]
+        E-Readers
+        Hewlett-Packard
+        Anti-Virus
+        Hands-Free
+        D-Link
+        Add-ons
+        (13 terms)
+    Character Classes: [COMMON-BASIC_LATIN-23_Pc_CONNECTOR_PUNCTUATION, LATIN-BASIC_LATIN-1_Lu_UPPERCASE_LETTER, LATIN-BASIC_LATIN-2_Ll_LOWERCASE_LETTER]
+        z_search_World
+        z_search_Reggae
+        z_search_Comedy
+        z_search_Rock
+        EL_Misc
+        HA_Misc
+        (6 terms)
+    Character Classes: [COMMON-BASIC_LATIN-24_Po_OTHER_PUNCTUATION, COMMON-BASIC_LATIN-25_Sm_MATH_SYMBOL, LATIN-BASIC_LATIN-1_Lu_UPPERCASE_LETTER]
+        DVD+R/RW
+        (1 terms)
+    Character Classes: [COMMON-BASIC_LATIN-24_Po_OTHER_PUNCTUATION, COMMON-BASIC_LATIN-9_Nd_DECIMAL_DIGIT_NUMBER, LATIN-BASIC_LATIN-2_Ll_LOWERCASE_LETTER]
+        '60s
+        '70s
+        '80s
+        '50s
+        (4 terms)
+    Character Classes: [COMMON-BASIC_LATIN-24_Po_OTHER_PUNCTUATION, LATIN-BASIC_LATIN-1_Lu_UPPERCASE_LETTER, LATIN-BASIC_LATIN-2_Ll_LOWERCASE_LETTER]
+        Electronic/Dance
+        Children's
+        Gangsta/Hardcore
+        Hardcore/Punk
+        Comedy/Spoken
+        Dancehall/Ragga
+        (16 terms)
+    Character Classes: [COMMON-BASIC_LATIN-25_Sm_MATH_SYMBOL, LATIN-BASIC_LATIN-1_Lu_UPPERCASE_LETTER]
+        DVD+R
+        (1 terms)
+    Character Classes: [COMMON-BASIC_LATIN-25_Sm_MATH_SYMBOL, LATIN-BASIC_LATIN-1_Lu_UPPERCASE_LETTER, LATIN-BASIC_LATIN-2_Ll_LOWERCASE_LETTER]
+        |Notebooks
+        |Processors
+        |Desktops
+        |Computers
+        |Televisions
+        |Appliances
+        (14 terms)
+    Character Classes: [COMMON-BASIC_LATIN-9_Nd_DECIMAL_DIGIT_NUMBER, LATIN-BASIC_LATIN-1_Lu_UPPERCASE_LETTER]
+        MP3
+        (1 terms)
+    Character Classes: [COMMON-BASIC_LATIN-9_Nd_DECIMAL_DIGIT_NUMBER, LATIN-BASIC_LATIN-1_Lu_UPPERCASE_LETTER, LATIN-BASIC_LATIN-2_Ll_LOWERCASE_LETTER]
+        Testcategory1
+        (1 terms)
+    Character Classes: [COMMON-BASIC_LATIN-9_Nd_DECIMAL_DIGIT_NUMBER, LATIN-BASIC_LATIN-2_Ll_LOWERCASE_LETTER]
+        90s
+        test1
+        (2 terms)
+    Character Classes: [LATIN-BASIC_LATIN-1_Lu_UPPERCASE_LETTER]
+        PSP
+        AMD
+        XBOX
+        SIRIUS
+        XM
+        ATI
+        (17 terms)
+    Character Classes: [LATIN-BASIC_LATIN-1_Lu_UPPERCASE_LETTER, LATIN-BASIC_LATIN-2_Ll_LOWERCASE_LETTER]
+        Music
+        Pop
+        Jazz
+        Latin
+        Rock
+        World
+        (477 terms)
+    Character Classes: [LATIN-BASIC_LATIN-2_Ll_LOWERCASE_LETTER]
+        test
+        (1 terms)
+
+Field: class
+    Character Classes: [COMMON-BASIC_LATIN-12_Zs_SPACE_SEPARATOR, COMMON-BASIC_LATIN-20_Pd_DASH_PUNCTUATION, COMMON-BASIC_LATIN-24_Po_OTHER_PUNCTUATION, COMMON-BASIC_LATIN-9_Nd_DECIMAL_DIGIT_NUMBER, LATIN-BASIC_LATIN-1_Lu_UPPERCASE_LETTER]
+        MID FPTV 32-45"
+        SMALL FPTV 0-31"
+        (2 terms)
+    Character Classes: [COMMON-BASIC_LATIN-12_Zs_SPACE_SEPARATOR, COMMON-BASIC_LATIN-20_Pd_DASH_PUNCTUATION, COMMON-BASIC_LATIN-9_Nd_DECIMAL_DIGIT_NUMBER, LATIN-BASIC_LATIN-1_Lu_UPPERCASE_LETTER]
+        HEADPHONES-MP3 SPKRS
+        MP-3 DEVICES
+        MP3-IPOD WARRANTY
+        (3 terms)
+    Character Classes: [COMMON-BASIC_LATIN-12_Zs_SPACE_SEPARATOR, COMMON-BASIC_LATIN-20_Pd_DASH_PUNCTUATION, LATIN-BASIC_LATIN-1_Lu_UPPERCASE_LETTER]
+        PRE-RECORDED CASS
+        CD-DVDRW DRIVES
+        T-MOBILE HARDWARE
+        GADGET-EREADER BTP
+        DIG ENT NON-REVENUE
+        CTO-MOBILE COMPUTING
+        (7 terms)
+    Character Classes: [COMMON-BASIC_LATIN-12_Zs_SPACE_SEPARATOR, COMMON-BASIC_LATIN-24_Po_OTHER_PUNCTUATION, COMMON-BASIC_LATIN-25_Sm_MATH_SYMBOL, COMMON-BASIC_LATIN-9_Nd_DECIMAL_DIGIT_NUMBER, LATIN-BASIC_LATIN-1_Lu_UPPERCASE_LETTER]
+        LARGE FPTV 46"+
+        (1 terms)
+    Character Classes: [COMMON-BASIC_LATIN-12_Zs_SPACE_SEPARATOR, COMMON-BASIC_LATIN-24_Po_OTHER_PUNCTUATION, LATIN-BASIC_LATIN-1_Lu_UPPERCASE_LETTER]
+        MOBILE COMP. ACCESS.
+        INK & PAPER
+        STORAGE & CD ACCESS
+        AT&T HARDWARE
+        AUDIO & VIDEO CABLES
+        H & F EQUIP HARDWARE
+        (12 terms)
+    Character Classes: [COMMON-BASIC_LATIN-12_Zs_SPACE_SEPARATOR, COMMON-BASIC_LATIN-9_Nd_DECIMAL_DIGIT_NUMBER, LATIN-BASIC_LATIN-1_Lu_UPPERCASE_LETTER]
+        MP3 ACCESSORIES
+        3D MOVIES
+        OPEN36 MARCH FY12
+        OPEN344 MARCH FY12
+        OPEN308 JULY FY12
+        OPEN351 MARCH FY12
+        (11 terms)
+    Character Classes: [COMMON-BASIC_LATIN-12_Zs_SPACE_SEPARATOR, LATIN-BASIC_LATIN-1_Lu_UPPERCASE_LETTER]
+        COMPACT DISC
+        DVD SOFTWARE
+        BLU RAY MOVIES
+        VIDEO GAME SOFTWARE
+        LICENSED MERCHANDISE
+        MI ACCESSORIES
+        (179 terms)
+    Character Classes: [COMMON-BASIC_LATIN-20_Pd_DASH_PUNCTUATION, LATIN-BASIC_LATIN-1_Lu_UPPERCASE_LETTER]
+        AMPS-EFFECTS
+        SET-TOP-BOXES
+        CABLE-VOD
+        (3 terms)
+    Character Classes: [COMMON-BASIC_LATIN-24_Po_OTHER_PUNCTUATION, LATIN-BASIC_LATIN-1_Lu_UPPERCASE_LETTER]
+        CARDS/COMPONENTS
+        (1 terms)
+    Character Classes: [LATIN-BASIC_LATIN-1_Lu_UPPERCASE_LETTER]
+        KITCHEN
+        PRODUCTIVITY
+        PREMIUMS
+        LAUNDRY
+        GUITARS
+        PHONES
+        (41 terms)
+
+Field: color
+    Character Classes: [COMMON-BASIC_LATIN-12_Zs_SPACE_SEPARATOR, COMMON-BASIC_LATIN-20_Pd_DASH_PUNCTUATION, COMMON-BASIC_LATIN-21_Ps_START_PUNCTUATION, COMMON-BASIC_LATIN-22_Pe_END_PUNCTUATION, LATIN-BASIC_LATIN-1_Lu_UPPERCASE_LETTER, LATIN-BASIC_LATIN-2_Ll_LOWERCASE_LETTER]
+        Stainless-Steel (Special Order)
+        White-on-White (Special Order)
+        Black-on-Black (Special Order)
+        Biscuit-on-Biscuit (Special Order)
+        Black-on-Stainless (Special Order)
+        Black-on-White (Special Order)
+        (13 terms)
+    Character Classes: [COMMON-BASIC_LATIN-12_Zs_SPACE_SEPARATOR, COMMON-BASIC_LATIN-20_Pd_DASH_PUNCTUATION, COMMON-BASIC_LATIN-24_Po_OTHER_PUNCTUATION, LATIN-BASIC_LATIN-1_Lu_UPPERCASE_LETTER, LATIN-BASIC_LATIN-2_Ll_LOWERCASE_LETTER]
+        Brushed Stainless-Steel/Black
+        Black/Brushed Stainless-Steel
+        Black/ Stainless-Steel
+        Stainless-Steel/ Black
+        Black Look/Panel-Ready
+        Black/Stainless-Steel Trim
+        (13 terms)
+    Character Classes: [COMMON-BASIC_LATIN-12_Zs_SPACE_SEPARATOR, COMMON-BASIC_LATIN-20_Pd_DASH_PUNCTUATION, COMMON-BASIC_LATIN-9_Nd_DECIMAL_DIGIT_NUMBER, LATIN-BASIC_LATIN-1_Lu_UPPERCASE_LETTER, LATIN-BASIC_LATIN-2_Ll_LOWERCASE_LETTER]
+        3-Tone Sunburst
+        2-Tone Sunburst
+        3-Color Sunburst
+        2-Color Sunburst
+        3-Tone Sunburst Satin
+        2-Tone Silver
+        (7 terms)
+    Character Classes: [COMMON-BASIC_LATIN-12_Zs_SPACE_SEPARATOR, COMMON-BASIC_LATIN-20_Pd_DASH_PUNCTUATION, LATIN-BASIC_LATIN-1_Lu_UPPERCASE_LETTER, LATIN-BASIC_LATIN-2_Ll_LOWERCASE_LETTER]
+        Monochromatic Stainless-Steel
+        Brushed Stainless-Steel
+        High-Gloss Black
+        See-Thru Black
+        Satina Stainless-Look
+        High-Gloss White
+        (61 terms)
+    Character Classes: [COMMON-BASIC_LATIN-12_Zs_SPACE_SEPARATOR, COMMON-BASIC_LATIN-20_Pd_DASH_PUNCTUATION, LATIN-BASIC_LATIN-2_Ll_LOWERCASE_LETTER]
+        dark-slate-gray leather
+        medium-dark-pewter cloth
+        medium-gray cloth
+        (3 terms)
+    Character Classes: [COMMON-BASIC_LATIN-12_Zs_SPACE_SEPARATOR, COMMON-BASIC_LATIN-21_Ps_START_PUNCTUATION, COMMON-BASIC_LATIN-22_Pe_END_PUNCTUATION, LATIN-BASIC_LATIN-1_Lu_UPPERCASE_LETTER]
+        (PRODUCT) RED
+        (1 terms)
+    Character Classes: [COMMON-BASIC_LATIN-12_Zs_SPACE_SEPARATOR, COMMON-BASIC_LATIN-21_Ps_START_PUNCTUATION, COMMON-BASIC_LATIN-22_Pe_END_PUNCTUATION, LATIN-BASIC_LATIN-1_Lu_UPPERCASE_LETTER, LATIN-BASIC_LATIN-2_Ll_LOWERCASE_LETTER]
+        Black (Special Order)
+        White (Special Order)
+        Bisque (Special Order)
+        Cameo White (Special Order)
+        Biscuit (Special Order)
+        Silver Metallic (Special Order)
+        (21 terms)
+    Character Classes: [COMMON-BASIC_LATIN-12_Zs_SPACE_SEPARATOR, COMMON-BASIC_LATIN-24_Po_OTHER_PUNCTUATION, COMMON-BASIC_LATIN-9_Nd_DECIMAL_DIGIT_NUMBER, LATIN-BASIC_LATIN-1_Lu_UPPERCASE_LETTER, LATIN-BASIC_LATIN-2_Ll_LOWERCASE_LETTER]
+        Titanium&#153; color
+        Cr&#232;me with black trim
+        (2 terms)
+    Character Classes: [COMMON-BASIC_LATIN-12_Zs_SPACE_SEPARATOR, COMMON-BASIC_LATIN-24_Po_OTHER_PUNCTUATION, COMMON-BASIC_LATIN-9_Nd_DECIMAL_DIGIT_NUMBER, LATIN-BASIC_LATIN-2_Ll_LOWERCASE_LETTER]
+        4 oz.
+        (1 terms)
+    Character Classes: [COMMON-BASIC_LATIN-12_Zs_SPACE_SEPARATOR, COMMON-BASIC_LATIN-24_Po_OTHER_PUNCTUATION, LATIN-BASIC_LATIN-1_Lu_UPPERCASE_LETTER, LATIN-BASIC_LATIN-2_Ll_LOWERCASE_LETTER]
+        Black/ Silver
+        Black/Titanium Color
+        Other/Brushed Aluminum Trim
+        Black/Dark Gray
+        Black/Silver Gray
+        Light Gray/Black/Charcoal
+        (392 terms)
+    Character Classes: [COMMON-BASIC_LATIN-12_Zs_SPACE_SEPARATOR, COMMON-BASIC_LATIN-24_Po_OTHER_PUNCTUATION, LATIN-BASIC_LATIN-2_Ll_LOWERCASE_LETTER]
+        black, gold trim
+        (1 terms)
+    Character Classes: [COMMON-BASIC_LATIN-12_Zs_SPACE_SEPARATOR, COMMON-BASIC_LATIN-9_Nd_DECIMAL_DIGIT_NUMBER, LATIN-BASIC_LATIN-1_Lu_UPPERCASE_LETTER, LATIN-BASIC_LATIN-2_Ll_LOWERCASE_LETTER]
+        3D Black
+        7 Color
+        (2 terms)
+    Character Classes: [COMMON-BASIC_LATIN-12_Zs_SPACE_SEPARATOR, COMMON-LATIN_1_SUPPLEMENT-24_Po_OTHER_PUNCTUATION, LATIN-BASIC_LATIN-1_Lu_UPPERCASE_LETTER, LATIN-BASIC_LATIN-2_Ll_LOWERCASE_LETTER]
+        Titanium¿ color
+        (1 terms)
+    Character Classes: [COMMON-BASIC_LATIN-12_Zs_SPACE_SEPARATOR, LATIN-BASIC_LATIN-1_Lu_UPPERCASE_LETTER, LATIN-BASIC_LATIN-2_Ll_LOWERCASE_LETTER]
+        White on white
+        Gloss Black
+        Charcoal Gray
+        Pearl White
+        Matte Black
+        Dark Blue
+        (1725 terms)
+    Character Classes: [COMMON-BASIC_LATIN-12_Zs_SPACE_SEPARATOR, LATIN-BASIC_LATIN-1_Lu_UPPERCASE_LETTER, LATIN-BASIC_LATIN-2_Ll_LOWERCASE_LETTER, LATIN-LATIN_1_SUPPLEMENT-2_Ll_LOWERCASE_LETTER]
+        Black Matté
+        Vintage Crème
+        (2 terms)
+    Character Classes: [COMMON-BASIC_LATIN-12_Zs_SPACE_SEPARATOR, LATIN-BASIC_LATIN-2_Ll_LOWERCASE_LETTER]
+        taupe vinyl
+        charcoal leather
+        graphite cloth
+        gray leather
+        medium neutral cloth
+        oak leather
+        (8 terms)
+    Character Classes: [COMMON-BASIC_LATIN-20_Pd_DASH_PUNCTUATION, COMMON-BASIC_LATIN-24_Po_OTHER_PUNCTUATION, LATIN-BASIC_LATIN-1_Lu_UPPERCASE_LETTER, LATIN-BASIC_LATIN-2_Ll_LOWERCASE_LETTER]
+        Black/Stainless-Steel
+        Stainless-Steel/Black
+        White/Stainless-Steel
+        Black/Tri-Color
+        Other/White-on-White
+        Red/Stainless-Steel
+        (23 terms)
+    Character Classes: [COMMON-BASIC_LATIN-20_Pd_DASH_PUNCTUATION, LATIN-BASIC_LATIN-1_Lu_UPPERCASE_LETTER, LATIN-BASIC_LATIN-2_Ll_LOWERCASE_LETTER]
+        Stainless-Steel
+        White-on-White
+        Black-on-Black
+        Bisque-on-Bisque
+        Biscuit-on-Biscuit
+        Stainless-steel
+        (42 terms)
+    Character Classes: [COMMON-BASIC_LATIN-24_Po_OTHER_PUNCTUATION, COMMON-BASIC_LATIN-9_Nd_DECIMAL_DIGIT_NUMBER, LATIN-BASIC_LATIN-1_Lu_UPPERCASE_LETTER, LATIN-BASIC_LATIN-2_Ll_LOWERCASE_LETTER]
+        Cr&#232;me
+        (1 terms)
+    Character Classes: [COMMON-BASIC_LATIN-24_Po_OTHER_PUNCTUATION, LATIN-BASIC_LATIN-1_Lu_UPPERCASE_LETTER, LATIN-BASIC_LATIN-2_Ll_LOWERCASE_LETTER]
+        Black/Silver
+        Silver/Black
+        Black/Gray
+        Black/Red
+        Black/White
+        Black/Blue
+        (626 terms)
+    Character Classes: [COMMON-BASIC_LATIN-24_Po_OTHER_PUNCTUATION, LATIN-BASIC_LATIN-2_Ll_LOWERCASE_LETTER]
+        blue/black
+        silver/gray
+        (2 terms)
+    Character Classes: [COMMON-BASIC_LATIN-9_Nd_DECIMAL_DIGIT_NUMBER, LATIN-BASIC_LATIN-1_Lu_UPPERCASE_LETTER]
+        3TS
+        2TS
+        (2 terms)
+    Character Classes: [COMMON-LATIN_1_SUPPLEMENT-24_Po_OTHER_PUNCTUATION, LATIN-BASIC_LATIN-1_Lu_UPPERCASE_LETTER, LATIN-BASIC_LATIN-2_Ll_LOWERCASE_LETTER]
+        Satina¿
+        (1 terms)
+    Character Classes: [LATIN-BASIC_LATIN-1_Lu_UPPERCASE_LETTER]
+        NA
+        TBS
+        LX
+        (3 terms)
+    Character Classes: [LATIN-BASIC_LATIN-1_Lu_UPPERCASE_LETTER, LATIN-BASIC_LATIN-2_Ll_LOWERCASE_LETTER]
+        Black
+        White
+        Silver
+        Red
+        Blue
+        Pink
+        (341 terms)
+    Character Classes: [LATIN-BASIC_LATIN-1_Lu_UPPERCASE_LETTER, LATIN-BASIC_LATIN-2_Ll_LOWERCASE_LETTER, LATIN-LATIN_1_SUPPLEMENT-2_Ll_LOWERCASE_LETTER]
+        Crème
+        (1 terms)
+    Character Classes: [LATIN-BASIC_LATIN-2_Ll_LOWERCASE_LETTER]
+        blue
+        gray
+        multicolor
+        quartz
+        red
+        various
+        (7 terms)
+
+Field: department
+    Character Classes: [COMMON-BASIC_LATIN-12_Zs_SPACE_SEPARATOR, COMMON-BASIC_LATIN-24_Po_OTHER_PUNCTUATION, LATIN-BASIC_LATIN-1_Lu_UPPERCASE_LETTER]
+        VIDEO/COMPACT DISC
+        (1 terms)
+    Character Classes: [COMMON-BASIC_LATIN-12_Zs_SPACE_SEPARATOR, LATIN-BASIC_LATIN-1_Lu_UPPERCASE_LETTER]
+        INTERACTIVE SOFTWARE
+        MOBILE AUDIO
+        DIGITAL COMMUNICATIO
+        COMPUTER SOFTWARE
+        MAGNOLIA HOME THEATR
+        (5 terms)
+    Character Classes: [COMMON-BASIC_LATIN-24_Po_OTHER_PUNCTUATION, LATIN-BASIC_LATIN-1_Lu_UPPERCASE_LETTER]
+        PHOTO/COMMODITIES
+        (1 terms)
+    Character Classes: [LATIN-BASIC_LATIN-1_Lu_UPPERCASE_LETTER]
+        APPLIANCE
+        COMPUTERS
+        AUDIO
+        ACCESSORIES
+        VIDEO
+        WARRANTY
+        (7 terms)
+
+Field: genre
+    Character Classes: [COMMON-BASIC_LATIN-12_Zs_SPACE_SEPARATOR, COMMON-BASIC_LATIN-20_Pd_DASH_PUNCTUATION, COMMON-BASIC_LATIN-24_Po_OTHER_PUNCTUATION, LATIN-BASIC_LATIN-1_Lu_UPPERCASE_LETTER, LATIN-BASIC_LATIN-2_Ll_LOWERCASE_LETTER]
+        Rap & Hip-Hop
+        (1 terms)
+    Character Classes: [COMMON-BASIC_LATIN-12_Zs_SPACE_SEPARATOR, COMMON-BASIC_LATIN-20_Pd_DASH_PUNCTUATION, LATIN-BASIC_LATIN-1_Lu_UPPERCASE_LETTER, LATIN-BASIC_LATIN-2_Ll_LOWERCASE_LETTER]
+        General Sci-Fi
+        (1 terms)
+    Character Classes: [COMMON-BASIC_LATIN-12_Zs_SPACE_SEPARATOR, COMMON-BASIC_LATIN-24_Po_OTHER_PUNCTUATION, LATIN-BASIC_LATIN-1_Lu_UPPERCASE_LETTER, LATIN-BASIC_LATIN-2_Ll_LOWERCASE_LETTER]
+        Gospel & Christian
+        General Soundtracks & Shows
+        R&B & Soul
+        Contemp. Christian
+        General R&B & Soul
+        Contemp. Gospel
+        (18 terms)
+    Character Classes: [COMMON-BASIC_LATIN-12_Zs_SPACE_SEPARATOR, COMMON-BASIC_LATIN-9_Nd_DECIMAL_DIGIT_NUMBER, LATIN-BASIC_LATIN-1_Lu_UPPERCASE_LETTER, LATIN-BASIC_LATIN-2_Ll_LOWERCASE_LETTER]
+        2 Tone Ska
+        (1 terms)
+    Character Classes: [COMMON-BASIC_LATIN-12_Zs_SPACE_SEPARATOR, LATIN-BASIC_LATIN-1_Lu_UPPERCASE_LETTER]
+        NO CATEGORY ASSIGNED
+        (1 terms)
+    Character Classes: [COMMON-BASIC_LATIN-12_Zs_SPACE_SEPARATOR, LATIN-BASIC_LATIN-1_Lu_UPPERCASE_LETTER, LATIN-BASIC_LATIN-2_Ll_LOWERCASE_LETTER]
+        Other Genres
+        Music DVDs
+        Heavy Metal
+        Hard Rock
+        Action and Adventure
+        Easy Listening
+        (87 terms)
+    Character Classes: [COMMON-BASIC_LATIN-20_Pd_DASH_PUNCTUATION, LATIN-BASIC_LATIN-1_Lu_UPPERCASE_LETTER, LATIN-BASIC_LATIN-2_Ll_LOWERCASE_LETTER]
+        Sci-Fi
+        (1 terms)
+    Character Classes: [COMMON-BASIC_LATIN-24_Po_OTHER_PUNCTUATION, COMMON-BASIC_LATIN-9_Nd_DECIMAL_DIGIT_NUMBER, LATIN-BASIC_LATIN-2_Ll_LOWERCASE_LETTER]
+        '60s
+        '70s
+        '80s
+        '50s
+        (4 terms)
+    Character Classes: [COMMON-BASIC_LATIN-24_Po_OTHER_PUNCTUATION, LATIN-BASIC_LATIN-1_Lu_UPPERCASE_LETTER, LATIN-BASIC_LATIN-2_Ll_LOWERCASE_LETTER]
+        Electronic/Dance
+        Children's
+        Gangsta/Hardcore
+        Hardcore/Punk
+        Comedy/Spoken
+        Dancehall/Ragga
+        (10 terms)
+    Character Classes: [COMMON-BASIC_LATIN-9_Nd_DECIMAL_DIGIT_NUMBER, LATIN-BASIC_LATIN-2_Ll_LOWERCASE_LETTER]
+        90s
+        (1 terms)
+    Character Classes: [LATIN-BASIC_LATIN-1_Lu_UPPERCASE_LETTER]
+        TV
+        (1 terms)
+    Character Classes: [LATIN-BASIC_LATIN-1_Lu_UPPERCASE_LETTER, LATIN-BASIC_LATIN-2_Ll_LOWERCASE_LETTER]
+        Pop
+        Drama
+        Jazz
+        Latin
+        Alternative
+        Country
+        (133 terms)
+
+Field: mpaaRating
+    Character Classes: [COMMON-BASIC_LATIN-20_Pd_DASH_PUNCTUATION, COMMON-BASIC_LATIN-9_Nd_DECIMAL_DIGIT_NUMBER, LATIN-BASIC_LATIN-1_Lu_UPPERCASE_LETTER]
+        PG-13
+        NC-17
+        (2 terms)
+    Character Classes: [COMMON-BASIC_LATIN-24_Po_OTHER_PUNCTUATION, LATIN-BASIC_LATIN-1_Lu_UPPERCASE_LETTER]
+        N/A
+        (1 terms)
+    Character Classes: [COMMON-BASIC_LATIN-9_Nd_DECIMAL_DIGIT_NUMBER, LATIN-BASIC_LATIN-1_Lu_UPPERCASE_LETTER]
+        TV14
+        TVY7
+        (2 terms)
+    Character Classes: [LATIN-BASIC_LATIN-1_Lu_UPPERCASE_LETTER]
+        NR
+        R
+        PG
+        G
+        TVPG
+        TVMA
+        (8 terms)
+    Character Classes: [LATIN-BASIC_LATIN-1_Lu_UPPERCASE_LETTER, LATIN-BASIC_LATIN-2_Ll_LOWERCASE_LETTER]
+        Unrated
+        (1 terms)
+
+

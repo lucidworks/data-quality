@@ -1,0 +1,870 @@
+This version gives unique and total token counts, and also lets you seem some samples.  This is against the Best Buy data.
+
+Some interesting ones:
+* categoryNames
+* class  (product class)
+* color
+* department
+* genre
+* mpaaRating
+
+Intermediate:
+* albumLabel
+* albumTitle
+* cast
+* crew
+* depthCategoryIds
+* depthCategoryNames
+
+Boring:
+* _version_
+* bundledIn
+* customerReviewAverage
+* customerReviewCount
+
+- - - actual report - - -
+
+Term Counts by Field, Unique / Total-instances (counts include deleted docs):
+    _version_: 1,476,194 / 1,476,194
+        1: 1457409815830593537 1
+        2: 1457409815831642112 1
+        3: 1457409815831642113 1
+        4: 1457409815832690688 1
+        5: 1457409815832690689 1
+        ...
+        738,095: 1457415603095601152 1
+        738,096: 1457415603095601153 1
+        738,097: 1457415603095601154 1
+        738,098: 1457415603095601155 1
+        738,099: 1457415603095601156 1
+        ...
+        1,476,190: 1457415809022296067 1
+        1,476,191: 1457415809023344640 1
+        1,476,192: 1457415809023344641 1
+        1,476,193: 1457415809023344642 1
+        1,476,194: 1457415809024393216 1
+    accessories: 2,878 / 45,598
+        1: 2908168 1,842
+        2: 8948847 1,729
+        3: 8913349 1,708
+        4: 3063036 1,451
+        5: 1879711 564
+        ...
+        1,437: 2304131 2
+        1,438: 2304431 2
+        1,439: 2304459 2
+        1,440: 2375626 2
+        1,441: 2387041 2
+        ...
+        2,874: 9956338 1
+        2,875: 9957955 1
+        2,876: 9958169 1
+        2,877: 9963356 1
+        2,878: 9969687 1
+    albumLabel: 42,158 / 1,010,416
+        1: UNKNOWN 60,915
+        2: Unknown 22,226
+        3: Sony Music Distribution (USA) 12,138
+        4: EMI Music Distribution 9,763
+        5: Columbia (USA) 7,113
+        ...
+        21,077: Cradle Company 2
+        21,078: Craig N' Co. 2
+        21,079: Crammed Disc Belgium 2
+        21,080: Crank: A Record Co. 2
+        21,081: Crate Diggas Palace/Traffic 2
+        ...
+        42,154: the vault entertainment 1
+        42,155: valentineryder.com 1
+        42,156: www.blunttruth.com 1
+        42,157: www.wild-Recordz.com 1
+        42,158: ?bersee Records 1
+    albumTitle: 130,597 / 3,746,119
+        1: the 144,819
+        2: of 94,168
+        3: vol 40,984
+        4: in 35,336
+        5: a 35,020
+        ...
+        65,297: korasaun 2
+        65,298: korch 2
+        65,299: kordofan 2
+        65,300: korette 2
+        65,301: korinth 2
+        ...
+        130,593: zzztherapy 1
+        130,594: zzzzzz 1
+        130,595: ? 1
+        130,596: ? 1
+        130,597: ?la 1
+    artistName: 120,424 / 2,390,836
+        1: various 138,490
+        2: artists 107,876
+        3: the 60,110
+        4: of 14,809
+        5: original 14,620
+        ...
+        60,210: cavallini 2
+        60,211: cavalo 2
+        60,212: cavalogia 2
+        60,213: cavasos 2
+        60,214: cavdarski 2
+        ...
+        120,420: zygotones 1
+        120,421: zykan 1
+        120,422: zywioly 1
+        120,423: zzi 1
+        120,424: zzz 1
+    bundledIn: 13,545 / 24,157
+        1: 999912700050009 15
+        2: 999933500050000 12
+        3: 999945200050003 10
+        4: 999946300050006 10
+        5: 999946300050008 10
+        ...
+        6,771: 999987700050018 2
+        6,772: 999987700050020 2
+        6,773: 999987700050024 2
+        6,774: 999987700050026 2
+        6,775: 999987800050000 2
+        ...
+        13,541: 999999800050004 1
+        13,542: 999999800050006 1
+        13,543: 999999800050008 1
+        13,544: 999999800050010 1
+        13,545: 999999800050014 1
+    cast: 160,525 / 6,319,891
+        1: cast 109,424
+        2: john 36,835
+        3: michael 26,407
+        4: david 23,833
+        5: james 22,673
+        ...
+        80,261: gid 4
+        80,262: gidra 4
+        80,263: gidwani 4
+        80,264: gien 4
+        80,265: gieshuebler 4
+        ...
+        160,521: ?zbatur 1
+        160,522: ?zg?r 1
+        160,523: ?berzillionaire 1
+        160,524: ?lgen 1
+        160,525: ?to 1
+    categoryIds: 3,875 / 5,104,380
+        1: cat00000 1,229,800
+        2: abcat0600000 1,104,933
+        3: cat02001 796,183
+        4: cat02015 308,579
+        5: cat02009 233,698
+        ...
+        1,936: pcmcat254000050007 17
+        1,937: pcmcat268400050019 17
+        1,938: pcmcat274200050015 17
+        1,939: pcmcat32500050015 17
+        1,940: pcmcat32500050016 17
+        ...
+        3,871: pcmcat95900050000 1
+        3,872: pcmcat95900050001 1
+        3,873: pcmcat96200050052 1
+        3,874: pcmcat97300050008 1
+        3,875: pcmcat98400050019 1
+    categoryNames: 3,209 / 5,103,869
+        1: Best Buy 1,229,800
+        2: Movies & Music 1,104,933
+        3: Music 796,197
+        4: Movies & TV Shows 308,579
+        5: Pop 233,698
+        ...
+        1,603: Computer Setup & Services 21
+        1,604: Corded Desktop Mice 21
+        1,605: Countertop Wine Chillers 21
+        1,606: Deck Install Kits 21
+        1,607: Drum Pedals 21
+        ...
+        3,205: |Midsze TV 1
+        3,206: |Monitors 1
+        3,207: |P. MiniDisc 1
+        3,208: |Peripherals & Accessories 1
+        3,209: |Speakers 1
+    class: 260 / 1,443,555
+        1: COMPACT DISC 941,345
+        2: DVD SOFTWARE 204,320
+        3: PRE-RECORDED CASS 92,843
+        4: BLU RAY MOVIES 80,617
+        5: VIDEO GAME SOFTWARE 9,738
+        ...
+        128: FRS 152
+        129: SO TOOLS 148
+        130: T-MOBILE HARDWARE 139
+        131: BOOM BOXES 138
+        132: PREPAID CARDS 138
+        ...
+        256: GK SQUAD MEMBERSHIPS 1
+        257: GOURMET 1
+        258: GS DI REMOTE SERVICE 1
+        259: HOME MNGMENT CONTENT 1
+        260: TUBE TV HISTORY 1
+    color: 3,302 / 47,572
+        1: Black 14,427
+        2: White 4,796
+        3: Stainless-Steel 2,800
+        4: Silver 2,312
+        5: Red 1,275
+        ...
+        1,649: Blue Night Fleck 1
+        1,650: Blue Plaid 1
+        1,651: Blue Pool 1
+        1,652: Blue Raspberry/Black 1
+        1,653: Blue Raspberry/White 1
+        ...
+        3,298: sand leather 1
+        3,299: silver/gray 1
+        3,300: various 1
+        3,301: white on white 1
+        3,302: wine 1
+    condition: 2 / 103,070
+        1: New 101,394
+        2: Refurbished 1,676
+    crew: 105,802 / 6,469,831
+        1: director 128,600
+        2: producer 112,307
+        3: screenwriter 97,719
+        4: cinematographer 88,808
+        5: editor 88,299
+        ...
+        52,899: blenkov 5
+        52,900: blessington 5
+        52,901: blink 5
+        52,902: bloecher 5
+        52,903: blomdahl 5
+        ...
+        105,798: ?sterberg 1
+        105,799: ?zel 1
+        105,800: ?zer 1
+        105,801: ?zogul 1
+        105,802: ?beda 1
+    customerReviewAverage: 41 / 68,266
+        1: 5.0 26,947
+        2: 4.0 8,684
+        3: 4.5 3,629
+        4: 3.0 3,439
+        5: 4.3 2,382
+        ...
+        19: 3.9 684
+        20: 2.5 634
+        21: 3.6 622
+        22: 3.4 512
+        23: 3.2 321
+        ...
+        37: 1.9 34
+        38: 1.6 30
+        39: 1.4 23
+        40: 1.2 11
+        41: 1.1 7
+    customerReviewCount: 345 / 68,266
+        1: 1 28,701
+        2: 2 10,258
+        3: 3 5,756
+        4: 4 3,493
+        5: 5 2,514
+        ...
+        171: 161 4
+        172: 163 4
+        173: 171 4
+        174: 178 4
+        175: 193 4
+        ...
+        341: 912 1
+        342: 1009 1
+        343: 1025 1
+        344: 1072 1
+        345: 2146 1
+    department: 14 / 1,443,555
+        1: VIDEO/COMPACT DISC 1,319,255
+        2: PHOTO/COMMODITIES 21,577
+        3: INTERACTIVE SOFTWARE 17,845
+        4: APPLIANCE 17,209
+        5: COMPUTERS 16,772
+        6: AUDIO 13,454
+        7: ACCESSORIES 8,054
+        8: MOBILE AUDIO 6,365
+        9: DIGITAL COMMUNICATIO 5,908
+        10: COMPUTER SOFTWARE 4,101
+        11: VIDEO 3,978
+        12: WARRANTY 3,580
+        13: DTS 3,014
+        14: MAGNOLIA HOME THEATR 2,443
+    depthCategoryIds: 3,884 / 5,104,380
+        1: 1/cat00000 1,229,800
+        2: 2/abcat0600000 1,104,933
+        3: 3/cat02001 796,183
+        4: 3/cat02015 308,579
+        5: 4/cat02009 233,698
+        ...
+        1,940: 5/pcmcat32500050015 17
+        1,941: 5/pcmcat67800050019 17
+        1,942: 6/abcat0307015 17
+        1,943: 6/cat15041 17
+        1,944: 6/cat15060 17
+        ...
+        3,880: 6/pcmcat95100050057 1
+        3,881: 6/pcmcat95600050010 1
+        3,882: 6/pcmcat95900050001 1
+        3,883: 7/pcmcat44000050066 1
+        3,884: 7/pcmcat94900050012 1
+    depthCategoryNames: 3,576 / 5,104,380
+        1: 1/Best Buy 1,229,800
+        2: 2/Movies & Music 1,104,933
+        3: 3/Music 796,196
+        4: 3/Movies & TV Shows 308,579
+        5: 4/Pop 233,698
+        ...
+        1,786: 5/Marine VHF Radio 19
+        1,787: 5/Nightstands 19
+        1,788: 5/Nintendo DS  Kits & Bundles 19
+        1,789: 5/Office 19
+        1,790: 5/Other Interests 19
+        ...
+        3,572: 6/|Bookshelf Compact Stereos 1
+        3,573: 6/|Digital TV 1
+        3,574: 6/|P. MiniDisc 1
+        3,575: 7/Games Price Drop 1
+        3,576: 7/Media Center PCs 1
+    description: 9,227 / 271,636
+        1: and 5,175
+        2: to 4,447
+        3: with 4,328
+        4: for 3,708
+        5: up 2,662
+        ...
+        4,612: microtractrix 3
+        4,613: middle 3
+        4,614: midnight 3
+        4,615: midsize 3
+        4,616: midwoofer 3
+        ...
+        9,223: ztwuuc 1
+        9,224: zv 1
+        9,225: zv5000 1
+        9,226: zv6000 1
+        9,227: zx5000 1
+    details: 23,304 / 4,034,053
+        1: type 51,941
+        2: yes 46,559
+        3: of 45,164
+        4: no 43,660
+        5: 1 40,429
+        ...
+        11,650: x50 3
+        11,651: x60 3
+        11,652: x768 3
+        11,653: x86 3
+        11,654: xl2 3
+        ...
+        23,300: zv6000 1
+        23,301: zx 1
+        23,302: zx1 1
+        23,303: zya 1
+        23,304: ? 1
+    features: 76,583 / 9,786,711
+        1: and 104,749
+        2: for 95,969
+        3: to 90,765
+        4: with 89,066
+        5: in 87,406
+        ...
+        38,290: somehow 3
+        38,291: somersault 3
+        38,292: sonax 3
+        38,293: songwriters 3
+        38,294: sonichub 3
+        ...
+        76,579: ? 1
+        76,580: ?clair 1
+        76,581: ?pil 1
+        76,582: ?o?o 1
+        76,583: ?berassassin 1
+    format: 52 / 1,331,589
+        1: CD 873,838
+        2: DVD 226,711
+        3: CASSETTE 92,088
+        4: VHS 67,334
+        5: VINYL 32,270
+        ...
+        24: PS Vita Game Card 36
+        25: CD-Single 31
+        26: Blu-ray-DVD 30
+        27: Blu-Ray 22
+        28: ActivePAD 18
+        ...
+        48: Game Guides 1
+        49: Online Subscription 1
+        50: Other, DVD-ROM 1
+        51: Pixter 1
+        52: Sign-Up Pack 1
+    frequentlyPurchasedWith: 24,708 / 162,833
+        1: 9137132 828
+        2: 4789524 820
+        3: 4726511 816
+        4: 4709001 810
+        5: 4580085 794
+        ...
+        12,352: 9830932 5
+        12,353: 9831995 5
+        12,354: 9835567 5
+        12,355: 9836293 5
+        12,356: 9837113 5
+        ...
+        24,704: 9984646 1
+        24,705: 9987449 1
+        24,706: 9989778 1
+        24,707: 9990395 1
+        24,708: 9990552 1
+    genre: 259 / 1,318,491
+        1: Pop 219,378
+        2: Drama 159,790
+        3: Jazz 82,521
+        4: Other Genres 78,299
+        5: Latin 72,432
+        ...
+        128: New Orleans R&B 432
+        129: Bachata 426
+        130: New Romantic 399
+        131: Keyboard/Synthesizer 359
+        132: Polka 349
+        ...
+        255: General Special Editions 1
+        256: Great Deal on Box Sets 1
+        257: Holidays 1
+        258: NO CATEGORY ASSIGNED 1
+        259: Thrillers 1
+    hardGoodType: 6 / 103,070
+        1: normalHardgood 72,024
+        2: appliance 21,896
+        3: mobileElectronic 6,569
+        4: giftCard 2,064
+        5: mobilePhone 491
+        6: broadbandCard 26
+    id: 1,275,077 / 1,476,194
+        1: 13302026 2
+        2: 13302035 2
+        3: 13302044 2
+        4: 13302053 2
+        5: 13302062 2
+        ...
+        637,537: 17055669 1
+        637,538: 17055678 1
+        637,539: 17055687 1
+        637,540: 17055696 1
+        637,541: 17055703 1
+        ...
+        1,275,073: 9999932 1
+        1,275,074: 9999941 1
+        1,275,075: 9999969 1
+        1,275,076: 9999987 1
+        1,275,077: 9999996 1
+    image: 771,010 / 1,474,260
+        1: http://images.bestbuy.com/BestBuy_US/images/products/nonsku/default_music_l.jpg 485,132
+        2: http://images.bestbuy.com/BestBuy_US/images/products/nonsku/default_movies_l.jpg 80,048
+        3: http://images.bestbuy.com/BestBuy_US/images/products/nonsku/default_hardlines_l.jpg 2,940
+        4: http://images.bestbuy.com/BestBuy_US/images/products/nonsku/default_hardlines_pd.jpg 2,062
+        5: http://images.bestbuy.com/BestBuy_US/images/products/nonsku/default_hardlines_m.gif 579
+        ...
+        385,503: http://images.bestbuy.com/BestBuy_US/images/products/1822/18227893.jpg 1
+        385,504: http://images.bestbuy.com/BestBuy_US/images/products/1822/18227919.jpg 1
+        385,505: http://images.bestbuy.com/BestBuy_US/images/products/1822/18227928.jpg 1
+        385,506: http://images.bestbuy.com/BestBuy_US/images/products/1822/18227937.jpg 1
+        385,507: http://images.bestbuy.com/BestBuy_US/images/products/1822/18227946.jpg 1
+        ...
+        771,006: http://images.bestbuy.com/BestBuy_US/images/products/9999/9999887_sc.jpg 1
+        771,007: http://images.bestbuy.com/BestBuy_US/images/products/9999/999990/1036994_sc.jpg 1
+        771,008: http://images.bestbuy.com/BestBuy_US/images/products/9999/999990/1287328_sc.jpg 1
+        771,009: http://images.bestbuy.com/BestBuy_US/images/products/9999/9999941_rc.jpg 1
+        771,010: http://imggroupa.bby.manage.net:80/BestBuy_US/images/products/9054/9054444.jpg 1
+    lengthInMinutes: 1,792 / 233,906
+        1: 90 14,002
+        2: 60 12,465
+        3: 100 7,047
+        4: 30 5,475
+        5: 50 5,094
+        ...
+        894: 1495 5
+        895: 1553 5
+        896: 1727 5
+        897: 1800 5
+        898: 537 4
+        ...
+        1,788: 7840 1
+        1,789: 8564 1
+        1,790: 9153 1
+        1,791: 9436 1
+        1,792: 10069 1
+    longDescription: 75,998 / 6,565,244
+        1: and 127,273
+        2: this 125,870
+        3: with 103,990
+        4: the 92,798
+        5: a 90,262
+        ...
+        37,997: 2800mhz 2
+        37,998: 28112 2
+        37,999: 2832 2
+        38,000: 284.98 2
+        38,001: 284.99 2
+        ...
+        75,994: z?mo 1
+        75,995: ? 1
+        75,996: ?lys?es 1
+        75,997: ?pil 1
+        75,998: ? 1
+    manufacturer: 45,770 / 1,131,127
+        1: UNKNOWN 60,917
+        2: Unknown 22,227
+        3: Sony Music Distribution (USA) 12,138
+        4: EMI Music Distribution 9,762
+        5: Sony 9,052
+        ...
+        22,883: California Ent. 2
+        22,884: Callaway 2
+        22,885: Calvin 2
+        22,886: Cam Italy 2
+        22,887: Camden Deluxe 2
+        ...
+        45,766: vpr Matrix? 1
+        45,767: wiREVO 1
+        45,768: www.blunttruth.com 1
+        45,769: www.wild-Recordz.com 1
+        45,770: ?bersee Records 1
+    mpaaRating: 14 / 142,875
+        1: NR 61,627
+        2: R 39,037
+        3: PG-13 15,107
+        4: PG 13,072
+        5: G 6,079
+        6: TVPG 2,259
+        7: TV14 1,824
+        8: NC-17 1,395
+        9: TVMA 1,311
+        10: TVG 577
+        11: TVY7 396
+        12: TVY 189
+        13: N/A 1
+        14: Unrated 1
+    name: 163,316 / 8,247,633
+        1: cd 877,471
+        2: dvd 241,716
+        3: the 234,393
+        4: various 146,863
+        5: of 135,197
+        ...
+        81,656: fetenkult 2
+        81,657: fetiche 2
+        81,658: fetishes 2
+        81,659: fetival 2
+        81,660: feudal 2
+        ...
+        163,312: ?scar 1
+        163,313: ?szi 1
+        163,314: ?ltima 1
+        163,315: ?ber 1
+        163,316: ?la 1
+    plot: 182,183 / 31,046,161
+        1: the 232,243
+        2: of 216,381
+        3: and 214,041
+        4: a 204,389
+        5: rovi 198,632
+        ...
+        91,090: korovin 6
+        91,091: korty 6
+        91,092: koryo 6
+        91,093: kostik 6
+        91,094: kothoga 6
+        ...
+        182,179: ?mer 1
+        182,180: ?mer's 1
+        182,181: ?zer 1
+        182,182: ?zkan 1
+        182,183: ?lgen 1
+    product_id: 54,363 / 54,363
+        1: 1 1
+        2: 10 1
+        3: 100 1
+        4: 1000 1
+        5: 10000 1
+        ...
+        27,180: 34467 1
+        27,181: 34468 1
+        27,182: 34469 1
+        27,183: 3447 1
+        27,184: 34470 1
+        ...
+        54,359: 9995 1
+        54,360: 9996 1
+        54,361: 9997 1
+        54,362: 9998 1
+        54,363: 9999 1
+    regularPrice: 4,709 / 1,476,194
+        1: 14.99 221,507
+        2: 9.99 139,551
+        3: 12.99 128,774
+        4: 11.99 95,050
+        5: 17.99 90,665
+        ...
+        2,353: 231.47 2
+        2,354: 231.99 2
+        2,355: 233.98 2
+        2,356: 233.99 2
+        2,357: 236.96 2
+        ...
+        4,705: 12995.99 1
+        4,706: 16499.98 1
+        4,707: 19995.0 1
+        4,708: 32999.98 1
+        4,709: 99999.99 1
+    relatedProducts: 14,257 / 106,876
+        1: 2970088 2,563
+        2: 2908168 1,768
+        3: 8948847 1,702
+        4: 8913349 1,679
+        5: 3063036 1,344
+        ...
+        7,127: 3508318 2
+        7,128: 3512117 2
+        7,129: 3521882 2
+        7,130: 3521919 2
+        7,131: 3526068 2
+        ...
+        14,253: 9982287 1
+        14,254: 9982375 1
+        14,255: 9984285 1
+        14,256: 9985114 1
+        14,257: 9999217 1
+    releaseDate: 8,211 / 1,346,976
+        1: 1990-10-17T00:00:00Z 9,719
+        2: 1990-10-25T00:00:00Z 9,359
+        3: 2008-01-13T00:00:00Z 7,281
+        4: 2004-11-16T00:00:00Z 5,328
+        5: 2004-01-01T00:00:00Z 5,247
+        ...
+        4,104: 2009-07-02T00:00:00Z 24
+        4,105: 2009-10-02T00:00:00Z 24
+        4,106: 2010-02-19T00:00:00Z 24
+        4,107: 2010-03-12T00:00:00Z 24
+        4,108: 2010-04-25T00:00:00Z 24
+        ...
+        8,207: 2012-12-07T00:00:00Z 1
+        8,208: 2013-03-01T00:00:00Z 1
+        8,209: 2013-03-12T00:00:00Z 1
+        8,210: 2013-04-06T00:00:00Z 1
+        8,211: 2013-05-15T00:00:00Z 1
+    salePrice: 4,911 / 1,476,194
+        1: 14.99 221,376
+        2: 9.99 139,558
+        3: 12.99 128,792
+        4: 11.99 95,039
+        5: 17.99 90,691
+        ...
+        2,454: 216.99 2
+        2,455: 217.98 2
+        2,456: 221.97 2
+        2,457: 221.98 2
+        2,458: 224.49 2
+        ...
+        4,907: 12995.99 1
+        4,908: 16499.98 1
+        4,909: 19995.0 1
+        4,910: 32999.98 1
+        4,911: 99999.99 1
+    salesRankLongTerm: 281,712 / 311,639
+        1: 4 2
+        2: 70 2
+        3: 259 2
+        4: 525 2
+        5: 2226 2
+        ...
+        140,854: 130931 1
+        140,855: 130932 1
+        140,856: 130933 1
+        140,857: 130934 1
+        140,858: 130935 1
+        ...
+        281,708: 304129 1
+        281,709: 304130 1
+        281,710: 304131 1
+        281,711: 304132 1
+        281,712: 304133 1
+    salesRankMediumTerm: 131,228 / 149,732
+        1: 1839 2
+        2: 3543 2
+        3: 5688 2
+        4: 5976 2
+        5: 6063 2
+        ...
+        65,612: 52667 1
+        65,613: 52668 1
+        65,614: 52669 1
+        65,615: 52670 1
+        65,616: 52671 1
+        ...
+        131,224: 137785 1
+        131,225: 137786 1
+        131,226: 137787 1
+        131,227: 137788 1
+        131,228: 137789 1
+    salesRankShortTerm: 112,483 / 130,355
+        1: 1409 2
+        2: 1494 2
+        3: 1646 2
+        4: 1677 2
+        5: 1752 2
+        ...
+        56,240: 41823 1
+        56,241: 41824 1
+        56,242: 41825 1
+        56,243: 41826 1
+        56,244: 41827 1
+        ...
+        112,479: 115626 1
+        112,480: 115627 1
+        112,481: 115628 1
+        112,482: 115629 1
+        112,483: 115630 1
+    shortDescription: 35,885 / 1,889,328
+        1: and 41,609
+        2: with 35,352
+        3: from 22,513
+        4: online 22,230
+        5: to 22,222
+        ...
+        17,941: assortment199.99 2
+        17,942: assortment3 2
+        17,943: assortment399.99 2
+        17,944: assortmentbluetooth2.0mp 2
+        17,945: assortmentsamsung 2
+        ...
+        35,881: zv6000 1
+        35,882: zxt 1
+        35,883: z?mo 1
+        35,884: ?clair 1
+        35,885: ?pil 1
+    softwareGrade: 97 / 417
+        1: Preschool and up 40
+        2: Preschool 36
+        3: Kindergarten and up 30
+        4: 2nd and up 20
+        5: Preschool to 2nd 18
+        ...
+        47: 2nd to 5th 2
+        48: 3rd to 7th 2
+        49: 7th to 12th 2
+        50: 9th to 12th 2
+        51: Kindergarten to 1 2
+        ...
+        93: Toddler to 3rd 1
+        94: Toddler to 6th 1
+        95: Toddler to 8 1
+        96: Toddler to Kindergarten 1
+        97: Toddler to kindergarten 1
+    startDate: 8,710 / 1,474,724
+        1: 1990-07-19T00:00:00Z 8,995
+        2: 2007-06-17T00:00:00Z 7,364
+        3: 1990-03-29T00:00:00Z 6,413
+        4: 2004-04-20T00:00:00Z 5,327
+        5: 2003-06-05T00:00:00Z 5,256
+        ...
+        4,353: 2012-01-13T00:00:00Z 37
+        4,354: 2012-05-23T00:00:00Z 37
+        4,355: 1989-05-11T00:00:00Z 36
+        4,356: 1989-07-18T00:00:00Z 36
+        4,357: 1989-10-31T00:00:00Z 36
+        ...
+        8,706: 2010-03-06T00:00:00Z 1
+        8,707: 2010-07-10T00:00:00Z 1
+        8,708: 2012-02-04T00:00:00Z 1
+        8,709: 2012-04-21T00:00:00Z 1
+        8,710: 2012-06-23T00:00:00Z 1
+    store_id: 1 / 1,287,679
+        1: 1 1,287,679
+    studio: 4,856 / 307,479
+        1: UNKNOWN 39,830
+        2: Warner Home Video 14,276
+        3: 20th Century Fox 9,720
+        4: Paramount 9,475
+        5: Image Entertainment 7,390
+        ...
+        2,426: Bombo 2
+        2,427: Bonneville / Bwe 2
+        2,428: Bookworld 2
+        2,429: Boomshadow Pics 2
+        2,430: Born Free Inc 2
+        ...
+        4,852: Zd Records 1
+        4,853: Zeit Media Limited 1
+        4,854: Zhana Records 1
+        4,855: Zoom Music / Star 1
+        4,856: Zrealm.Com 1
+    subclass: 1,273 / 2,248,742
+        1: rock 286,369
+        2: misc 174,328
+        3: jazz 85,430
+        4: international 77,635
+        5: contemporary 74,333
+        ...
+        635: pe 79
+        636: transmitters 79
+        637: dl 78
+        638: lens 78
+        639: lifestyle 78
+        ...
+        1,269: var 1
+        1,270: web 1
+        1,271: wind 1
+        1,272: wrless 1
+        1,273: y 1
+    text: 1,479,550 / 19,085,534
+        1: cd 887,235
+        2: the 309,508
+        3: dvd 249,485
+        4: of 207,903
+        5: various 149,122
+        ...
+        739,773: 17401483 1
+        739,774: 17401492 1
+        739,775: 17401508 1
+        739,776: 17401517 1
+        739,777: 17401526 1
+        ...
+        1,479,546: ?szi 1
+        1,479,547: ?ltima 1
+        1,479,548: ?ber 1
+        1,479,549: ?berassassin 1
+        1,479,550: ?la 1
+    type: 7 / 1,476,194
+        1: Music 1,010,577
+        2: Movie 308,695
+        3: HardGood 103,070
+        4: Bundle 32,638
+        5: Game 10,524
+        6: Software 7,110
+        7: BlackTie 3,580
+    weight: 1,965 / 67,074
+        1: 1.0 1,425
+        2: 2.0 1,269
+        3: 0.3 1,208
+        4: 0.5 1,106
+        5: 0.1 1,076
+        ...
+        981: 1.89375 4
+        982: 1.98 4
+        983: 2.85 4
+        984: 7.99 4
+        985: 17.3 4
+        ...
+        1,961: 600.0 1
+        1,962: 636.0 1
+        1,963: 641.0 1
+        1,964: 677.0 1
+        1,965: 3119.0 1
+
