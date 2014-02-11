@@ -10,6 +10,12 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
+import org.apache.commons.cli.PosixParser;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.HttpSolrServer;
 
@@ -20,7 +26,13 @@ public class EmptyFieldStats {
   static int PORT = 8983;
   // static String COLL = "collection1";
   static String COLL = "demo_shard1_replica1";
-  
+
+  static String HELP_WHAT_IS_IT = "Look for fields that aren't fully populated.";
+  static String HELP_USAGE = "EmptyFieldStats -u http://localhost:8983";
+  // final static Logger log = LoggerFactory.getLogger( FieldStats.class );
+
+  static Options options;
+
   HttpSolrServer server;
   Long totalDocs;
   // TODO: could also do stored values
@@ -214,10 +226,72 @@ public class EmptyFieldStats {
 	}
   }
 
+  static void helpAndExit() {
+	helpAndExit( null, 1 );
+  }
+  static void helpAndExit( String optionalError, int errorCode ) {
+    HelpFormatter formatter = new HelpFormatter();
+    if ( null==optionalError ) {
+      // log.info( HELP_WHAT_IS_IT );
+      System.out.println( HELP_WHAT_IS_IT );
+	}
+	else {
+	  // log.error( optionalError );
+	  System.err.println( optionalError );
+	}
+	formatter.printHelp( HELP_USAGE, options, true );
+	System.exit( errorCode );
+  }
+
   public static void main( String [] argv ) throws Exception {
-	HttpSolrServer s = SolrUtils.getServer( HOST, PORT, COLL );
-	EmptyFieldStats ef = new EmptyFieldStats( s );
-	String report = ef.generateReport( s.getBaseURL() );
+
+	options = new Options();
+	options.addOption( "u", "url", true, "URL for Solr, OR set host, port and possibly collection" );
+	options.addOption( "h", "host", true, "IP address for Solr, default=localhost" );
+	options.addOption( "p", "port", true, "Port for Solr, default=8983" );
+	options.addOption( "c", "collection", true, "Collection/Core for Solr, Eg: collection1" );
+	// options.addOption( "i", "ids", false, "Include IDs of docs with empty fields. WARNING: may create large report" );
+	// options.addOption( "f", "fields", true, "Fields to analyze, Eg: fields=name,category, default is all fields" );
+    if ( argv.length < 1 ) {
+      helpAndExit();
+    }
+    CommandLine cmd = null;
+    try {
+      CommandLineParser parser = new PosixParser();
+      // CommandLineParser parser = new DefaultParser();
+      cmd = parser.parse( options, argv );
+    }
+    catch( ParseException exp ) {
+      helpAndExit( "Parsing command line failed. Reason: " + exp.getMessage(), 2 );
+    }
+    // Already using -h for host, don't really need help, just run with no options
+    //if ( cmd.hasOption("help") ) {
+    //  helpAndExit();
+    //}
+    String fullUrl = cmd.getOptionValue( "url" );
+    String host = cmd.getOptionValue( "host" );
+    String port = cmd.getOptionValue( "port" );
+    String coll = cmd.getOptionValue( "collection" );
+    if ( null==fullUrl && null==host ) {
+      helpAndExit( "Must specifify at least url or host", 3 );
+    }
+    if ( null!=fullUrl && null!=host ) {
+      helpAndExit( "Must not specifify both url and host", 4 );
+    }
+    // Init
+	// HttpSolrServer solr = SolrUtils.getServer( HOST, PORT, COLL );
+    HttpSolrServer solr;
+    if ( null!=fullUrl ) {
+      solr = SolrUtils.getServer( fullUrl );
+    }
+    else {
+      // Utils handle null values
+      solr = SolrUtils.getServer( host, port, coll );    
+    }
+    System.out.println( "Solr = " + solr.getBaseURL() );
+	EmptyFieldStats fs = new EmptyFieldStats( solr );
+	String report = fs.generateReport( solr.getBaseURL() );
 	System.out.println( report );
+  
   }
 }
