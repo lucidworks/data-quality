@@ -1,0 +1,241 @@
+package com.lucidworks.dq.diff;
+
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.text.MessageFormat;
+import java.text.NumberFormat;
+import java.util.LinkedHashSet;
+import java.util.Set;
+
+import org.apache.solr.client.solrj.impl.HttpSolrServer;
+
+import com.lucidworks.dq.data.EmptyFieldStats;
+import com.lucidworks.dq.schema.Schema;
+import com.lucidworks.dq.schema.SchemaFromRest;
+import com.lucidworks.dq.schema.SchemaFromXml;
+import com.lucidworks.dq.util.SetUtils;
+import com.lucidworks.dq.util.SolrUtils;
+
+public class DiffEmptyFieldStats {
+
+  public static String generateReport( EmptyFieldStats fieldStatsA, EmptyFieldStats fieldStatsB, String labelA, String labelB ) throws Exception {
+    StringWriter sw = new StringWriter();
+    PrintWriter out = new PrintWriter(sw);
+
+	out.println( "========== Differences Report ==========" );
+	out.println( "Schema A = " + labelA );
+	out.println( "Schema B = " + labelB );
+
+	out.println();
+    addSimpleStatToReport( out, "A: Total Active Docs", fieldStatsA.getTotalDocCount() );
+    addSimpleStatToReport( out, "B: Total Active Docs", fieldStatsB.getTotalDocCount() );
+
+    out.println();
+    Set<String> fieldsA = fieldStatsA.getAllFieldNames();
+    Set<String> fieldsB = fieldStatsB.getAllFieldNames();
+    addSetComparisonToReport( out, fieldsA, fieldsB, "All Fields" );
+
+    out.println();
+    addAllFieldStatsToReport( out, fieldStatsA, fieldStatsB );
+
+
+//	// Simple Values
+//	// -------------
+//	// Name
+//	String nameA = schemaA.getSchemaName();
+//	String nameB = schemaB.getSchemaName();
+//	addStringComparisionToReport( out, nameA, nameB, "Schema Name" );
+//    // Version
+//	float versA = schemaA.getSchemaVersion();
+//	float versB = schemaB.getSchemaVersion();
+//	out.print( "Schema Version: " );
+//	if ( versA == versB ) {
+//	  out.println( "Both = '" + versA + "'" );
+//	}
+//	else {
+//	  out.println( "\tA = '" + versA + "'" );
+//	  out.println( "\tB = '" + versB + "'" );
+//	}
+	
+//	// Complex Values
+//	// --------------
+//	// Fields
+//    Set<String> fieldsA = schemaA.getAllSchemaFieldNames();
+//    Set<String> fieldsB = schemaB.getAllSchemaFieldNames();
+//    addSetComparisonToReport( out, fieldsA, fieldsB, "Fields" );
+//    // Dynamic Field Patterns
+//    // TODO: Verify that order is being preserved through the entire process
+//    Set<String> patternsA = schemaA.getAllDynamicFieldPatterns();
+//    Set<String> patternsB = schemaB.getAllDynamicFieldPatterns();
+//    addSetComparisonToReport( out, patternsA, patternsB, "Dynamic-Field Patterns", true );
+
+	String outStr = sw.toString();
+    return outStr;
+
+  }
+
+  static void addAllFieldStatsToReport( PrintWriter out, EmptyFieldStats fieldStatsA, EmptyFieldStats fieldStatsB ) {
+    Set<String> fieldsA = fieldStatsA.getAllFieldNames();
+    Set<String> fieldsB = fieldStatsB.getAllFieldNames();
+    Set<String> allFields = SetUtils.union_nonDestructive( fieldsA, fieldsB );
+
+    // Fully Populated
+    Set<String> fullFieldsA = fieldStatsA.getFullyPopulatedIndexedFields();
+    Set<String> fullFieldsB = fieldStatsB.getFullyPopulatedIndexedFields();
+    // Subset
+    Set<String> fullFieldsBoth = SetUtils.intersection_nonDestructive( fullFieldsA, fullFieldsB );
+    
+    // Empty
+    Set<String> emptyFieldsA = fieldStatsA.getFieldsWithNoIndexedValues();
+    Set<String> emptyFieldsB = fieldStatsB.getFieldsWithNoIndexedValues();
+    // Subset
+    Set<String> emptyFieldsBoth = SetUtils.intersection_nonDestructive( emptyFieldsA, emptyFieldsB );
+
+    // All Other Fields
+    // We can only summarize the subsets of completely full and completely empty fields in both collections
+    // All other fields need to be listed in the detailed report
+    Set<String> detailFields = new LinkedHashSet<>();
+    detailFields.addAll( allFields );
+    detailFields.removeAll( fullFieldsBoth );
+    detailFields.removeAll( emptyFieldsBoth );
+    
+    out.println( "Populated at 100% in Both A and B: " + fullFieldsBoth );
+    out.println();
+    out.println( "No Indexed Values / 0% in Both A and B: " + emptyFieldsBoth );
+    out.println();
+
+    out.println( "Partially Populated Fields and Percentages, A / B:" );
+    for ( String name : detailFields ) {
+      Long countA = null;
+      if ( fieldStatsA.getIndexedValueCounts().containsKey(name) ) {
+    	  countA = fieldStatsA.getIndexedValueCounts().get(name);
+      }
+	  Double percentA = null;
+	  if ( fieldStatsA.getIndexedValuePercentages().containsKey(name) ) {
+		  percentA = fieldStatsA.getIndexedValuePercentages().get( name );
+	  }
+      Long countB = null;
+      if ( fieldStatsB.getIndexedValueCounts().containsKey(name) ) {
+    	  countB = fieldStatsB.getIndexedValueCounts().get(name);
+      }
+	  Double percentB = null;
+	  if ( fieldStatsB.getIndexedValuePercentages().containsKey(name) ) {
+		  percentB = fieldStatsB.getIndexedValuePercentages().get( name );
+	  }
+	  addStatsPairAndPercentToReport( out, name, countA, countB, percentA, percentB, "\t" );
+    }
+  }
+
+  static void addSimpleStatToReport( PrintWriter out, String label, long stat ) {
+	String statStr = NumberFormat.getNumberInstance().format( stat );
+	out.println( "" + label + ": " + statStr );
+  }
+
+  static void addStringComparisionToReport( PrintWriter out, String thingA, String thingB, String attrLabel ) {
+	out.print( attrLabel + ":" );
+	if ( null!=thingA && null!=thingB && thingA.equals(thingB) ) {
+	  out.println( " Both = '" + thingA + "'" );
+	}
+	else {
+      out.println();
+	  out.println( "\tA = '" + thingA + "'" );
+	  out.println( "\tB = '" + thingB + "'" );
+	}  
+  }
+
+  static void addStatsPairAndPercentToReport( PrintWriter out, String label, Long statA, Long statB, Double percA, Double percB, String optIndent ) {
+	if ( null!=optIndent ) {
+	  out.print( optIndent );
+	}
+	String statStrA = null!=statA ? NumberFormat.getNumberInstance().format( statA ) : "(not in A)";
+	String statStrB = null!=statB ? NumberFormat.getNumberInstance().format( statB ) : "(not in B)";
+	String percStrA = null!=percA ? " (" + MessageFormat.format( "{0,number,#.##%}" + ")", percA ) : "";
+	String percStrB = null!=percB ? " (" + MessageFormat.format( "{0,number,#.##%}" + ")", percB ) : "";
+	out.println( "" + label + ": " + statStrA + percStrA + " / " + statStrB + percStrB );
+  }
+
+
+  static void addSetComparisonToReport( PrintWriter out, Set<String> setA, Set<String> setB, String attrLabel ) {
+	  addSetComparisonToReport( out, setA, setB, attrLabel, false );
+  }
+  static void addSetComparisonToReport( PrintWriter out, Set<String> setA, Set<String> setB, String attrLabel, boolean checkOrder ) {
+    Set<String> inBoth = SetUtils.intersection_nonDestructive( setA, setB );
+    Set<String> inAOnly = SetUtils.inAOnly_nonDestructive( setA, setB );
+    Set<String> inBOnly = SetUtils.inBOnly_nonDestructive( setA, setB );
+    out.println();
+    out.print( attrLabel + ":" );
+    if ( inBoth.isEmpty() && inAOnly.isEmpty() && inBOnly.isEmpty() ) {
+    	out.println( " None!" );
+    }
+    else {
+    	out.println();
+    	if ( ! inBoth.isEmpty() ) {
+    	  if ( ! checkOrder ) {
+    		out.println( "\tIn both = '" + inBoth + "'" );
+    	  }
+    	  else {
+    		// Note: Sets don't normally perserve order but I've been careful
+    		// to use LinkedHashSet and LinkedHashMap, which DO
+    		Set<String> commonA = SetUtils.intersection_nonDestructive( setA, setB );
+    		Set<String> commonB = SetUtils.intersection_nonDestructive( setB, setA );
+    		boolean inSameOrder = SetUtils.sameAndInSameOrder( commonA, commonB );
+    		if ( inSameOrder ) {
+    		  out.println( "\tIn both and SAME relative order = '" + inBoth + "'" );   			
+    		}
+    		else {
+    		  out.println( "\tIn both but DIFFERENT relative order:" );			
+    		  out.println( "\t\tCommon, order in A = '" + commonA + "'" );
+    		  out.println( "\t\tCommon, order in B = '" + commonB + "'" );    			
+    		}
+    	  }
+    	}
+    	if ( ! inAOnly.isEmpty() ) {
+	      out.println( "\tA only = '" + inAOnly + "'" );		
+    	}
+    	if ( ! inBOnly.isEmpty() ) {
+	      out.println( "\tB only = '" + inBOnly + "'" );		
+    	}    	
+    }
+	  
+  }
+
+  public static void main( String[] args ) throws Exception {
+	HttpSolrServer sA = SolrUtils.getServer( HOST1, PORT1, COLL1 );
+	String labelA = sA.getBaseURL();
+	EmptyFieldStats fieldsStatsA = new EmptyFieldStats( sA );
+	String reportA = fieldsStatsA.generateReport( labelA );
+
+	HttpSolrServer sB = SolrUtils.getServer( HOST2, PORT2, COLL2 );
+	String labelB = sB.getBaseURL();
+	EmptyFieldStats fieldsStatsB = new EmptyFieldStats( sB );
+	String reportB = fieldsStatsB.generateReport( labelB );
+
+	System.out.println( "========== Individual Reports ==========" );
+	System.out.println();
+	System.out.println( "---------- A: " + labelA + " ----------" );
+	System.out.println( reportA );
+	System.out.println( "---------- B: " + labelB + " ----------" );
+	System.out.println( reportB );
+	
+	String report = generateReport( fieldsStatsA, fieldsStatsB, labelA, labelB );
+	System.out.println( report );
+  }
+
+
+  static String HOST0 = "localhost";
+  static String PORT0 = "8983";
+  static String COLL0 = "demo_shard1_replica1";
+  static String URL0 = "http://" + HOST0 + ":" + PORT0 + "/solr/" + COLL0;
+	  // + "/select?q=*:*&rows=" + ROWS + "&fl=id&wt=json&indent=on"
+
+  static String HOST1 = "localhost";
+  static String PORT1 = "8984"; // "8983";
+  static String COLL1 = "collection1";
+  static String URL1 = "http://" + HOST1 + ":" + PORT1 + "/solr/" + COLL1;
+
+  static String HOST2 = "localhost";
+  static String PORT2 = "8985"; // "8983";
+  static String COLL2 = "collection1";
+  static String URL2 = "http://" + HOST1 + ":" + PORT2 + "/solr/" + COLL2;
+
+}
