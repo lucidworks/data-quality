@@ -211,14 +211,18 @@ public class SolrUtils {
 
   // http://localhost:8985/solr/collection1/terms
   // TODO: not returning term counts for now, not really what we're looking at
-  public static Set<String> getAllTermsForField( HttpSolrServer server, String fieldName ) throws SolrServerException {
-	return getTermsForField( server, fieldName, -1 );
+  public static Set<String> getAllTermsForField_ViaTermsRequest( HttpSolrServer server, String fieldName ) throws SolrServerException {
+	return getTermsForField_ViaTermsRequest( server, fieldName, -1 );
+  }
+  // Get multiple fields at once
+  public static Map<String,Map<String,Long>> getAllTermsForFields_ViaTermsRequest( HttpSolrServer server, Set<String> fieldNames ) throws SolrServerException {
+	return getTermsForFields_ViaTermsRequest( server, fieldNames, -1 );
   }
   // By default we'll get the top 10
-  public static Set<String> getTermsForField( HttpSolrServer server, String fieldName ) throws SolrServerException {
-	return getTermsForField( server, fieldName, null );
+  public static Set<String> getTermsForField_ViaTermsRequest( HttpSolrServer server, String fieldName ) throws SolrServerException {
+	return getTermsForField_ViaTermsRequest( server, fieldName, null );
   }
-  public static Set<String> getTermsForField( HttpSolrServer server, String fieldName, Integer optLimit ) throws SolrServerException {
+  public static Set<String> getTermsForField_ViaTermsRequest( HttpSolrServer server, String fieldName, Integer optLimit ) throws SolrServerException {
 	Set<String> out = new LinkedHashSet<>();
 	SolrQuery q = new SolrQuery();
 	q.setRequestHandler("/terms");
@@ -235,10 +239,6 @@ public class SolrUtils {
       out.add( name );
     }
 	return out;
-  }
-  // Get multiple fields at once
-  public static Map<String,Map<String,Long>> getAllTermsForFields_ViaTermsRequest( HttpSolrServer server, Set<String> fieldNames ) throws SolrServerException {
-	return getTermsForFields_ViaTermsRequest( server, fieldNames, -1 );
   }
   // By default gets the top 10
   public static Map<String,Map<String,Long>> getTermsForFields_ViaTermsRequest( HttpSolrServer server, Set<String> fieldNames ) throws SolrServerException {
@@ -499,7 +499,7 @@ public class SolrUtils {
 	// color, condition, department, format, genre, manufacturer, mpaaRating
 	// class, subclass, studio, softwareGrade, mpaaRating, albumLabel
 	// categoryIds, categoryNames
-	Set<String> terms = getAllTermsForField( s, fieldName );
+	Set<String> terms = getAllTermsForField_ViaTermsRequest( s, fieldName );
 	System.out.println( "Field " + fieldName + " has " + terms.size() + " terms" );
 //    System.out.println( "Terms for field " + fieldName + " = " + terms );
 //	Map<String,Set<String>> terms = getTermsForFields( s, getActualFieldNames(s) );
