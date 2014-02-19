@@ -6,6 +6,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.solr.client.solrj.SolrQuery;
@@ -22,9 +23,10 @@ import org.apache.solr.common.util.SimpleOrderedMap;
 public class SolrUtils {
 
 
-  // TODO: get ID field from server
+  // TODO: get ID field from server, appears in many places
   static String ID_FIELD = "id";
-  // ^--ID also assumed to be a string
+  // TODO: ID also assumed to be a string
+
   static int ALL_ROWS = Integer.MAX_VALUE;
   
   static String DEFAULT_HOST = "localhost";
@@ -117,6 +119,53 @@ public class SolrUtils {
     // out.addAll( fields.iterator())
 	return out;
   }
+  public static Set<String> getLukeFieldsWithStoredValues( HttpSolrServer server ) throws SolrServerException {
+	Set<String> out = new LinkedHashSet<>();
+	SolrQuery q = new SolrQuery();
+	q.setRequestHandler("/admin/luke");
+    QueryResponse res = server.query( q );
+    NamedList<Object> res2 = res.getResponse();
+    SimpleOrderedMap fields = (SimpleOrderedMap) res2.get("fields");
+    for ( int i=0; i<fields.size(); i++ ) {
+      String name = fields.getName( i );
+      SimpleOrderedMap val = (SimpleOrderedMap) fields.getVal( i );
+      // String type = (String) val.get( "type" );
+      String schemaFlags = (String) val.get( "schema" );
+      String indexFlags = (String) val.get( "index" );
+      // Integer numDocs = (Integer) val.get( "docs" );
+      // Look at 3rd character, offset 2
+      if ( null!=schemaFlags && schemaFlags.length() >= 3 ) {
+    	String flag = schemaFlags.substring( 2, 3 );
+    	if ( flag.equalsIgnoreCase("S") ) {
+    	   out.add( name );    		
+    	}
+      }
+    }
+	return out;
+  }
+  public static Set<String> getLukeFieldsWithIndexedValues( HttpSolrServer server ) throws SolrServerException {
+	Set<String> out = new LinkedHashSet<>();
+	SolrQuery q = new SolrQuery();
+	q.setRequestHandler("/admin/luke");
+    QueryResponse res = server.query( q );
+    NamedList<Object> res2 = res.getResponse();
+    SimpleOrderedMap fields = (SimpleOrderedMap) res2.get("fields");
+    for ( int i=0; i<fields.size(); i++ ) {
+      String name = fields.getName( i );
+      SimpleOrderedMap val = (SimpleOrderedMap) fields.getVal( i );
+      // String type = (String) val.get( "type" );
+      String schemaFlags = (String) val.get( "schema" );
+      String indexFlags = (String) val.get( "index" );
+      // Look at 1st character, offset 0
+      if ( null!=schemaFlags && schemaFlags.length() >= 1 ) {
+    	String flag = schemaFlags.substring( 0, 1 );
+    	if ( flag.equalsIgnoreCase("I") ) {
+    	   out.add( name );    		
+    	}
+      }
+    }
+	return out;
+  }
   public static Set<String> _getActualFieldNames( HttpSolrServer server ) throws SolrServerException {
 	Set<String> out = new LinkedHashSet<>();
     // Look at the first real document
@@ -146,6 +195,7 @@ public class SolrUtils {
   public static Set<String> getAllIds( HttpSolrServer server ) throws SolrServerException {
 	  Set<String> out = new LinkedHashSet<>();
 	  SolrQuery q = new SolrQuery( "*:*" );
+	  // TODO: use proper ID
 	  q.addField( ID_FIELD );
 	  q.setRows( ALL_ROWS );
 	  QueryResponse res = server.query( q );
@@ -160,24 +210,42 @@ public class SolrUtils {
 	  return getDocCountForQuery( server, "*:*" );
   }
   public static long getDocCountForField( HttpSolrServer server, String fieldName ) throws SolrServerException {
-	  // NullPointerException for location
-	  // com.spatial4j.core.io.ParseUtils.parsePoint(ParseUtils.java:42)
-	  String queryStr = fieldName + ":[* TO *]";
-	  try {
-		  return getDocCountForQuery( server, queryStr );
-	  }
-	  catch( Exception e ) {
-		  // TODO: will this wildcard expand to all terms?
-		  queryStr = fieldName + ":*";
-		  return getDocCountForQuery( server, queryStr );		  
-	  }
+	// NullPointerException for location
+	// com.spatial4j.core.io.ParseUtils.parsePoint(ParseUtils.java:42)
+	String queryStr = fieldName + ":[* TO *]";
+	try {
+	  return getDocCountForQuery( server, queryStr );
+	}
+	catch( Exception e ) {
+	  // TODO: will this wildcard expand to all terms?
+	  queryStr = fieldName + ":*";
+	  return getDocCountForQuery( server, queryStr );		  
+	}
   }
-  public static Set<String> getEmptyFieldKeys( HttpSolrServer server, String fieldName ) throws SolrServerException {
+  public static long getStoredDocCountForField( HttpSolrServer server, String fieldName ) throws SolrServerException {
+	long out = 0L;
+	String queryStr = "*:*";
+	SolrQuery q = new SolrQuery( queryStr );
+	q.addField( fieldName );
+	// q.setRows( ALL_ROWS );
+	q.setRows( 1000 );
+	QueryResponse res = server.query( q );
+	for ( SolrDocument doc : res.getResults() ) {
+	  Object value = doc.get( fieldName );
+	  // TODO: could check for data types and do specific checks
+	  // Eg: if string, do a trim, see if length > 0
+	  if ( null!=value ) {
+		out++;
+	  }
+	}
+	return out;
+  }
+  public static Set<String> getEmptyFieldDocIds( HttpSolrServer server, String fieldName ) throws SolrServerException {
 	  // NullPointerException for location
 	  // com.spatial4j.core.io.ParseUtils.parsePoint(ParseUtils.java:42)
 	  String queryStr = "-" + fieldName + ":[* TO *]";
 	  Set<String> out = new LinkedHashSet<>();
-	  SolrQuery q = new SolrQuery( "*:*" );
+	  SolrQuery q = new SolrQuery( queryStr );
 	  q.addField( ID_FIELD );
 	  q.setRows( ALL_ROWS );
 	  QueryResponse res = server.query( q );
@@ -307,7 +375,186 @@ public class SolrUtils {
 	}
 	return out;
   }
-  
+
+  public static Map< String, Map<String, Collection<Object>> > getAllStoredValuesForFields_ByDocument( HttpSolrServer server, Set<String> fieldNames ) throws SolrServerException {
+	return getStoredValuesForFields_ByDocument( server, fieldNames, ALL_ROWS );
+  }
+  // returns Map: docId -> fieldName -> values
+  // Mirrors SolrJ structure
+  public static Map< String, Map<String,Collection<Object>> > getStoredValuesForFields_ByDocument( HttpSolrServer server, Set<String> fieldNames, Integer optLimit  ) throws SolrServerException {
+	Map< String, Map<String, Collection<Object>> > out = new LinkedHashMap<>();
+	SolrQuery q = new SolrQuery( "*:*" );
+	boolean forcedId = false;
+	boolean sawWildcard = false;
+	if ( null!=fieldNames && ! fieldNames.isEmpty() ) {
+	  boolean haveSeenId = false;
+	  for ( String fieldName : fieldNames ) {
+        q.addField( fieldName );
+        if ( fieldName.equals("*") ) {
+          sawWildcard = true;
+          haveSeenId = true;
+        }
+        else if ( fieldName.equals(ID_FIELD) ) {
+          haveSeenId = true;
+        }
+	  }
+	  if ( ! haveSeenId ) {
+		// TODO: lookup real ID field
+	    q.addField( ID_FIELD );
+		forcedId = true;
+	  }
+	}
+	else {
+	  q.addField( "*" );	
+	}
+	if ( null!=optLimit ) {
+	  q.setRows( optLimit );
+	}
+	QueryResponse res = server.query( q );
+	for ( SolrDocument doc : res.getResults() ) {
+	  // TODO: lookup real ID field
+	  String id = doc.getFirstValue( ID_FIELD ).toString();
+	  // doc.getFieldNames();
+	  Map<String, Collection<Object>> values = doc.getFieldValuesMap();
+	  // If they really didn't want the ID, then remove it
+	  if ( forcedId ) {
+		values.remove( ID_FIELD );
+	  }
+	  out.put( id, values );
+	}
+	return out;
+  }
+  public static Map< String, Map<String,Collection<Object>> > getAllStoredValuesForFields_ByField( HttpSolrServer server, Set<String> fieldNames ) throws SolrServerException {
+	return getStoredValuesForFields_ByField( server, fieldNames, ALL_ROWS );
+  }
+  public static Map< String, Map<String,Collection<Object>> > getStoredValuesForFields_ByField( HttpSolrServer server, Set<String> fieldNames, Integer optLimit ) throws SolrServerException {
+	return transformStoredValuesData_ByDocument2ByField(
+		       getStoredValuesForFields_ByDocument( server, fieldNames, optLimit )
+		   );
+  }
+  // Input Map: docId -> fieldName -> values
+  // returns Map: fieldName -> docId -> values
+  static Map< String, Map<String,Collection<Object>> > transformStoredValuesData_ByDocument2ByField( Map< String, Map<String,Collection<Object>> > byDocValues ) {
+	Map< String, Map<String,Collection<Object>> > out = new LinkedHashMap<>();
+    // Foreach Document
+    for ( Entry<String, Map<String, Collection<Object>>> docEntry : byDocValues.entrySet() ) {
+  	  String docId = docEntry.getKey();
+	  Map<String, Collection<Object>> docValuesRaw = docEntry.getValue();
+	  // java.lang.UnsupportedOperationException
+	  // Map<String, Collection<Object>> docValues = new LinkedHashMap<>();
+	  // java.lang.UnsupportedOperationException
+	  // docValues.putAll( docValuesRaw );
+	  // for ( Entry<String, Collection<Object>> fieldEntry : docValues.entrySet() )
+	  for ( String fieldName : docValuesRaw.keySet() )
+	  {
+		// String fieldName = fieldEntry.getKey();
+		// Collection<Object> values = fieldEntry.getValue();
+		Collection<Object> values = docValuesRaw.get( fieldName );
+		Map<String,Collection<Object>> aggregatedFieldVector = null;
+		if ( out.containsKey(fieldName) ) {
+		  aggregatedFieldVector = out.get( fieldName );
+		}
+		else {
+		  aggregatedFieldVector = new LinkedHashMap<>();
+		  out.put( fieldName, aggregatedFieldVector );
+		}
+		aggregatedFieldVector.put( docId, values );
+	  }
+    }
+    return out;
+  }
+
+  // Uses FieldName-first layered Map
+  // Input: fieldName -> docId -> values
+  // Returns Map: fieldName -> fieldValue -> total values count
+  // You typically pass in input obtained from calling transformStoredValuesData_ByDocument2ByField
+  // Do NOT pass in data directly from getStoredValuesForFields_ByDocument, it's in the wrong format
+  // even though the generic signatures might match.
+  public static Map< String, Map<String,Long> > flattenStoredValues_ValueToTotalCount( Map< String, Map<String,Collection<Object>> > storedValues_ByField ) {
+	Map< String, Map<String,Long> > out = new LinkedHashMap<>();
+	// Foreach field
+	for ( Entry<String, Map<String, Collection<Object>>> fieldEntry : storedValues_ByField.entrySet() ) {
+	  String fieldName = fieldEntry.getKey();
+	  Map<String,Collection<Object>> data = fieldEntry.getValue();
+	  // Map: valueStr -> count
+	  Map<String,Long> valueCounts = new LinkedHashMap<>();
+	  // Foreach doc
+	  for ( Entry<String, Collection<Object>> docEntry : data.entrySet() ) {
+		String docId = docEntry.getKey();
+		Collection<Object> values = docEntry.getValue();
+		for ( Object v : values ) {
+		  String valKey = v.toString();
+		  if ( valueCounts.containsKey(valKey) ) {
+			Long prevCount = valueCounts.get( valKey );
+			valueCounts.put( valKey, prevCount + 1L );
+		  }
+		  else {
+			  valueCounts.put( valKey, 1L );
+		  }
+		}
+	  }  // End foreach doc
+	  out.put( fieldName, valueCounts );
+	}  // End foreach field
+	return out;
+  }
+  // Uses FieldName-first layered Map
+  // Input: fieldName -> docId -> values
+  // Returns Map: fieldName -> document count
+  public static Map<String, Long> flattenStoredValues_ToDocCount( Map< String, Map<String,Collection<Object>> > storedValues_ByField ) {
+	Map<String, Long> out = new LinkedHashMap<>();
+	// Intermediate Map: fieldName -> fieldValue -> docIds
+	Map< String, Map<String,Set<String>> > intermediateData = flattenStoredValues_ValueToDocIds( storedValues_ByField );
+	// Foreach Field
+	for ( Entry<String, Map<String, Set<String>>> fieldEntry : intermediateData.entrySet() ) {
+	  String fieldName = fieldEntry.getKey();
+	  Map<String, Set<String>> values = fieldEntry.getValue();
+	  // Tabulate Doc IDs across all values for this field
+	  Set<String> overallIds = new LinkedHashSet<>();
+	  for ( Entry<String, Set<String>> valueEntry : values.entrySet() ) {
+		String valueStr = valueEntry.getKey();
+		Set<String> docIds = valueEntry.getValue();
+		overallIds.addAll( docIds );
+	  }
+	  out.put( fieldName, new Long(overallIds.size()) );
+	}
+	return out;
+  }
+  // Uses FieldName-first layered Map
+  // Input: fieldName -> docId -> values
+  // Returns Map: fieldName -> fieldValue -> docIds
+  // You typically pass in input obtained from calling transformStoredValuesData_ByDocument2ByField
+  // Do NOT pass in data directly from getStoredValuesForFields_ByDocument, it's in the wrong format
+  // even though the generic signatures might match.
+  public static Map< String, Map<String,Set<String>> > flattenStoredValues_ValueToDocIds( Map< String, Map<String,Collection<Object>> > storedValues_ByField ) {
+	Map< String, Map<String,Set<String>> > out = new LinkedHashMap<>();
+	// Foreach field
+	for ( Entry<String, Map<String, Collection<Object>>> fieldEntry : storedValues_ByField.entrySet() ) {
+	  String fieldName = fieldEntry.getKey();
+	  Map<String,Collection<Object>> data = fieldEntry.getValue();
+	  // Map: valueStr -> set<docIds>
+	  Map<String,Set<String>> valueToDocIds = new LinkedHashMap<>();
+	  // Foreach doc
+	  for ( Entry<String, Collection<Object>> docEntry : data.entrySet() ) {
+		String docId = docEntry.getKey();
+		Collection<Object> values = docEntry.getValue();
+		for ( Object v : values ) {
+		  String valKey = v.toString();
+		  Set<String> docIdsForValue = null;
+		  if ( valueToDocIds.containsKey(valKey) ) {
+			docIdsForValue = valueToDocIds.get(valKey);
+		  }
+		  else {
+			docIdsForValue = new LinkedHashSet<>();
+			valueToDocIds.put( valKey, docIdsForValue );
+		  }
+		  docIdsForValue.add( docId );
+		}
+	  }  // End foreach doc
+	  out.put( fieldName, valueToDocIds );
+	}  // End foreach field
+	return out;
+  }
+
   
   // Info From REST API Calls
   // -------------------------------------------------------------------------------
@@ -494,13 +741,29 @@ public class SolrUtils {
 	// String coll = "collection1";
 	HttpSolrServer s = getServer( host, port, coll );
 
+	Set<String> storedFields = getLukeFieldsWithStoredValues( s );
+	System.out.println( "storedFields = " + storedFields );
+
+	Set<String> indexedFields = getLukeFieldsWithIndexedValues( s );
+	System.out.println( "indexedFields = " + storedFields );
+	
+	Set<String> storedButNotIndexed = SetUtils.inAOnly_nonDestructive( storedFields, indexedFields );
+	Set<String> indexedButNotStored = SetUtils.inBOnly_nonDestructive( storedFields, indexedFields );
+	System.out.println( "storedButNotIndexed = " + storedButNotIndexed );
+	System.out.println( "indexedButNotStored = " + indexedButNotStored );
+	
+	Set<String> allFields = getAllDeclaredAndActualFieldNames(s);
+	Set<String> indexedAndOrStored = SetUtils.union_nonDestructive( storedFields, indexedFields );
+	Set<String> neitherIndexedNorStored = SetUtils.inAOnly_nonDestructive( allFields, indexedAndOrStored );
+	System.out.println( "Sanity Check: neitherIndexedNorStored = " + neitherIndexedNorStored );
+
 	// String fieldName = "name";
-	String fieldName = "color";
+	// String fieldName = "color";
 	// color, condition, department, format, genre, manufacturer, mpaaRating
 	// class, subclass, studio, softwareGrade, mpaaRating, albumLabel
 	// categoryIds, categoryNames
-	Set<String> terms = getAllTermsForField_ViaTermsRequest( s, fieldName );
-	System.out.println( "Field " + fieldName + " has " + terms.size() + " terms" );
+	// Set<String> terms = getAllTermsForField_ViaTermsRequest( s, fieldName );
+	// System.out.println( "Field " + fieldName + " has " + terms.size() + " terms" );
 //    System.out.println( "Terms for field " + fieldName + " = " + terms );
 //	Map<String,Set<String>> terms = getTermsForFields( s, getActualFieldNames(s) );
 //    System.out.println( "Terms = " + terms );
