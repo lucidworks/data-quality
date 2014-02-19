@@ -1,3 +1,8 @@
+
+Group terms by which Unicode classifications they span.
+
+Theory: Mangled/corrupt items will be more random and likely to span more classes.
+
 Total Active Docs: 1,275,077
 
 All Fields: [_root_, _version_, accessories, albumLabel, albumTitle, artistName, author, bundledIn, cast, cat, category, categoryIds, categoryNames, categoryPath, class, color, comments, condition, content, content_type, crew, customerReviewAverage, customerReviewCount, department, depthCategoryIds, depthCategoryNames, description, details, features, format, frequentlyPurchasedWith, genre, hardGoodType, id, image, inStock, includes, keywords, last_modified, lengthInMinutes, links, longDescription, manu, manu_exact, manufacturer, mpaaRating, name, payloads, plot, popularity, price, product_id, regularPrice, relatedProducts, releaseDate, resourcename, salePrice, salesRankLongTerm, salesRankMediumTerm, salesRankShortTerm, shippingWeight, shortDescription, sku, softwareGrade, startDate, store, store_id, studio, subclass, subject, text, text_rev, title, type, url, weight]

@@ -1,0 +1,585 @@
+Command line options:
+    --host localhost --port 8985
+    --stored-fields  # Also scan stored fields
+    --ids            # include IDs of docs with missing values
+
+Note: We don't bother to show IDs for docs where 100% of docs are missing.
+Would be the same for every field that was 0%.
+And you can get that with just a dump of IDs.
+Could add another command line option if we really needed it.
+
+----------- http://localhost:8985/solr -----------
+Total Active Docs: 33
+
+All Fields: [_root_, _version_, author, cat, category, comments, content, content_type, description, features, id, inStock, includes, keywords, last_modified, links, manu, manu_exact, name, payloads, popularity, price, resourcename, sku, store, subject, text, text_rev, title, url, weight, address_s, compName_s, field_a_en, field_b_en, incubationdate_dt, manu_id_s, manufacturedate_dt, price_c, price_c____amount_raw, price_c____currency, store_0_coordinate, store_1_coordinate]
+
+Luke Indexed but not Stored: [manu_exact, price_c____amount_raw, price_c____currency, store_0_coordinate, store_1_coordinate, text]
+Luke Stored but not Indexed: []
+
+Indexed at 100%: [_version_, id]
+
+No Indexed Values / 0%: [_root_, author, category, comments, content, content_type, description, keywords, last_modified, links, resourcename, sku, store, subject, text_rev, title, url]
+
+Partially Indexed Fields / Percentages:
+    cat: 21 (63.64%)
+        IDs of non-indexed docs:
+            "GB18030TEST"
+            "adata"
+            "apple"
+            "asus"
+            "ati"
+            "belkin"
+            "canon"
+            "corsair"
+            "dell"
+            "maxtor"
+            "samsung"
+            "viewsonic"
+    features: 21 (63.64%)
+        IDs of non-indexed docs:
+            "adata"
+            "apple"
+            "asus"
+            "ati"
+            "belkin"
+            "canon"
+            "corsair"
+            "dell"
+            "maxtor"
+            "samsung"
+            "viewsonic"
+            "VS1GB400C3"
+    inStock: 20 (60.61%)
+        IDs of non-indexed docs:
+            "adata"
+            "apple"
+            "asus"
+            "ati"
+            "belkin"
+            "canon"
+            "corsair"
+            "dell"
+            "maxtor"
+            "samsung"
+            "viewsonic"
+            "NEW112"
+            "NEW113"
+    includes: 6 (18.18%)
+        IDs of non-indexed docs:
+            "GB18030TEST"
+            "F8V7067-APL-KIT"
+            "IW-02"
+            "adata"
+            "apple"
+            "asus"
+            "ati"
+            "belkin"
+            "canon"
+            "corsair"
+            "dell"
+            "maxtor"
+            "samsung"
+            "viewsonic"
+            "TWINX2048-3200PRO"
+            "VS1GB400C3"
+            "VDBDB1A16"
+            "USD"
+            "EUR"
+            "GBP"
+            "NOK"
+            "VA902B"
+            "0579B002"
+            "SOLR1000"
+            "UTF8TEST"
+            "EN7800GTX/2DHTV/256M"
+            "100-435805"
+    manu: 21 (63.64%)
+        IDs of non-indexed docs:
+            "GB18030TEST"
+            "adata"
+            "apple"
+            "asus"
+            "ati"
+            "belkin"
+            "canon"
+            "corsair"
+            "dell"
+            "maxtor"
+            "samsung"
+            "viewsonic"
+    manu_exact: 21 (63.64%)
+        IDs of non-indexed docs:
+            "GB18030TEST"
+            "adata"
+            "apple"
+            "asus"
+            "ati"
+            "belkin"
+            "canon"
+            "corsair"
+            "dell"
+            "maxtor"
+            "samsung"
+            "viewsonic"
+    name: 22 (66.67%)
+        IDs of non-indexed docs:
+            "adata"
+            "apple"
+            "asus"
+            "ati"
+            "belkin"
+            "canon"
+            "corsair"
+            "dell"
+            "maxtor"
+            "samsung"
+            "viewsonic"
+    payloads: 3 (9.09%)
+        IDs of non-indexed docs:
+            "GB18030TEST"
+            "F8V7067-APL-KIT"
+            "IW-02"
+            "MA147LL/A"
+            "adata"
+            "apple"
+            "asus"
+            "ati"
+            "belkin"
+            "canon"
+            "corsair"
+            "dell"
+            "maxtor"
+            "samsung"
+            "viewsonic"
+            "USD"
+            "EUR"
+            "GBP"
+            "NOK"
+            "3007WFP"
+            "VA902B"
+            "0579B002"
+            "NEW111"
+            "9885A004"
+            "SOLR1000"
+            "UTF8TEST"
+            "EN7800GTX/2DHTV/256M"
+            "100-435805"
+            "NEW112"
+            "NEW113"
+    popularity: 14 (42.42%)
+        IDs of non-indexed docs:
+            "GB18030TEST"
+            "adata"
+            "apple"
+            "asus"
+            "ati"
+            "belkin"
+            "canon"
+            "corsair"
+            "dell"
+            "maxtor"
+            "samsung"
+            "viewsonic"
+            "USD"
+            "EUR"
+            "GBP"
+            "NOK"
+            "UTF8TEST"
+            "NEW112"
+            "NEW113"
+    price: 15 (45.45%)
+        IDs of non-indexed docs:
+            "adata"
+            "apple"
+            "asus"
+            "ati"
+            "belkin"
+            "canon"
+            "corsair"
+            "dell"
+            "maxtor"
+            "samsung"
+            "viewsonic"
+            "VDBDB1A16"
+            "USD"
+            "EUR"
+            "GBP"
+            "NOK"
+            "NEW112"
+            "NEW113"
+    text: 22 (66.67%)
+        IDs of non-indexed docs:
+            "adata"
+            "apple"
+            "asus"
+            "ati"
+            "belkin"
+            "canon"
+            "corsair"
+            "dell"
+            "maxtor"
+            "samsung"
+            "viewsonic"
+    weight: 10 (30.3%)
+        IDs of non-indexed docs:
+            "GB18030TEST"
+            "adata"
+            "apple"
+            "asus"
+            "ati"
+            "belkin"
+            "canon"
+            "corsair"
+            "dell"
+            "maxtor"
+            "samsung"
+            "viewsonic"
+            "TWINX2048-3200PRO"
+            "VS1GB400C3"
+            "VDBDB1A16"
+            "USD"
+            "EUR"
+            "GBP"
+            "NOK"
+            "SOLR1000"
+            "UTF8TEST"
+            "NEW112"
+            "NEW113"
+    address_s: 11 (33.33%)
+        IDs of non-indexed docs:
+            "GB18030TEST"
+            "F8V7067-APL-KIT"
+            "IW-02"
+            "MA147LL/A"
+            "TWINX2048-3200PRO"
+            "VS1GB400C3"
+            "VDBDB1A16"
+            "USD"
+            "EUR"
+            "GBP"
+            "NOK"
+            "3007WFP"
+            "VA902B"
+            "0579B002"
+            "NEW111"
+            "9885A004"
+            "SOLR1000"
+            "UTF8TEST"
+            "EN7800GTX/2DHTV/256M"
+            "100-435805"
+            "NEW112"
+            "NEW113"
+    compName_s: 11 (33.33%)
+        IDs of non-indexed docs:
+            "GB18030TEST"
+            "F8V7067-APL-KIT"
+            "IW-02"
+            "MA147LL/A"
+            "TWINX2048-3200PRO"
+            "VS1GB400C3"
+            "VDBDB1A16"
+            "USD"
+            "EUR"
+            "GBP"
+            "NOK"
+            "3007WFP"
+            "VA902B"
+            "0579B002"
+            "NEW111"
+            "9885A004"
+            "SOLR1000"
+            "UTF8TEST"
+            "EN7800GTX/2DHTV/256M"
+            "100-435805"
+            "NEW112"
+            "NEW113"
+    field_a_en: 1 (3.03%)
+        IDs of non-indexed docs:
+            "GB18030TEST"
+            "F8V7067-APL-KIT"
+            "IW-02"
+            "MA147LL/A"
+            "adata"
+            "apple"
+            "asus"
+            "ati"
+            "belkin"
+            "canon"
+            "corsair"
+            "dell"
+            "maxtor"
+            "samsung"
+            "viewsonic"
+            "TWINX2048-3200PRO"
+            "VS1GB400C3"
+            "VDBDB1A16"
+            "USD"
+            "EUR"
+            "GBP"
+            "NOK"
+            "3007WFP"
+            "VA902B"
+            "0579B002"
+            "NEW111"
+            "9885A004"
+            "SOLR1000"
+            "UTF8TEST"
+            "EN7800GTX/2DHTV/256M"
+            "100-435805"
+            "NEW113"
+    field_b_en: 1 (3.03%)
+        IDs of non-indexed docs:
+            "GB18030TEST"
+            "F8V7067-APL-KIT"
+            "IW-02"
+            "MA147LL/A"
+            "adata"
+            "apple"
+            "asus"
+            "ati"
+            "belkin"
+            "canon"
+            "corsair"
+            "dell"
+            "maxtor"
+            "samsung"
+            "viewsonic"
+            "TWINX2048-3200PRO"
+            "VS1GB400C3"
+            "VDBDB1A16"
+            "USD"
+            "EUR"
+            "GBP"
+            "NOK"
+            "3007WFP"
+            "VA902B"
+            "0579B002"
+            "NEW111"
+            "9885A004"
+            "SOLR1000"
+            "UTF8TEST"
+            "EN7800GTX/2DHTV/256M"
+            "100-435805"
+            "NEW112"
+    incubationdate_dt: 1 (3.03%)
+        IDs of non-indexed docs:
+            "GB18030TEST"
+            "F8V7067-APL-KIT"
+            "IW-02"
+            "MA147LL/A"
+            "adata"
+            "apple"
+            "asus"
+            "ati"
+            "belkin"
+            "canon"
+            "corsair"
+            "dell"
+            "maxtor"
+            "samsung"
+            "viewsonic"
+            "TWINX2048-3200PRO"
+            "VS1GB400C3"
+            "VDBDB1A16"
+            "USD"
+            "EUR"
+            "GBP"
+            "NOK"
+            "3007WFP"
+            "VA902B"
+            "0579B002"
+            "NEW111"
+            "9885A004"
+            "UTF8TEST"
+            "EN7800GTX/2DHTV/256M"
+            "100-435805"
+            "NEW112"
+            "NEW113"
+    manu_id_s: 19 (57.58%)
+        IDs of non-indexed docs:
+            "GB18030TEST"
+            "adata"
+            "apple"
+            "asus"
+            "ati"
+            "belkin"
+            "canon"
+            "corsair"
+            "dell"
+            "maxtor"
+            "samsung"
+            "viewsonic"
+            "SOLR1000"
+            "UTF8TEST"
+    manufacturedate_dt: 9 (27.27%)
+        IDs of non-indexed docs:
+            "GB18030TEST"
+            "adata"
+            "apple"
+            "asus"
+            "ati"
+            "belkin"
+            "canon"
+            "corsair"
+            "dell"
+            "maxtor"
+            "samsung"
+            "viewsonic"
+            "USD"
+            "EUR"
+            "GBP"
+            "NOK"
+            "3007WFP"
+            "VA902B"
+            "0579B002"
+            "NEW111"
+            "SOLR1000"
+            "UTF8TEST"
+            "NEW112"
+            "NEW113"
+    price_c: 19 (57.58%)
+        IDs of non-indexed docs:
+            "adata"
+            "apple"
+            "asus"
+            "ati"
+            "belkin"
+            "canon"
+            "corsair"
+            "dell"
+            "maxtor"
+            "samsung"
+            "viewsonic"
+            "VDBDB1A16"
+            "NEW112"
+            "NEW113"
+    price_c____amount_raw: 19 (57.58%)
+        IDs of non-indexed docs:
+            "adata"
+            "apple"
+            "asus"
+            "ati"
+            "belkin"
+            "canon"
+            "corsair"
+            "dell"
+            "maxtor"
+            "samsung"
+            "viewsonic"
+            "VDBDB1A16"
+            "NEW112"
+            "NEW113"
+    price_c____currency: 19 (57.58%)
+        IDs of non-indexed docs:
+            "adata"
+            "apple"
+            "asus"
+            "ati"
+            "belkin"
+            "canon"
+            "corsair"
+            "dell"
+            "maxtor"
+            "samsung"
+            "viewsonic"
+            "VDBDB1A16"
+            "NEW112"
+            "NEW113"
+    store_0_coordinate: 13 (39.39%)
+        IDs of non-indexed docs:
+            "GB18030TEST"
+            "adata"
+            "apple"
+            "asus"
+            "ati"
+            "belkin"
+            "canon"
+            "corsair"
+            "dell"
+            "maxtor"
+            "samsung"
+            "viewsonic"
+            "USD"
+            "EUR"
+            "GBP"
+            "NOK"
+            "SOLR1000"
+            "UTF8TEST"
+            "NEW112"
+            "NEW113"
+    store_1_coordinate: 13 (39.39%)
+        IDs of non-indexed docs:
+            "GB18030TEST"
+            "adata"
+            "apple"
+            "asus"
+            "ati"
+            "belkin"
+            "canon"
+            "corsair"
+            "dell"
+            "maxtor"
+            "samsung"
+            "viewsonic"
+            "USD"
+            "EUR"
+            "GBP"
+            "NOK"
+            "SOLR1000"
+            "UTF8TEST"
+            "NEW112"
+            "NEW113"
+
+Stored Values at 100%: [id, _version_]
+
+No Stored Values / 0%: []
+
+Partially Stored Fields / Percentages:
+    name: 22 (66.67%)
+    features: 21 (63.64%)
+    price: 15 (45.45%)
+    price_c: 19 (57.58%)
+    inStock: 20 (60.61%)
+    manu: 21 (63.64%)
+    manu_id_s: 19 (57.58%)
+    cat: 21 (63.64%)
+    weight: 10 (30.3%)
+    popularity: 14 (42.42%)
+    store: 13 (39.39%)
+    manufacturedate_dt: 9 (27.27%)
+    includes: 6 (18.18%)
+    compName_s: 11 (33.33%)
+    address_s: 11 (33.33%)
+    payloads: 3 (9.09%)
+    incubationdate_dt: 1 (3.03%)
+    field_a_en: 1 (3.03%)
+    field_b_en: 1 (3.03%)
+
+Comparision: Indexed and Stored Fields: (Indexed / Stored)
+    cat: 21 (63.64%) / 21 (63.64%)
+    features: 21 (63.64%) / 21 (63.64%)
+    inStock: 20 (60.61%) / 20 (60.61%)
+    includes: 6 (18.18%) / 6 (18.18%)
+    manu: 21 (63.64%) / 21 (63.64%)
+    manu_exact: 21 (63.64%) / -- n/a --
+    name: 22 (66.67%) / 22 (66.67%)
+    payloads: 3 (9.09%) / 3 (9.09%)
+    popularity: 14 (42.42%) / 14 (42.42%)
+    price: 15 (45.45%) / 15 (45.45%)
+    text: 22 (66.67%) / -- n/a --
+    weight: 10 (30.3%) / 10 (30.3%)
+    address_s: 11 (33.33%) / 11 (33.33%)
+    compName_s: 11 (33.33%) / 11 (33.33%)
+    field_a_en: 1 (3.03%) / 1 (3.03%)
+    field_b_en: 1 (3.03%) / 1 (3.03%)
+    incubationdate_dt: 1 (3.03%) / 1 (3.03%)
+    manu_id_s: 19 (57.58%) / 19 (57.58%)
+    manufacturedate_dt: 9 (27.27%) / 9 (27.27%)
+    price_c: 19 (57.58%) / 19 (57.58%)
+    price_c____amount_raw: 19 (57.58%) / -- n/a --
+    price_c____currency: 19 (57.58%) / -- n/a --
+    store_0_coordinate: 13 (39.39%) / -- n/a --
+    store_1_coordinate: 13 (39.39%) / -- n/a --
+    store: 0 (0%) / 13 (39.39%)
+
+

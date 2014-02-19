@@ -1,3 +1,9 @@
+
+Group terms by which Unicode classifications they span.
+
+Theory: Mangled/corrupt items will be more random and likely to span more classes.
+
+
 Fetching ALL terms, this may take a while ...
 Via TermsRequest took 62 ms
 Tabulating retrieved terms ...
