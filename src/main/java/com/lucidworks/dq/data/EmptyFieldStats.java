@@ -40,7 +40,7 @@ public class EmptyFieldStats {
   boolean showIds = false;
   Set<String> targetFields = null;
 
-  HttpSolrServer server;
+  HttpSolrServer solrServer;
   Long totalDocs;
 
   Set<String> allFieldNames;
@@ -74,7 +74,7 @@ public class EmptyFieldStats {
   }
   // TODO: refactor to allow options to be settable after constructor is run
   public EmptyFieldStats( HttpSolrServer server, Set<String> targetFields, Boolean includeStoredFields, Boolean showIds ) throws SolrServerException {
-    this.server = server;
+    this.solrServer = server;
     if ( null!=targetFields && ! targetFields.isEmpty() ) {
       this.targetFields = targetFields;
     }
@@ -88,7 +88,9 @@ public class EmptyFieldStats {
 	// TODO: should defer these?  Nice sanity check...
 	doAllTabulations();  
   }
-
+  public HttpSolrServer getSolrServer() {
+	return this.solrServer;
+  }
   public Set<String> getTargetFields() {
 	return targetFields;
   }
@@ -115,9 +117,9 @@ public class EmptyFieldStats {
     fieldStatsStoredValueCounts = new LinkedHashMap<>();
     fieldStatsStoredValueDeficits = new LinkedHashMap<>();
     fieldStatsStoredValuePercentages = new LinkedHashMap<>();
-    allFieldNames = SolrUtils.getAllDeclaredAndActualFieldNames(server);
-	lukeIndexedFields = SolrUtils.getLukeFieldsWithIndexedValues( server );
-	lukeStoredFields = SolrUtils.getLukeFieldsWithStoredValues( server );
+    allFieldNames = SolrUtils.getAllDeclaredAndActualFieldNames(solrServer);
+	lukeIndexedFields = SolrUtils.getLukeFieldsWithIndexedValues( solrServer );
+	lukeStoredFields = SolrUtils.getLukeFieldsWithStoredValues( solrServer );
 	lukeIndexedButNotStored = SetUtils.inAOnly_nonDestructive( lukeIndexedFields, lukeStoredFields );
 	lukeStoredButNotIndexed = SetUtils.inBOnly_nonDestructive( lukeIndexedFields, lukeStoredFields );
   }
@@ -129,10 +131,7 @@ public class EmptyFieldStats {
   }
 
   void fetchTotalDocCountFromServer() throws SolrServerException {
-	totalDocs = SolrUtils.getTotalDocCount( getServer() );
-  }
-  public HttpSolrServer getServer() {
-	return this.server;
+	totalDocs = SolrUtils.getTotalDocCount( getSolrServer() );
   }
   public long getTotalDocCount() {
 	return totalDocs;
@@ -196,7 +195,7 @@ public class EmptyFieldStats {
   }
   void tabulateFieldsWithIndexedValues( Set<String> fieldNames ) throws SolrServerException {
 	for ( String field : fieldNames ) {
-	  long stat = SolrUtils.getDocCountForField( getServer(), field );
+	  long stat = SolrUtils.getDocCountForField( getSolrServer(), field );
 	  if ( stat > 0L ) {
         fieldsWithIndexedValues.add( field );
         if ( getTotalDocCount() > 0L ) {
@@ -237,7 +236,7 @@ public class EmptyFieldStats {
 	int fieldCount = 0;
 
 	// Map<String, Map<String, Collection<Object>>> docsByField = SolrUtils.getStoredValuesForFields_ByField( server, fieldNames, 100000 );
-	Map<String, Map<String, Collection<Object>>> docsByField = SolrUtils.getAllStoredValuesForFields_ByField( server, fieldNames );
+	Map<String, Map<String, Collection<Object>>> docsByField = SolrUtils.getAllStoredValuesForFields_ByField( solrServer, fieldNames );
 	// Map<String, Map<String, Long>> stats = SolrUtils.flattenStoredValues_ValueToTotalCount( docsByField );
 
 	// Gives us: field name -> doc count
@@ -289,7 +288,7 @@ public class EmptyFieldStats {
 	  // long stat = _SolrUtils.getDocCountForField( getServer(), field );
 	  long start = System.currentTimeMillis();
 
-	  long stat = SolrUtils.getStoredDocCountForField( getServer(), field );
+	  long stat = SolrUtils.getStoredDocCountForField( getSolrServer(), field );
 
 	  long stop = System.currentTimeMillis();
 	  long diff = stop - start;
@@ -442,7 +441,7 @@ public class EmptyFieldStats {
   // TODO: this will break on certain data types like location/geo
   // TODO: only works on indexed values at this time
   void addMissingIdsToReport( PrintWriter out, String fieldName, String optIndent ) throws SolrServerException {
-	Set<String> missingIds = SolrUtils.getEmptyFieldDocIds( server, fieldName );
+	Set<String> missingIds = SolrUtils.getEmptyFieldDocIds( solrServer, fieldName );
 	for ( String id : missingIds ) {
 	  if ( null!=optIndent ) {
 		out.print( optIndent );
