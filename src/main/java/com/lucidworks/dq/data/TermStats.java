@@ -102,40 +102,6 @@ public class TermStats {
 	return includeIndexedFields;
   }
 
-  void resetData() throws SolrServerException {
-	resetData( true );
-  }
-  void resetData( Boolean includeHelperClass ) throws SolrServerException {
-	if ( null==includeHelperClass || includeHelperClass ) {
-	  fieldStats.resetData();
-	}
-	termsMap = new LinkedHashMap<>();
-	valuesMap = new LinkedHashMap<>();
-    uniqueTermCounts = new LinkedHashMap<>();
-    totalTermCounts = new LinkedHashMap<>();
-    uniqueValueCounts = new LinkedHashMap<>();
-    totalValueCounts = new LinkedHashMap<>();
-    uniqueTermLengths_byField_min = new LinkedHashMap<>();
-    uniqueTermLengths_byField_max = new LinkedHashMap<>();
-    uniqueTermLengths_byField_avg = new LinkedHashMap<>();
-    uniqueTermLengths_byField_std = new LinkedHashMap<>();
-    uniqueValueLengths_byField_min = new LinkedHashMap<>();
-    uniqueValueLengths_byField_max = new LinkedHashMap<>();
-    uniqueValueLengths_byField_avg = new LinkedHashMap<>();
-    uniqueValueLengths_byField_std = new LinkedHashMap<>();
-  }
-  void doAllTabulations() throws SolrServerException {
-	doAllTabulations( true );
-  }
-  // We can skip this only when we've first called their constructor
-  // TODO: a bit awkward... requires knowledge of helper class impl
-  void doAllTabulations( Boolean includeHelperClass ) throws SolrServerException {
-	if ( null==includeHelperClass || includeHelperClass.booleanValue() ) {
-	  fieldStats.doAllTabulations();
-	}
-	tabulateAllFields();
-  }
-
   // Passthroughs to Helper class
   public long getTotalDocCount() {
 	return fieldStats.getTotalDocCount();
@@ -198,6 +164,39 @@ public class TermStats {
 	return out;
   }
 
+  void resetData() throws SolrServerException {
+	resetData( true );
+  }
+  void resetData( Boolean includeHelperClass ) throws SolrServerException {
+	if ( null==includeHelperClass || includeHelperClass ) {
+	  fieldStats.resetData();
+	}
+	termsMap = new LinkedHashMap<>();
+	valuesMap = new LinkedHashMap<>();
+    uniqueTermCounts = new LinkedHashMap<>();
+    totalTermCounts = new LinkedHashMap<>();
+    uniqueValueCounts = new LinkedHashMap<>();
+    totalValueCounts = new LinkedHashMap<>();
+    uniqueTermLengths_byField_min = new LinkedHashMap<>();
+    uniqueTermLengths_byField_max = new LinkedHashMap<>();
+    uniqueTermLengths_byField_avg = new LinkedHashMap<>();
+    uniqueTermLengths_byField_std = new LinkedHashMap<>();
+    uniqueValueLengths_byField_min = new LinkedHashMap<>();
+    uniqueValueLengths_byField_max = new LinkedHashMap<>();
+    uniqueValueLengths_byField_avg = new LinkedHashMap<>();
+    uniqueValueLengths_byField_std = new LinkedHashMap<>();
+  }
+  void doAllTabulations() throws SolrServerException {
+	doAllTabulations( true );
+  }
+  // We can skip this only when we've first called their constructor
+  // TODO: a bit awkward... requires knowledge of helper class impl
+  void doAllTabulations( Boolean includeHelperClass ) throws SolrServerException {
+	if ( null==includeHelperClass || includeHelperClass.booleanValue() ) {
+	  fieldStats.doAllTabulations();
+	}
+	tabulateAllFields();
+  }
   
   void tabulateAllFields() throws SolrServerException {
 	if ( getIncludeIndexedFields() ) {
