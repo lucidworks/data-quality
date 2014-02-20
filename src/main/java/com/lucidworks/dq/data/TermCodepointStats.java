@@ -53,36 +53,64 @@ public class TermCodepointStats {
   // Object we're leveraging
   EmptyFieldStats fieldStats;
 
-  // Fields we care about, if any
-  Set<String> targetFieldNames;
+  boolean includeIndexedFields;
 
+  // Indexed Terms
+  // -------------
   // fieldName -> term -> count
   Map<String, Map<String,Long>> rawTermsMap;
-
   // fieldName -> classifierTuple -> terms
   // Map<String,Map<Set<String>,Set<String>>> categorizedTerms;
   // Map<String,Map<List<String>,Set<String>>> categorizedTerms;
   Map<  String,  Map<String, Set<String>>  > categorizedTerms;
   
+  // Stored Values
+  // -------------
+  // fieldName -> value -> count
+  Map<String, Map<String,Long>> rawValuesMap;
+  // fieldName -> classifierTuple -> values
+  Map<  String,  Map<String, Set<String>>  > categorizedValues;
+
   public TermCodepointStats( HttpSolrServer server ) throws SolrServerException {
-	this( server, null );
+	this( server, null, null, null );
   }
-  public TermCodepointStats( HttpSolrServer server, Collection<String> targetFields ) throws SolrServerException {
+  public TermCodepointStats( HttpSolrServer server, Set<String> targetFields, Boolean includeIndexedFields, Boolean includeStoredFields ) throws SolrServerException {
 	// this.server = server;
-	this.fieldStats = new EmptyFieldStats( server );
-	if ( null == targetFields || targetFields.isEmpty() ) {
-	  targetFields = fieldStats.getFieldsWithIndexedValues();
-	}
-	this.targetFieldNames = new LinkedHashSet<>( targetFields );
-	resetData( false );
-	// TODO: should defer these?  Nice sanity check...
+	// this.fieldStats = new EmptyFieldStats( server );
+	// Target Fields and includeStoredFields handled by fieldsStats  
+	this.fieldStats = new EmptyFieldStats( server, targetFields, includeStoredFields, null );
+
+    // TODO: a bit of mismatch about Indexed Fields vs Stored Fields
+	// In this class we let you turn off Indexed fields if you only want Stored fields
+	// but the base/component class does understand about Stored fields
+    if ( null==includeIndexedFields || includeIndexedFields.booleanValue() ) {
+      this.includeIndexedFields = true;
+    }
+
+    // Sanity check
+    if ( ! getIncludeIndexedFields() && ! getIncludeStoredFields() ) {
+      throw new IllegalArgumentException( "Constructor Args: Must at least check Indexed or Stored fields, or both.  Otherwise nothing to do!" );
+    }
+
+    resetData( false );
+
+    // TODO: should defer these?  Nice sanity check...
 	// Don't chain the helper class since tey just did it
 	doAllTabulations( false );
 	  
   }
 
-  public Set<String> getTargetFieldNames() {
-    return targetFieldNames;
+  public HttpSolrServer getSolrServer() {
+	return fieldStats.getSolrServer();
+  }
+  public Set<String> getTargetFields() {
+	return fieldStats.getTargetFields();
+  }
+  public boolean getIncludeStoredFields() {
+	return fieldStats.getIncludeStoredFields();
+  }
+  public boolean getIncludeIndexedFields() {
+	return includeIndexedFields;
   }
 
   // Passthroughs to Helper class
@@ -92,14 +120,20 @@ public class TermCodepointStats {
   public Set<String> getAllFieldNames() {
 	return fieldStats.getAllFieldNames();
   }
-  public Set<String> _getFieldsWithIndexedValues() {
+  public Set<String> getFieldsWithIndexedValues() {
 	return fieldStats.getFieldsWithIndexedValues();
   }
-  public Set<String> _getFieldsWithNoIndexedValues() {
+  public Set<String> getFieldsWithNoIndexedValues() {
 	return fieldStats.getFieldsWithNoIndexedValues();
   }
+  public Set<String> getFieldsWithStoredValues() {
+	return fieldStats.getFieldsWithStoredValues();
+  }
+  public Set<String> getFieldsWithNoStoredValues() {
+	return fieldStats.getFieldsWithNoStoredValues();
+  }
 
-  public Set<String> getFieldNamesWithTerms() {
+  public Set<String> _getFieldNamesWithTerms() {
 	return rawTermsMap.keySet();
   }
 
@@ -113,6 +147,8 @@ public class TermCodepointStats {
 	}
 	categorizedTerms = new TreeMap<>();
 	rawTermsMap = new LinkedHashMap<>();
+	categorizedValues = new TreeMap<>();
+	rawValuesMap = new LinkedHashMap<>();
   }
   void doAllTabulations() throws SolrServerException {
 	doAllTabulations( true );
@@ -123,8 +159,97 @@ public class TermCodepointStats {
 	if ( null==includeHelperClass || includeHelperClass ) {
 	  fieldStats.doAllTabulations();
 	}
-	// tabulateAllFields();
-	tabulateFields( getTargetFieldNames() );
+	tabulateAllFields();
+	// tabulateFields( getTargetFields() );
+  }
+
+  void tabulateAllFields() throws SolrServerException {
+	// tabulateFields( getFieldNamesWithTerms() );
+
+	if ( getIncludeIndexedFields() ) {
+	  if ( null!=getTargetFields() ) {
+	    tabulateIndexedFields( getTargetFields() );
+	  }
+	  else {
+	    tabulateIndexedFields( getFieldsWithIndexedValues() );
+	  }
+	}
+	if ( getIncludeStoredFields() ) {
+	  if ( null!=getTargetFields() ) {
+        tabulateStoredFields( getTargetFields() );			
+	  }
+	  else {
+		tabulateStoredFields( getFieldsWithStoredValues() );			
+	  }
+	}
+
+  
+  }
+
+
+  void tabulateIndexedFields( Set<String> fieldNames ) throws SolrServerException {
+	System.out.println( "Fetching ALL terms, this may take a while ..." );
+	long start = System.currentTimeMillis();
+
+	// Includes Deleted Docs
+	// Note: report includes statement about whether deleted docs are included or not
+	// so if you change the impl, also change the report text
+	rawTermsMap = SolrUtils.getAllTermsForFields_ViaTermsRequest( fieldStats.getSolrServer(), fieldNames );
+	long stop = System.currentTimeMillis();
+	long diff = stop - start;
+	System.out.println( "Via TermsRequest took " + diff + " ms" );
+
+	// Try to get just active docs ...
+	// ... slow, unstable ...
+	// termsMap = SolrUtils.getTermsForFields_ViaSearchFacets( fieldStats.getServer(), fieldNames, -1 );
+	// termsMap = SolrUtils.getTermsForFields_ViaSearchFacets( fieldStats.getServer(), fieldNames, 100 );
+	// Set<String> tmpFieldNames = new LinkedHashSet<>();
+	// tmpFieldNames.addAll( Arrays.asList(new String[]{ "class", "mpaaRating", "type" }) );
+	// termsMap = SolrUtils.getTermsForFields_ViaSearchFacets( fieldStats.getServer(), tmpFieldNames, 100 );
+	// termsMap = SolrUtils.getTermsForFields_ViaSearchFacets( fieldStats.getServer(), tmpFieldNames, -1 );
+	// long stop = System.currentTimeMillis();
+	// long diff = stop - start;
+	// System.out.println( "Via SearchFacets took " + diff + " ms" );
+	
+	System.out.println( "Tabulating retrieved terms ..." );
+	// TODO: total term instances
+	for ( String field : fieldNames ) {
+	  if ( rawTermsMap.containsKey(field) ) {
+		Map<String,Long> terms = rawTermsMap.get(field);
+		// Classify and tabulate terms into Unicode groupings
+		// Map< Set<String>, Set<String> > classifications = classifyTerms( terms.keySet() );
+		// Map< List<String>, Set<String> > classifications = classifyTerms( terms.keySet() );
+		Map< String, Set<String> > classifications = classifyTerms( terms.keySet() );
+		categorizedTerms.put( field, classifications );
+	  }
+	  // TODO: else... maybe override getFieldsWithNoIndexedValues
+	}
+  }
+
+  void tabulateStoredFields( Set<String> fieldNames ) throws SolrServerException {
+	System.out.println( "Fetching ALL values, this may take a while ..." );
+	long start = System.currentTimeMillis();
+
+	// Does NOT includes Deleted Docs
+	// Note: report includes statement about whether deleted docs are included or not
+	// so if you change the impl, also change the report text
+	// rawTermsMap = SolrUtils.getAllTermsForFields_ViaTermsRequest( fieldStats.getSolrServer(), fieldNames );
+	Map<String, Map<String, Collection<Object>>> docsByField = SolrUtils.getAllStoredValuesForFields_ByField( getSolrServer(), fieldNames );
+	rawValuesMap = SolrUtils.flattenStoredValues_ValueToTotalCount( docsByField );
+
+	long stop = System.currentTimeMillis();
+	long diff = stop - start;
+	System.out.println( "Via Search Request took " + diff + " ms" );
+
+	System.out.println( "Tabulating retrieved values ..." );
+	// TODO: total term instances
+	for ( String field : fieldNames ) {
+	  if ( rawValuesMap.containsKey(field) ) {
+		Map<String,Long> values = rawValuesMap.get(field);
+		Map< String, Set<String> > classifications = classifyTerms( values.keySet() );
+		categorizedValues.put( field, classifications );
+	  }
+	}
   }
 
   // classifierTuple -> terms
@@ -167,53 +292,8 @@ public class TermCodepointStats {
     return out;
   }
 
-  void tabulateAllFields() throws SolrServerException {
-	tabulateFields( getFieldNamesWithTerms() );
-  }
-  void tabulateFields( Set<String> fieldNames ) throws SolrServerException {
-	System.out.println( "Fetching ALL terms, this may take a while ..." );
-	long start = System.currentTimeMillis();
-
-	// Includes Deleted Docs
-	// Note: report includes statement about whether deleted docs are included or not
-	// so if you change the impl, also change the report text
-	rawTermsMap = SolrUtils.getAllTermsForFields_ViaTermsRequest( fieldStats.getServer(), fieldNames );
-	long stop = System.currentTimeMillis();
-	long diff = stop - start;
-	System.out.println( "Via TermsRequest took " + diff + " ms" );
-
-	// Try to get just active docs ...
-	// ... slow, unstable ...
-	// termsMap = SolrUtils.getTermsForFields_ViaSearchFacets( fieldStats.getServer(), fieldNames, -1 );
-	// termsMap = SolrUtils.getTermsForFields_ViaSearchFacets( fieldStats.getServer(), fieldNames, 100 );
-	// Set<String> tmpFieldNames = new LinkedHashSet<>();
-	// tmpFieldNames.addAll( Arrays.asList(new String[]{ "class", "mpaaRating", "type" }) );
-	// termsMap = SolrUtils.getTermsForFields_ViaSearchFacets( fieldStats.getServer(), tmpFieldNames, 100 );
-	// termsMap = SolrUtils.getTermsForFields_ViaSearchFacets( fieldStats.getServer(), tmpFieldNames, -1 );
-	// long stop = System.currentTimeMillis();
-	// long diff = stop - start;
-	// System.out.println( "Via SearchFacets took " + diff + " ms" );
-	
-	System.out.println( "Tabulating retrieved terms ..." );
-	// TODO: total term instances
-	for ( String field : fieldNames ) {
-	  if ( rawTermsMap.containsKey(field) ) {
-		Map<String,Long> terms = rawTermsMap.get(field);
-		// Classify and tabulate terms into Unicode groupings
-		// Map< Set<String>, Set<String> > classifications = classifyTerms( terms.keySet() );
-		// Map< List<String>, Set<String> > classifications = classifyTerms( terms.keySet() );
-		Map< String, Set<String> > classifications = classifyTerms( terms.keySet() );
-		categorizedTerms.put( field, classifications );
-	  }
-	  // TODO: else... maybe override getFieldsWithNoIndexedValues
-	}
-  }
-
   // TODO: could include label as a settable member field
   public String generateReport( String optLabel ) throws Exception {
-	return generateReportForFields( optLabel, getTargetFieldNames()  );
-  }
-  String generateReportForFields( String optLabel, Set<String> fieldNames ) throws Exception {
 	// *if* not done in constructor, nor by specific all,
 	// then do it now
 	// doAllTabulations();
@@ -234,46 +314,48 @@ public class TermCodepointStats {
     out.println();
     out.println( "All Fields: " + getAllFieldNames() );
 
-    out.println();
-    // out.println( "Fields with Indexed Values: " + getFieldsWithIndexedValues() );
-    out.println( "Fields with Terms: " + getFieldNamesWithTerms() );
+    // out.println();
+    // out.println( "Target Fields to Analyze: " + getFieldNamesWithTerms() );
+    if ( null!=getTargetFields() ) {
+        out.println();
+        out.println( "LIMITING to Target Fields: " + getTargetFields() );
+    }
 
-    out.println();
-    out.println( "Target Fields to Analyze: " + getFieldNamesWithTerms() );
+    if ( getIncludeIndexedFields() ) {
+      out.println();
+      // out.println( "Fields with Indexed Values: " + getFieldsWithIndexedValues() );
+      // out.println( "Fields with Terms: " + getFieldNamesWithTerms() );
+      out.println( "Fields with Indexed Terms: " + getFieldsWithIndexedValues() );
 
-    out.println();
-    // addAllFieldStatsToReport( out );
-    addFieldStatsToReport( out, fieldNames );
+      out.println();
+      // addAllFieldStatsToReport( out );
+      // addFieldStatsToReport( out, fieldNames );
+      addIndexedFieldStatsToReport( out );
+    }
     
+    if ( getIncludeStoredFields() ) {
+      out.println();
+      out.println( "Fields with Stored Values: " + getFieldsWithStoredValues() );
+      out.println();
+      addStoredFieldStatsToReport( out );
+    }
+
     String outStr = sw.toString();
     return outStr;
   }
-  void addSimpleStatToReport( PrintWriter out, String label, long stat, String optIndent ) {
-	if ( null!=optIndent ) {
-		out.print( optIndent );
-	}
-	String statStr = NumberFormat.getNumberInstance().format( stat );
-	out.println( "" + label + ": " + statStr );
+  void _addAllFieldStatsToReport( PrintWriter out ) {
+	addIndexedFieldStatsToReport( out /*, getFieldNamesWithTerms()*/ );
   }
-  void addStatPairToReport( PrintWriter out, String label, long statA, long statB, String optIndent ) {
-	if ( null!=optIndent ) {
-		out.print( optIndent );
-	}
-	String statAStr = NumberFormat.getNumberInstance().format( statA );
-	String statBStr = NumberFormat.getNumberInstance().format( statB );
-	out.println( "" + label + ": " + statAStr + " / " + statBStr );
+  void addIndexedFieldStatsToReport( PrintWriter out /*, Set<String> fieldNames*/ ) {
+	addIndexedFieldStatsToReport( out, /* fieldNames,*/ 5 );
   }
-  void addAllFieldStatsToReport( PrintWriter out ) {
-	addFieldStatsToReport( out, getFieldNamesWithTerms() );
-  }
-  void addFieldStatsToReport( PrintWriter out, Set<String> fieldNames ) {
-	addFieldToReport( out, fieldNames, 5 );
-  }
-  void addFieldToReport( PrintWriter out, Set<String> fieldNames, int sampleSliceSize ) {
+  void addIndexedFieldStatsToReport( PrintWriter out, /*Set<String> fieldNames,*/ int sampleSliceSize ) {
 	// Whether includes deleted or not controlled by tabulateFieldsWithIndexedValues
-	out.println( "Unicode Term Categories, for each Field (terms include deleted docs):" );
+	out.println( "Indexed Terms Unicode Categories, for each Field (terms include deleted docs):" );
 	// Foreach Field
-	for ( String field : fieldNames ) {
+	// for ( String field : fieldNames )
+	for ( String field : rawTermsMap.keySet() )
+	{
 	  out.println();
 	  out.println( "Field: " + field );
 	  // Map< Set<String>, Set<String> > stats = categorizedTerms.get( field );
@@ -308,29 +390,56 @@ public class TermCodepointStats {
 	}
   }
 
-//		// Whether to show "..."
-//		boolean hadMore = false;
-//		int i = 0;
-//		// Do until we run out of terms OR have displayed enough examples
-//		for ( Entry<String, Long> entry : terms.entrySet() ) {
-//		  i++;
-//		  String term = entry.getKey();
-//		  if ( term.length() < expectedMin ) {
-//		    if ( displayedSamples >= sampleSliceSize ) {
-//			  hadMore = true;
-//			  break;
-//		    }
-//		    Long count = entry.getValue();
-//		    String countStr = NumberFormat.getNumberInstance().format( count );
-//		    String iStr = NumberFormat.getNumberInstance().format( i+1 );
-//		    out.println( "\t\t\t" + iStr + ": " + term + ", len=" + term.length() );
-//		    displayedSamples++;
-//		  }
-//		}
-//		if ( hadMore ) {
-//		  out.println( "\t\t\t..." );			
-//		}
-//	  }
+  void addStoredFieldStatsToReport( PrintWriter out ) {
+	addStoredFieldStatsToReport( out, 5 );
+  }
+  void addStoredFieldStatsToReport( PrintWriter out, int sampleSliceSize ) {
+	// Whether includes deleted or not controlled by tabulateFieldsWithIndexedValues
+	out.println( "Stored Values Unicode Categories, for each Field (values do not include deleted docs):" );
+	// Foreach Field
+	for ( String field : rawValuesMap.keySet() ) {
+	  out.println();
+	  out.println( "Field: " + field );
+	  Map< String, Set<String> > stats = categorizedValues.get( field );
+	  for ( Entry< String, Set<String> > entry : stats.entrySet() ) {
+	    String tuple = entry.getKey();
+	    Set<String> terms = entry.getValue();
+	    out.println( "\tCharacter Classes: [" + tuple + "]" );
+	    int displayedCount = 0;
+	    boolean brokeEarly = false;
+	    for ( String t : terms ) {
+	      displayedCount++;
+	      if ( displayedCount > sampleSliceSize ) {
+	    	brokeEarly = true;
+	    	break;
+	      }
+	      out.println( "\t\t" + t );
+	    }
+	    if ( ! brokeEarly ) {
+	      out.println( "\t\t\t(showing all " + terms.size() + " values)" );
+	    }
+	    else {
+	      out.println( "\t\t\t... (" + terms.size() + " values)" );
+	    }
+	  }
+	}
+  }
+
+  void addSimpleStatToReport( PrintWriter out, String label, long stat, String optIndent ) {
+	if ( null!=optIndent ) {
+		out.print( optIndent );
+	}
+	String statStr = NumberFormat.getNumberInstance().format( stat );
+	out.println( "" + label + ": " + statStr );
+  }
+  void addStatPairToReport( PrintWriter out, String label, long statA, long statB, String optIndent ) {
+	if ( null!=optIndent ) {
+		out.print( optIndent );
+	}
+	String statAStr = NumberFormat.getNumberInstance().format( statA );
+	String statBStr = NumberFormat.getNumberInstance().format( statB );
+	out.println( "" + label + ": " + statAStr + " / " + statBStr );
+  }
 
   static void helpAndExit() {
 	helpAndExit( null, 1 );
@@ -359,9 +468,14 @@ public class TermCodepointStats {
 	// TODO: adding IDs would be hard since we don't get those back from calls
 	// AND searching for some tokens might have syntax error issues
 	// options.addOption( "i", "ids", false, "Include IDs of docs when displaying sample values." );
+	options.addOption( "s", "stored-fields", false, "Also check stats of Stored fields. WARNING: may take lots of time and memory for large collections" );
+	options.addOption( "S", "no-stored-fields", false, "Don't check stats of Stored fields; this is the default." );
+	// TODO: -i for --indexed-fields conflicts with -i for --ids for including IDs in EmptyFieldStats
+	// but here we really might want to focus on only stored values
+	options.addOption( "i", "indexed-fields", false, "Check stats of Indexed fields; this is the default." );
+	options.addOption( "I", "no-indexed-fields", false, "Don't check stats of Indexed fields.  Used with --stored-fields to only get Stored Fields info." );
 	// TODO: add option for sample size
-	// options.addOption( "s", "stored-fields", false, "Also check stats of Stored fields. WARNING: may take lots of time and memory for large collections" );
-	options.addOption( "f", "fields", true, "Fields to analyze, Eg: fields=name,category  Default is all fields" );
+	options.addOption( "f", "fields", true, "Fields to analyze, Eg: fields=name,category, default is all indexed/stored fields" );
 	if ( argv.length < 1 ) {
 	  helpAndExit();
 	}
@@ -388,11 +502,53 @@ public class TermCodepointStats {
 	if ( null!=fullUrl && null!=host ) {
 	  helpAndExit( "Must not specifify both url and host", 4 );
 	}
-    String fieldsStr = cmd.getOptionValue( "fields" );
+
+    // Indexed fields, default is Yes
+    Boolean indexedFieldsFlagObj = null;
+    if( cmd.hasOption("indexed-fields")) {
+      // Can't do yes and no for same option
+      if( cmd.hasOption("no-indexed-fields")) {
+    	helpAndExit( "Can't specifify --indexed-fields AND --no-indexed-fields", 4 );
+      }
+      else {
+    	indexedFieldsFlagObj = new Boolean( true );
+      }
+    }
+    else if( cmd.hasOption("no-indexed-fields")) {
+      indexedFieldsFlagObj = new Boolean( false );
+    }
+
+    // Stored fields, default is No
+    Boolean storedFieldsFlagObj = null;
+    if(cmd.hasOption("stored-fields")) {
+      // Can't do yes and no for same option
+      if(cmd.hasOption("no-stored-fields")) {
+    	helpAndExit( "Can't specifify --stored-fields AND --no-stored-fields", 4 );
+      }
+      else {
+    	storedFieldsFlagObj = new Boolean( true );
+      }
+    }
+    else if(cmd.hasOption("no-stored-fields")) {
+      storedFieldsFlagObj = new Boolean( false );
+    }
+
+    // Sanity check
+    // Also double checked in constructor since user might skip the main logic
+    // Indexed, default is Yes
+    boolean checkIndexedFields = null==indexedFieldsFlagObj || indexedFieldsFlagObj.booleanValue();
+    // Stored, default is No
+    boolean checkStoredFields = null!=storedFieldsFlagObj && storedFieldsFlagObj.booleanValue();
+    if ( ! checkIndexedFields && ! checkStoredFields ) {
+      helpAndExit( "Syntax: Must at least check Indexed or Stored fields, or both.  Otherwise nothing to do!", 4 );
+    }
+	
+	
+	String targetFieldsStr = cmd.getOptionValue( "fields" );
 	// List<String> fieldNames = Arrays.asList( new String[]{"categoryNames", "class", "color", "department", "genre", "mpaaRating"} );
-    Set<String> fieldNames = null;
-    if ( null!=fieldsStr ) {
-    	fieldNames = SetUtils.splitCsv( fieldsStr );
+    Set<String> targetFields = null;
+    if ( null!=targetFieldsStr ) {
+    	targetFields = SetUtils.splitCsv( targetFieldsStr );
     }
 
     // Init
@@ -406,7 +562,9 @@ public class TermCodepointStats {
       solr = SolrUtils.getServer( host, port, coll );    
     }
     System.out.println( "Solr = " + solr.getBaseURL() );
-	TermCodepointStats tcp = new TermCodepointStats( solr, fieldNames );
+
+    
+    TermCodepointStats tcp = new TermCodepointStats( solr, targetFields, indexedFieldsFlagObj, storedFieldsFlagObj );
 
 	String report = tcp.generateReport( solr.getBaseURL() );
 	System.out.println( report );
