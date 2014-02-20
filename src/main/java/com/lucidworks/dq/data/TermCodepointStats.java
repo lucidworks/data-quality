@@ -356,8 +356,12 @@ public class TermCodepointStats {
 	options.addOption( "h", "host", true, "IP address for Solr, default=localhost" );
 	options.addOption( "p", "port", true, "Port for Solr, default=8983" );
 	options.addOption( "c", "collection", true, "Collection/Core for Solr, Eg: collection1" );
-	// options.addOption( "i", "ids", false, "Include IDs of docs with empty fields. WARNING: may create large report" );
-	options.addOption( "f", "fields", true, "Fields to analyze, Eg: fields=name,category, default is all fields" );
+	// TODO: adding IDs would be hard since we don't get those back from calls
+	// AND searching for some tokens might have syntax error issues
+	// options.addOption( "i", "ids", false, "Include IDs of docs when displaying sample values." );
+	// TODO: add option for sample size
+	// options.addOption( "s", "stored-fields", false, "Also check stats of Stored fields. WARNING: may take lots of time and memory for large collections" );
+	options.addOption( "f", "fields", true, "Fields to analyze, Eg: fields=name,category  Default is all fields" );
 	if ( argv.length < 1 ) {
 	  helpAndExit();
 	}

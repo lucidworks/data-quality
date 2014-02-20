@@ -543,6 +543,7 @@ public class EmptyFieldStats {
 	options.addOption( "c", "collection", true, "Collection/Core for Solr, Eg: collection1" );
 	options.addOption( "s", "stored-fields", false, "Also check stats of Stored fields. WARNING: may take lots of time and memory for large collections" );
 	options.addOption( "i", "ids", false, "Include IDs of docs with empty fields. WARNING: may create large report" );
+	// TODO: could add option for number of IDs to include...
 	options.addOption( "f", "fields", true, "Fields to analyze, Eg: fields=name,category, default is all fields" );
     if ( argv.length < 1 ) {
       helpAndExit();
