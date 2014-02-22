@@ -14,6 +14,9 @@ import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.HttpSolrServer;
 import org.apache.solr.client.solrj.response.FacetField;
 import org.apache.solr.client.solrj.response.FacetField.Count;
+import org.apache.solr.client.solrj.response.Group;
+import org.apache.solr.client.solrj.response.GroupCommand;
+import org.apache.solr.client.solrj.response.GroupResponse;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
@@ -143,6 +146,22 @@ public class SolrUtils {
     }
 	return out;
   }
+  // field name -> type name
+  public static Map<String,String> getLukeFieldTypes( HttpSolrServer server ) throws SolrServerException {
+	Map<String,String> out = new LinkedHashMap<>();
+	SolrQuery q = new SolrQuery();
+	q.setRequestHandler("/admin/luke");
+    QueryResponse res = server.query( q );
+    NamedList<Object> res2 = res.getResponse();
+    SimpleOrderedMap fields = (SimpleOrderedMap) res2.get("fields");
+    for ( int i=0; i<fields.size(); i++ ) {
+      String name = fields.getName( i );
+      SimpleOrderedMap val = (SimpleOrderedMap) fields.getVal( i );
+      String type = (String) val.get( "type" );
+      out.put( name, type );
+    }
+	return out;
+  }
   public static Set<String> getLukeFieldsWithIndexedValues( HttpSolrServer server ) throws SolrServerException {
 	Set<String> out = new LinkedHashSet<>();
 	SolrQuery q = new SolrQuery();
@@ -204,6 +223,47 @@ public class SolrUtils {
 		  out.add( id );
 	  }
 	  return out;
+  }
+  public static Map<Object,Long> getAllStoredValuesAndCountsForField_ViaNormalQuery( HttpSolrServer server, String fieldName ) throws SolrServerException {
+	Map<Object,Long> out = new LinkedHashMap<>();
+	SolrQuery q = new SolrQuery( "*:*" );
+	q.addField( fieldName );
+	q.setRows( ALL_ROWS );
+	QueryResponse res = server.query( q );
+	for ( SolrDocument doc : res.getResults() ) {
+	  Object value = doc.get( fieldName );
+	  Long oldCount = 0L;
+	  if ( out.containsKey(value) ) {
+		oldCount = out.get(value);
+	  }
+	  out.put( value, oldCount + 1L );
+	}
+	return out;
+  }
+  public static Map<Object,Long> getAllStoredValuesAndCountsForField_ViaGroupedQuery( HttpSolrServer server, String fieldName ) throws SolrServerException {
+	Map<Object,Long> out = new LinkedHashMap<>();
+	SolrQuery q = new SolrQuery( "*:*" );
+	q.addField( fieldName );
+	q.set( "group", true );
+	q.set( "group.field", fieldName );
+	q.set( "group.limit", 0 );  // No docs, we just want counts
+	// q.addField( ID_FIELD );  // moot if not getting docs
+	q.setRows( ALL_ROWS );   // All *Groups*
+	QueryResponse res = server.query( q );
+	GroupResponse groups = res.getGroupResponse();
+	List<GroupCommand> grpVals = groups.getValues();
+	for ( GroupCommand cmd : grpVals ) {
+	  String name = cmd.getName();
+	  int numTotalDocMatches = cmd.getMatches();
+	  List<Group> cmdVals = cmd.getValues();
+	  for ( Group gVal : cmdVals ) {
+		String val = gVal.getGroupValue();
+		SolrDocumentList grpRes = gVal.getResult();
+		long valCount = grpRes.getNumFound();
+		out.put( val, valCount );
+	  }
+	}  
+	return out;
   }
 
   public static long getTotalDocCount( HttpSolrServer server ) throws SolrServerException {
@@ -741,21 +801,29 @@ public class SolrUtils {
 	// String coll = "collection1";
 	HttpSolrServer s = getServer( host, port, coll );
 
-	Set<String> storedFields = getLukeFieldsWithStoredValues( s );
-	System.out.println( "storedFields = " + storedFields );
+	Map<String,String> fieldTypes = getLukeFieldTypes(s);
+	System.out.println( "Field -> Type:" );
+	for ( Entry<String, String> entry : fieldTypes.entrySet() ) {
+	  String fieldName = entry.getKey();
+	  String typeName = entry.getValue();
+	  System.out.println( "\t" + fieldName + ": " + typeName );
+	}
 
-	Set<String> indexedFields = getLukeFieldsWithIndexedValues( s );
-	System.out.println( "indexedFields = " + storedFields );
-	
-	Set<String> storedButNotIndexed = SetUtils.inAOnly_nonDestructive( storedFields, indexedFields );
-	Set<String> indexedButNotStored = SetUtils.inBOnly_nonDestructive( storedFields, indexedFields );
-	System.out.println( "storedButNotIndexed = " + storedButNotIndexed );
-	System.out.println( "indexedButNotStored = " + indexedButNotStored );
-	
-	Set<String> allFields = getAllDeclaredAndActualFieldNames(s);
-	Set<String> indexedAndOrStored = SetUtils.union_nonDestructive( storedFields, indexedFields );
-	Set<String> neitherIndexedNorStored = SetUtils.inAOnly_nonDestructive( allFields, indexedAndOrStored );
-	System.out.println( "Sanity Check: neitherIndexedNorStored = " + neitherIndexedNorStored );
+//	Set<String> storedFields = getLukeFieldsWithStoredValues( s );
+//	System.out.println( "storedFields = " + storedFields );
+//
+//	Set<String> indexedFields = getLukeFieldsWithIndexedValues( s );
+//	System.out.println( "indexedFields = " + storedFields );
+//	
+//	Set<String> storedButNotIndexed = SetUtils.inAOnly_nonDestructive( storedFields, indexedFields );
+//	Set<String> indexedButNotStored = SetUtils.inBOnly_nonDestructive( storedFields, indexedFields );
+//	System.out.println( "storedButNotIndexed = " + storedButNotIndexed );
+//	System.out.println( "indexedButNotStored = " + indexedButNotStored );
+//	
+//	Set<String> allFields = getAllDeclaredAndActualFieldNames(s);
+//	Set<String> indexedAndOrStored = SetUtils.union_nonDestructive( storedFields, indexedFields );
+//	Set<String> neitherIndexedNorStored = SetUtils.inAOnly_nonDestructive( allFields, indexedAndOrStored );
+//	System.out.println( "Sanity Check: neitherIndexedNorStored = " + neitherIndexedNorStored );
 
 	// String fieldName = "name";
 	// String fieldName = "color";
