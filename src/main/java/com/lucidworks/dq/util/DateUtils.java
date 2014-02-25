@@ -3,6 +3,10 @@ package com.lucidworks.dq.util;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
 import java.util.TimeZone;
 
 public class DateUtils {
@@ -61,4 +65,14 @@ public class DateUtils {
     return outDate;
   }
 
+  public static List<Double> dates2Doubles( Collection<Date> dates ) {
+	List<Double> out = new ArrayList<>();
+	for ( Date d : dates ) {
+	  out.add(  new Double( d.getTime() )  );
+	}
+	return out;
+  }
+  public static Double date2Double( Date d ) {
+	return new Double( d.getTime() ).doubleValue();
+  }
 }
