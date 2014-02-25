@@ -30,6 +30,7 @@ import org.apache.commons.cli.PosixParser;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.HttpSolrServer;
 
+import com.lucidworks.dq.util.DateUtils;
 import com.lucidworks.dq.util.SetUtils;
 import com.lucidworks.dq.util.SolrUtils;
 import com.lucidworks.dq.util.StatsUtils;
@@ -221,6 +222,7 @@ public class DateChecker {
       Map<java.util.Date,Long> histo = SolrUtils.getHistogramForDateField( getSolrServer(), field, 1 );
       dateHistogramByField.put( field, histo );
     }
+  
   }
   void _tabulateDates( Set<String> fieldNames ) throws SolrServerException, java.text.ParseException {
 	System.out.println( "Fetching all date values, this may take a while ..." );
@@ -420,28 +422,46 @@ public class DateChecker {
         out.println();
 	  }
 	  float scale = (float) BAR_LEN / (float) maxCount;
+
+	  List<Date> dates = new ArrayList<>( histo.keySet() );
+	  List<Long> counts = new ArrayList<>( histo.values() );
+	  if ( dates.size() != counts.size() ) {
+	    throw new IllegalStateException( "Number of of keys (" + dates.size() + ") != number of values (" + counts.size() );
+	  }
+	  List<Double> x = DateUtils.dates2Doubles( dates );
+	  List<Double> y = StatsUtils.longs2Doubles( counts );
+	  // leastSquares_Exponential only looks at values > 0.0
+	  double[] curve = StatsUtils.leastSquares_Exponential( x, y );
+	  double A = curve[0];
+	  double k = curve[1];  
 	  // Reverse their order; we use LinkedHashMaps which preserves insertion order
 	  histo = SetUtils.reverseMapEntryKeyOrder( histo );
+	  // Plot the samples
 	  for ( Entry<Date, Long> histoEntry : histo.entrySet() ) {
 	    Date d = histoEntry.getKey();
 	    Long v = histoEntry.getValue();
-	    addDateBarToReport( out, d, v, scale, "\t", true );
+	    Double curvePoint = A * Math.exp( k * DateUtils.date2Double(d) );
+	    addDateBarToReport( out, d, v, curvePoint, scale, "\t", true );
 	  }
 	}
   }
 
-  void addDateBarToReport( PrintWriter out, Date date, long count, float scale, String optIndent, Boolean skipEmpty ) {
+  void addDateBarToReport( PrintWriter out, Date date, long count, Double optCurvePoint, float scale, String optIndent, Boolean skipEmpty ) {
 	// DateFormat formatter = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
 	DateFormat formatter = new SimpleDateFormat( "yyyy-MM-dd" );
 	// We don't display timezone, but don't want 2010 -> 2009 14:00 PST
 	formatter.setTimeZone( TimeZone.getTimeZone( "GMT" ) );
 	String label = formatter.format( date );
 	int numChars = new Double( (double)count * scale + 0.5 ).intValue();
-    String bar = generateBar( "*", numChars );
+    String bar = generateBar( "=", numChars );
     if ( bar.length() < 1 ) {
       if (null==skipEmpty || skipEmpty.booleanValue() ) {
     	return;
       }
+    }
+    if ( null!=optCurvePoint ) {
+      int curveAt = new Double( optCurvePoint * scale + 0.5 ).intValue();
+      bar = plotPointOnBar( bar, "|", "#", curveAt );
     }
 	if ( null!=optIndent ) {
 	  out.print( optIndent );
@@ -452,6 +472,31 @@ public class DateChecker {
 	if ( n <= 0 ) { return ""; }
 	// http://stackoverflow.com/questions/1235179/simple-way-to-repeat-a-string-in-java
 	return new String(new char[n]).replace("\0", s);
+  }
+  static String plotPointOnBar( String oldBar, String newTextClear, String newTextOverlap, int positionBaseOne ) {
+    // String newBar = oldBar + " (length was " + oldBar.length() + ", marker at " + positionBaseOne + ")";
+    // return newBar;
+	if ( positionBaseOne < 1 ) {
+	  return oldBar;
+	}
+	int newBarLen = Math.max( oldBar.length(), positionBaseOne );
+	StringBuffer newBar = new StringBuffer();
+	for ( int i=1; i<=newBarLen; i++ ) {
+	  String barChar = " ";
+	  if ( i <= oldBar.length() ) {
+		barChar = oldBar.substring( i-1, i );
+	  }
+	  if ( i == positionBaseOne ) {
+		if ( barChar.equalsIgnoreCase(" ") ) {
+		  barChar = newTextClear;
+		}
+		else {
+		  barChar = newTextOverlap;
+		}
+	  }
+	  newBar.append( barChar );
+	}
+	return new String( newBar );
   }
   void addSimpleStatToReport( PrintWriter out, String label, long stat ) {
 	addSimpleStatToReport( out, label, stat, null );
