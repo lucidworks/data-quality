@@ -1,6 +1,7 @@
 package com.lucidworks.dq.util;
 
 import java.net.URL;
+import java.text.ParseException;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -14,10 +15,12 @@ import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.HttpSolrServer;
 import org.apache.solr.client.solrj.response.FacetField;
 import org.apache.solr.client.solrj.response.FacetField.Count;
+import org.apache.solr.client.solrj.response.FieldStatsInfo;
 import org.apache.solr.client.solrj.response.Group;
 import org.apache.solr.client.solrj.response.GroupCommand;
 import org.apache.solr.client.solrj.response.GroupResponse;
 import org.apache.solr.client.solrj.response.QueryResponse;
+import org.apache.solr.client.solrj.response.RangeFacet;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.util.NamedList;
@@ -103,7 +106,6 @@ public class SolrUtils {
     return SetUtils.union_destructive( declaredFields, actualFields );
   }
   // http://localhost:8985/solr/collection1/admin/luke
-  // TODO: Find out if this will include fields that are Stored but NOT Indexed
   public static Set<String> getActualFieldNames( HttpSolrServer server ) throws SolrServerException {
 	Set<String> out = new LinkedHashSet<>();
 	SolrQuery q = new SolrQuery();
@@ -792,22 +794,114 @@ public class SolrUtils {
     return out;
   }
 
+  // http://localhost:8983/solr/demo_shard1_replica1/select?q=*:*&stats=true&stats.field=releaseDate&stats.field=startDate&rows=0
+  public static FieldStatsInfo getStatsForField( HttpSolrServer server, String fieldName ) throws SolrServerException {
+	SolrQuery q = new SolrQuery( "*:*" );
+	q.set( "stats", true );
+	q.set( "stats.field", fieldName );
+	q.setRows( 0 );
+	QueryResponse res = server.query( q );
+    Map<String, FieldStatsInfo> fieldStats = res.getFieldStatsInfo();
+    return fieldStats.get( fieldName );
+//    for ( Entry<String, FieldStatsInfo> entry : fieldStats.entrySet() ) {
+//      String fieldName2 = entry.getKey();
+//      FieldStatsInfo vals = entry.getValue();
+//      String fieldName3 = vals.getName();
+//      Object min = vals.getMin();
+//      Object max = vals.getMax();
+//      Object sum = vals.getSum();
+//      Object mean = vals.getMean();
+//      Double std = vals.getStddev();
+//      Long count = vals.getCount();
+//      Long missing = vals.getMissing();
+//      System.out.println( "Stats=" + vals );
+//    }
+  }
 
-  public static void main( String[] argv ) throws SolrServerException {
+  public static Map<java.util.Date,Long> getHistogramForDateField( HttpSolrServer server, String fieldName, int gapInYears ) throws SolrServerException, ParseException {
+	FieldStatsInfo stats = getStatsForField( server, fieldName );
+	java.util.Date startObj = (java.util.Date) stats.getMin();
+	java.util.Date endObj = (java.util.Date) stats.getMax();
+	System.out.println( "Stats, Objs: Start/Stop: " + startObj + " / " + endObj );
+	String start = DateUtils.date2SolrXmlZulu_date2str( startObj );
+	String end = DateUtils.date2SolrXmlZulu_date2str( endObj );
+	System.out.println( "Stats, Strs: Start/Stop: " + start + " / " + end );
+
+    // http://lucene.apache.org/solr/4_0_0/solr-core/org/apache/solr/util/DateMathParser.html
+	String gap = "+" + gapInYears + "YEARS";  // Eg: "+5YEARS"
+
+	// return getHistogramForDateField( server, fieldName, start.toString(), end.toString(), gap );
+	// Mon Jul 10 17:00:00 PDT 2006
+	// 2012-07-29T00:00:00Z
+	// return getHistogramForDateField( server, fieldName, "2006-07-10T17:00:00Z", end.toString(), gap ); 
+	return getHistogramForDateField( server, fieldName, start, end, gap );
+  }
+
+  // Input needs to be strings so we can also use Solr date math
+  // https://lucene.apache.org/solr/4_0_0/solr-solrj/org/apache/solr/client/solrj/response/RangeFacet.html
+  // http://localhost:8983/solr/demo_shard1_replica1/select?q=*:*&rows=0&facet=true&facet.range=releaseDate&facet.range=startDate&facet.range.start=NOW-30YEARS&facet.range.end=NOW&facet.range.gap=%2B5YEARS
+  public static Map<java.util.Date,Long> getHistogramForDateField( HttpSolrServer server, String fieldName, String start, String end, String gap ) throws SolrServerException, ParseException {
+	Map<java.util.Date,Long> out = new LinkedHashMap<>();
+    SolrQuery q = new SolrQuery( "*:*" );
+    // q.addField( ID_FIELD );    // Minimize data
+    q.setRows( 0 );            // Minimize data
+    q.setFacetLimit( -1 );     // all values
+	q.set( "facet", true );
+	q.set( "facet.range", fieldName );
+	q.set( "facet.range.start", start );
+	q.set( "facet.range.end", end );
+	q.set( "facet.range.gap", gap );
+	QueryResponse res = server.query( q );
+    // List<FacetField> facets = res.getFacetFields();
+	List<RangeFacet> facets = res.getFacetRanges();
+	// Foreach Facet
+	// for ( FacetField f : facets )
+	for ( RangeFacet f : facets )
+	{
+	  System.out.println( "Facet: " + f );
+	  List counts = f.getCounts();
+	  for ( Object c : counts ) {
+		RangeFacet.Count c2 = (RangeFacet.Count) c;
+		int countI = c2.getCount();
+		String val = c2.getValue();
+		// System.out.println( "\tval / count: " + val + " / " + countI );
+		java.util.Date valDate = DateUtils.solrXmlZulu2Date_str2date( val );
+		out.put( valDate, new Long(countI) );
+	  }
+	  // System.out.println( "Facet: " + f + ", counts=" + counts );
+	}
+	return out;
+  }
+
+
+  public static void main( String[] argv ) throws SolrServerException, ParseException {
 	String host = "localhost";
 	int port = 8983;
 	String coll = "demo_shard1_replica1";
 	// int port = 8985;
 	// String coll = "collection1";
 	HttpSolrServer s = getServer( host, port, coll );
-
-	Map<String,String> fieldTypes = getLukeFieldTypes(s);
-	System.out.println( "Field -> Type:" );
-	for ( Entry<String, String> entry : fieldTypes.entrySet() ) {
-	  String fieldName = entry.getKey();
-	  String typeName = entry.getValue();
-	  System.out.println( "\t" + fieldName + ": " + typeName );
+	
+	// getStatsForField( s, "releaseDate" );
+	// getHistogramForDateField( s, "startDate", "NOW-30YEARS", "NOW", "+5YEARS" );
+	Map<java.util.Date,Long> histo = getHistogramForDateField( s, "startDate", 5 );
+	System.out.println( "Histogram: " + histo );
+	for ( Entry<java.util.Date, Long> entry : histo.entrySet() ) {
+		java.util.Date dateRaw = entry.getKey();
+	  // String dateFmt = DateUtils.javaDefault2SolrXmlZulu_str2str( dateRaw );
+	  // String dateFmt = DateUtils.solrXmlZulu2JavaDefault_str2str( dateRaw );
+	  Long count = entry.getValue();
+	  System.out.println( "\t" + dateRaw + ": " + count );
+	  // System.out.println( "\t" + dateFmt + ": " + count );
 	}
+
+//	Map<String,String> fieldTypes = getLukeFieldTypes(s);
+//	System.out.println( "Field -> Type:" );
+//	for ( Entry<String, String> entry : fieldTypes.entrySet() ) {
+//	  String fieldName = entry.getKey();
+//	  String typeName = entry.getValue();
+//	  System.out.println( "\t" + fieldName + ": " + typeName );
+//	}
 
 //	Set<String> storedFields = getLukeFieldsWithStoredValues( s );
 //	System.out.println( "storedFields = " + storedFields );

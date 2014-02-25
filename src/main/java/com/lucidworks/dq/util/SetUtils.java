@@ -1,8 +1,13 @@
 package com.lucidworks.dq.util;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class SetUtils {
@@ -34,6 +39,20 @@ public class SetUtils {
 	  if ( ! f.trim().isEmpty() ) {
 		out.add( f.trim() );
 	  }
+	}
+	return out;
+  }
+
+  // Assumes always using LinkedHashMap which keep things in predictable insertion order
+  public static <K,V> Map<K,V> reverseMapEntryKeyOrder( Map<K,V> inEntries ) {
+	List<K> keys = new ArrayList<>( inEntries.keySet() );
+	List<V> values = new ArrayList<>( inEntries.values() );
+	if ( keys.size() != values.size() ) {
+	  throw new IllegalStateException( "Number of of keys (" + keys.size() + ") != number of values (" + values.size() );
+	}
+	Map<K,V> out = new LinkedHashMap<>();
+	for ( int i=keys.size()-1; i>=0; i-- ) {
+	  out.put( keys.get(i), values.get(i) );
 	}
 	return out;
   }
