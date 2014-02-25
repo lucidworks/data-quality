@@ -1,4 +1,4 @@
-Scroll to end for Date Histogram and Exponential Growth Curve Fitting
+Date Histogram and Exponential Growth Curve Fitting
 
 Report:
 * Guesses your date fields
@@ -16,7 +16,6 @@ flatter than the data for 2 reasons:
 ------------
 
 Solr = http://localhost:8983/solr/demo_shard1_replica1
-
 
 Stats, Strs: Start/Stop: 1900-01-01T00:00:00Z / 2025-12-31T00:00:00Z
     Years with < .5 hash marks aren't displayed
