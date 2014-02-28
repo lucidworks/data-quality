@@ -8,7 +8,10 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 public class SetUtils {
 
@@ -55,6 +58,85 @@ public class SetUtils {
 	  out.put( keys.get(i), values.get(i) );
 	}
 	return out;
+  }
+
+  public static <K,V> Map<K,V> mapHead( Map<K,V> inEntries, int n ) {
+    if ( n < 1 ) {
+      throw new IllegalStateException( "Number of desired entries must be > 0, but n = " + n );
+    }
+    // TODO: safe to do this?
+    //if ( n >= inEntries.size() ) {
+    //  return inEntries;
+    //}
+    Map<K,V> out = new LinkedHashMap<>();
+    int counter = 0;
+    for ( Entry<K, V> entry : inEntries.entrySet() ) {
+      out.put( entry.getKey(), entry.getValue() );
+      counter++;
+      if ( counter >= n ) {
+        break;
+      }
+    }
+    // for ( int i=1; i<=n; i++ )
+    return out;
+  }
+  public static <K,V> Map<K,V> mapTail( Map<K,V> inEntries, int n ) {
+    if ( n < 1 ) {
+      throw new IllegalStateException( "Number of desired entries must be > 0, but n = " + n );
+    }
+	List<K> keys = new ArrayList<>( inEntries.keySet() );
+	List<V> values = new ArrayList<>( inEntries.values() );
+	if ( keys.size() != values.size() ) {
+	  throw new IllegalStateException( "Number of of keys (" + keys.size() + ") != number of values (" + values.size() );
+	}
+	Map<K,V> out = new LinkedHashMap<>();
+	int start = inEntries.size() - n - 1;
+	if ( start<0 ) start = 0;
+	for ( int i=start; i<keys.size(); i++ ) {
+      out.put( keys.get(i), values.get(i) );
+	}
+    return out;
+  }
+
+  public static <K,V> Map<K,V> sortMapByValues( Map<K,V> inMap ) {
+    // Inverting also sorts because we use TreeMap
+    Map<V,Set<K>> invertedMap = invertMapAndSort( inMap );
+    // This preserves the new order
+    Map<K,V> out = uninvertMap( invertedMap );
+    return out;
+  }
+  // using tree map for output, so automatically sorted
+  public static <K,V> Map<V,Set<K>> invertMapAndSort( Map<K,V> inMap ) {
+    Map<V,Set<K>> out = new TreeMap<>();
+    for ( Entry<K, V> entry : inMap.entrySet() ) {
+      K key = entry.getKey();
+      V value = entry.getValue();
+      if ( out.containsKey(value) ) {
+    	Set<K> vector = out.get(value);
+    	vector.add( key );
+      }
+      else {
+        Set<K> vector = new TreeSet<>();
+        vector.add( key );
+        out.put( value, vector );
+      }
+    }
+    return out;
+  }
+  // Preserve insertion order
+  public static <K,V> Map<K,V> uninvertMap( Map<V,Set<K>> inMap ) {
+    Map<K,V> out = new LinkedHashMap<>();
+    for ( Entry<V, Set<K>> entry : inMap.entrySet() ) {
+      V value = entry.getKey();
+      Set<K> keys = entry.getValue();
+      for ( K k : keys ) {
+    	if ( out.containsKey(k) ) {
+    	  throw new IllegalArgumentException( "Duplicate entries for supposed unique key " + k );
+    	}
+    	out.put( k, value );
+      }
+    }
+    return out;
   }
 
   public static boolean sameAndInSameOrder( Set<String> idsA, Set<String> idsB ) {
