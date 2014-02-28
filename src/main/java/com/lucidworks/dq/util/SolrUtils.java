@@ -370,6 +370,36 @@ public class SolrUtils {
     }
 	return out;
   }
+
+  // By default gets the top 10
+  public static Map<String,Long> getAllTermsAndCountsForField_ViaTermsRequest( HttpSolrServer server, String fieldName ) throws SolrServerException {
+	return getTermsAndCountsForField_ViaTermsRequest( server, fieldName, -1 );
+  }
+  public static Map<String,Long> getTermsAndCountsForField_ViaTermsRequest( HttpSolrServer server, String fieldName ) throws SolrServerException {
+	return getTermsAndCountsForField_ViaTermsRequest( server, fieldName, null );
+  }
+  // Includes deleted Docs
+  public static Map<String,Long> getTermsAndCountsForField_ViaTermsRequest( HttpSolrServer server, String fieldName, Integer optLimit ) throws SolrServerException {
+	Map<String,Long> out = new LinkedHashMap<>();
+	SolrQuery q = new SolrQuery();
+	q.setRequestHandler("/terms");
+    q.addTermsField( fieldName );
+	if ( null!=optLimit ) {
+	  q.setTermsLimit( optLimit );
+	}
+    QueryResponse res = server.query( q );
+    NamedList<Object> res2 = res.getResponse();
+    SimpleOrderedMap res3 = (SimpleOrderedMap) res2.get("terms");
+    NamedList terms = (NamedList) res3.get( fieldName );
+	for ( int i=0; i<terms.size(); i++ ) {
+	  String name = terms.getName( i );
+	  Integer count = (Integer) terms.getVal( i );
+	  out.put( name, new Long(count) );
+	}
+    return out;
+  }
+
+
   // By default gets the top 10
   public static Map<String,Map<String,Long>> getTermsForFields_ViaTermsRequest( HttpSolrServer server, Set<String> fieldNames ) throws SolrServerException {
 	return getTermsForFields_ViaTermsRequest( server, fieldNames, null );
