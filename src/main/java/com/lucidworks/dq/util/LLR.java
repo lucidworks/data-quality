@@ -5,8 +5,13 @@ import java.io.StringWriter;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.TreeSet;
+
+import org.apache.solr.client.solrj.SolrServerException;
+import org.apache.solr.client.solrj.impl.HttpSolrServer;
 
 public class LLR {
 
@@ -26,6 +31,12 @@ public class LLR {
   // Set<String> allWordsAboveThreshold = new TreeSet<>();
   Set<String> allWords = new TreeSet<>();
 
+  Map<String,Double> scoresByWord = new TreeMap<>();
+  Map<String,Double> sortedScoresByWord = new TreeMap<>();
+
+  // Peformance Stat
+  long plogp_counter = 0L;
+
   public LLR( Map<String,Long> wordsA, Map<String,Long> wordsB /*, Long optThreshold*/ ) {
 	this.wordsA = wordsA;
 	this.wordsB = wordsB;
@@ -33,6 +44,8 @@ public class LLR {
 	//  this.minWordsThreshold = optThreshold.longValue();
 	//}
 	doInitialCalculations();
+	calcAllWords();
+	sortWords();
   }
 
   public void doInitialCalculations() {
@@ -60,7 +73,13 @@ public class LLR {
       rowTotals.put( word, new Double(countA + countB) );
     }
 
-    // Calculate Row Totals
+  }
+
+  public void calcAllWords() {
+	for ( String word : allWords ) {
+	  double g2 = calcG2( word );
+	  scoresByWord.put( word, g2 );
+    }
   }
 
   // Each word is done individually, across both collections
@@ -77,11 +96,13 @@ public class LLR {
     if ( row1Total > 0.0 ) {
       double prob = row1Total / grandTotal;
       plogpRow1 = prob * Math.log(prob);
+      plogp_counter++;
     }
     double plogpRow2 = 0.0;
     if ( row2Total > 0.0 ) {
       double prob = row2Total / grandTotal;
       plogpRow2 = prob * Math.log(prob);
+      plogp_counter++;
     }
     double H_rowSums = -1.0 * ( plogpRow1 + plogpRow2 );
     if(debug) System.out.println( "Row plogp 1 & 2 and H_rowSums: " + plogpRow1 + "  " + plogpRow2 + "  " + H_rowSums );
@@ -91,8 +112,10 @@ public class LLR {
     // We checked column sums earlier
     double probCol1 = sumA / grandTotal;
     double plogpCol1 = probCol1 * Math.log( probCol1 );
+    plogp_counter++;
     double probCol2 = sumB / grandTotal;
     double plogpCol2 = probCol2 * Math.log( probCol2 );
+    plogp_counter++;
     double H_colSums = -1.0 * ( plogpCol1 + plogpCol2 );
     if(debug) System.out.println( "Column plogp 1 & 2 and H_colSums: " + plogpCol1 + "  " + plogpCol2 + "  " + H_colSums );
 
@@ -111,6 +134,7 @@ public class LLR {
     double prob_12 = k_12 / grandTotal;
     double prob_22 = k_22 / grandTotal;
     // p log( p )
+    // method has its own counter
     double plogp_11 = plogp( prob_11 );
     double plogp_21 = plogp( prob_21 );
     double plogp_12 = plogp( prob_12 );
@@ -140,11 +164,18 @@ public class LLR {
   // TODO: maybe some implementitons just add 1 to all counts?
   double plogp( double prob ) {
 	if ( prob > 0.0 ) {
+	  plogp_counter++;
 	  return prob * Math.log( prob );
 	}
 	else {
 	  return 0.0;
 	}
+  }
+
+  void sortWords() {
+	//  Map<String,Double> scoresByWord = new TreeMap<>();
+	//  Map<String,Double> sortedScoresByWord = new TreeMap<>();
+    sortedScoresByWord = SetUtils.sortMapByValues( scoresByWord );
   }
 
 //  double pLogP_KOverallWordA( String word ) {
@@ -191,32 +222,54 @@ public class LLR {
 	StringWriter sw = new StringWriter();
     PrintWriter out = new PrintWriter(sw);
 
+    int sampleSize = 5;
+
     if ( null!=optLabel ) {
     	out.println( "----------- " + optLabel + " -----------" );
     }
 
-    for ( String word : allWords ) {
-      double g2 = calcG2( word );
-      out.println( word + ": " + g2 );
+    out.println();
+    out.println( "Corpus A unique / total words: " + wordsA.size() + " / " + sumA );
+    out.println( "Corpus B unique / total words: " + wordsB.size() + " / " + sumB );
+    out.println( "Combined unique / total words: " + allWords.size() + " / " + grandTotal );
+    out.println( "Number of p log(p) calculations: " + plogp_counter );
+    out.println();
+
+    if ( sortedScoresByWord.size() <= 2 * sampleSize + 1 ) {
+      addTermsSliceToReport( out, "All Term Changes", sortedScoresByWord );
+    }
+    else {
+      Map<String,Double> firstTerms = SetUtils.mapHead( sortedScoresByWord, sampleSize );
+      addTermsSliceToReport( out, "Term Changes, first " + sampleSize + " entries", firstTerms );
+      Map<String,Double> lastTerms = SetUtils.mapTail( sortedScoresByWord, sampleSize );
+      addTermsSliceToReport( out, "Term Changes, last " + sampleSize + " entries", lastTerms );
     }
 
     String outStr = sw.toString();
     return outStr;
   }
-
-  public static void main( String[] argv ) {
-	Map<String,Long> corpusA = new LinkedHashMap<String,Long>() {{
-      // 100k docs total
-	  put( "blog",        25L );  // test word
-	  put( "computer",  3200L );  // other words
-	  put( "internet", 96775L );  // other words
-	}};
-	Map<String,Long> corpusB = new LinkedHashMap<String,Long>() {{
-      // 200k docs total
-      put( "blog",       2500L ); // test word
-      put( "computer",   6000L ); // other words
-      put( "internet", 191500L ); // other words
-    }};
+  void addTermsSliceToReport( PrintWriter out, String label, Map<String,Double> terms ) {
+    out.println( "" + label + ":" );
+    for ( Entry<String, Double> wordEntry : terms.entrySet() ) {
+      String word = wordEntry.getKey();
+      double g2 = wordEntry.getValue();
+      out.println( "\t" + word + ": " + g2 );
+    }  
+  }
+  
+  public static void main( String[] argv ) throws SolrServerException {
+//	Map<String,Long> corpusA = new LinkedHashMap<String,Long>() {{
+//      // 100k docs total
+//	  put( "blog",        25L );  // test word
+//	  put( "computer",  3200L );  // other words
+//	  put( "internet", 96775L );  // other words
+//	}};
+//	Map<String,Long> corpusB = new LinkedHashMap<String,Long>() {{
+//      // 200k docs total
+//      put( "blog",       2500L ); // test word
+//      put( "computer",   6000L ); // other words
+//      put( "internet", 191500L ); // other words
+//    }};
 
 //    // Example posted online
 //	Map<String,Long> corpusA = new LinkedHashMap<String,Long>() {{
@@ -230,8 +283,31 @@ public class LLR {
 //      put( "other words",  80000L ); // other words
 //    }};
 
-    LLR llr = new LLR( corpusA, corpusB );
+  Map<String,Long> corpusA = new LinkedHashMap<String,Long>() {{
+    put( "apples",   25L );
+    put( "bananas",  30L );
+    put( "carrots",  40L );
+    put( "food",    100L );
+  }};
+  Map<String,Long> corpusB = new LinkedHashMap<String,Long>() {{
+    put( "apples",   20L ); // down by 5
+    put( "bananas",  35L ); // up by 5
+    put( "candy",    40L ); // carrots -> candy!
+    put( "food",    100L ); // unchanged, and total unchanged
+  }};
+
+
+//    HttpSolrServer solrA = SolrUtils.getServer( "localhost", 8984 );   
+//    HttpSolrServer solrB = SolrUtils.getServer( "localhost", 8985 );
+//    String fieldName = "text";
+//    // Set<String> corpusA = SolrUtils.getTermsForField_ViaTermsRequest( solrA, fieldName );
+//    // Set<String> corpusB = SolrUtils.getTermsForField_ViaTermsRequest( solrB, fieldName );
+//    Map<String, Long> corpusA = SolrUtils.getAllTermsAndCountsForField_ViaTermsRequest( solrA, fieldName );
+//    Map<String, Long> corpusB = SolrUtils.getAllTermsAndCountsForField_ViaTermsRequest( solrB, fieldName );
+
+	LLR llr = new LLR( corpusA, corpusB );
     String report = llr.generateReport( "A -> B" );
     System.out.print( report );
+
   }
 }
