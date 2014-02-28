@@ -66,7 +66,7 @@ public class LLR {
   // Each word is done individually, across both collections
   double calcG2( String word ) {
     boolean debug = false;
-    if(debug) System.out.println( "Calculating G2 for \"" + word + '"' );
+    if(debug) System.out.println( "\n=== Calculating G2 for \"" + word + "\" ===" );
     // Calc H_rowSums
 	// ---------------
     double row1Total = rowTotals.get(word);
@@ -121,9 +121,16 @@ public class LLR {
     if(debug) System.out.println( "H_k = " + H_k );
 
     // Dunning's formula
-    double G2 = 2.0 * grandTotal * ( H_k - H_rowSums - H_colSums );
-    if(debug) System.out.println( "G2 = 2.0 * grandTotal * ( H_k - H_rowSums - H_colSums )" );
-    if(debug) System.out.println( "2 * " + grandTotal + " * ( " + H_k + " - " + H_rowSums + " - " + H_colSums + " )" );
+    // http://tdunning.blogspot.com/2008/03/surprise-and-coincidence.html
+//    double G2 = 2.0 * grandTotal * ( H_k - H_rowSums - H_colSums );
+//    if(debug) System.out.println( "G2 = 2.0 * grandTotal * ( H_k - H_rowSums - H_colSums )" );
+//    if(debug) System.out.println( "2 * " + grandTotal + " * ( " + H_k + " - " + H_rowSums + " - " + H_colSums + " )" );
+
+    // Revised, see http://math.stackexchange.com/questions/693114/wrong-result-from-llr-using-dunning-entropy-method
+    double G2 = 2.0 * grandTotal * ( H_rowSums + H_colSums - H_k );
+    if(debug) System.out.println( "G2 = 2.0 * grandTotal * ( H_rowSums + H_colSums - H_k )" );
+    if(debug) System.out.println( "2 * " + grandTotal + " * ( " + H_rowSums + " + " + H_colSums + " - " + H_k + " )" );
+
     return G2;
   }
 
@@ -198,29 +205,30 @@ public class LLR {
   }
 
   public static void main( String[] argv ) {
-//	Map<String,Long> corpus2004 = new LinkedHashMap<String,Long>() {{
-//      // 100k docs total
-//	  put( "blog",        25L );  // test word
-//	  put( "computer",  3200L );  // other words
-//	  put( "internet", 96775L );  // other words
-//	}};
-//	Map<String,Long> corpus2014 = new LinkedHashMap<String,Long>() {{
-//      // 200k docs total
-//      put( "blog",       2500L ); // test word
-//      put( "computer",   6000L ); // other words
-//      put( "internet", 191500L ); // other words
-//    }};
-
 	Map<String,Long> corpusA = new LinkedHashMap<String,Long>() {{
-	  // 100k docs total
-      put( "spam",        40000L );  // test word
-      put( "other words", 60000L );  // other words
-    }};
-    Map<String,Long> corpusB = new LinkedHashMap<String,Long>() {{
+      // 100k docs total
+	  put( "blog",        25L );  // test word
+	  put( "computer",  3200L );  // other words
+	  put( "internet", 96775L );  // other words
+	}};
+	Map<String,Long> corpusB = new LinkedHashMap<String,Long>() {{
       // 200k docs total
-      put( "spam",        120000L ); // test word
-      put( "other words",  80000L ); // other words
+      put( "blog",       2500L ); // test word
+      put( "computer",   6000L ); // other words
+      put( "internet", 191500L ); // other words
     }};
+
+//    // Example posted online
+//	Map<String,Long> corpusA = new LinkedHashMap<String,Long>() {{
+//	  // 100k docs total
+//      put( "spam",        40000L );  // test word
+//      put( "other words", 60000L );  // other words
+//    }};
+//    Map<String,Long> corpusB = new LinkedHashMap<String,Long>() {{
+//      // 200k docs total
+//      put( "spam",        120000L ); // test word
+//      put( "other words",  80000L ); // other words
+//    }};
 
     LLR llr = new LLR( corpusA, corpusB );
     String report = llr.generateReport( "A -> B" );
