@@ -77,15 +77,86 @@ public class LLR {
 
   public void calcAllWords() {
 	for ( String word : allWords ) {
-	  double g2 = calcG2( word );
+	  // double g2 = calcG2_viaDunning( word );
+	  double g2 = calcG2_viaTraditional( word );
 	  scoresByWord.put( word, g2 );
     }
   }
 
-  // Each word is done individually, across both collections
-  double calcG2( String word ) {
+
+  // TODO: G2 is the same as -2 log lambda ?
+  // http://scg.unibe.ch/archive/papers/Kuhn09aLogLikelihoodRatio.pdf
+  // Before Sign:
+  //   food: 0.0
+  //   bananas: 0.46192170199964266
+  //   apples: 0.6291706616789554
+  //   carrots: 60.03320678316349
+  //   candy: 60.03320678316351
+  // After Sign:
+  //  candy: -60.03320678316351
+  //  bananas: -0.46192170199964266
+  //  food: 0.0
+  //  apples: 0.6291706616789554
+  //  carrots: 60.03320678316349
+  double calcG2_viaTraditional( String word ) {
     boolean debug = false;
-    if(debug) System.out.println( "\n=== Calculating G2 for \"" + word + "\" ===" );
+    if(debug) System.out.println( "\n=== Calculating G2 via Traditional formula for \"" + word + "\" ===" );
+    // Simple terms
+    double k1 = wordsA.containsKey(word) ? wordsA.get(word) : 0L;
+    double k2 = wordsB.containsKey(word) ? wordsB.get(word) : 0L;
+    double n1 = sumA;
+    double n2 = sumB;
+    double p1 = k1 / n1;
+    double p2 = k2 / n2;
+    if(debug) System.out.println( "Corpus A: k1, n1, p1: " + k1 + ", " + n1 + ", " + p1 );
+    if(debug) System.out.println( "Corpus B: k2, n2, p2: " + k2 + ", " + n2 + ", " + p2 );
+    double p = (k1 + k2) / (n1 + n2);  // rowCount / grandTotal
+    if(debug) System.out.println( "Combined: k1+2, n1+2, p1+2: " + (k1+k2) + ", " + (n1+n2) + ", " + p );
+    // Factors
+    double factorA = Math.log( L(p1,k1,n1) );
+    double factorB = Math.log( L(p2,k2,n2) );
+    double factorC = Math.log(  L(p,k1,n1) );
+    double factorD = Math.log(  L(p,k2,n2) );
+    double sign = sign( p1, p2 );
+    // Result
+    double out = sign * 2.0 * ( factorA + factorB - factorC - factorD );
+    if(debug) System.out.println( "out = +/-sign * 2.0 * ( factorA + factorB - factorC - factorD )" );
+    if(debug) System.out.println( "Sign and Factors A, B, C, D: " + sign + ", " + factorA + ", " + factorB + ", " + factorC + ", " + factorD );
+    if(debug) System.out.println( "out = " + out );
+    return out;
+  }
+
+  // TODO: this is Binomial Likelihood ?
+  // k = word count
+  // n = total words in corpus (non-unique)
+  // p = k/n, BUT might use different k and n
+  static double L( double p, double k, double n ) {
+	double part1 = Math.pow( p, k );
+	double part2 = Math.pow( (1.0-p), (n-k) );
+	return part1 * part2;
+  }
+
+  // TODO: confirm meaning of +/-
+  // plus = heavier in first collection
+  // minus = heavier in second collection
+  static double sign( double p1, double p2 ) {
+    if ( p1 - p2 >= 0.0 ) {
+      return 1.0;
+    }
+    else {
+      return -1.0;
+    }
+  }
+
+  // Each word is done individually, across both collections
+  //   food: 1.7319479184152442E-13
+  //   bananas: 0.4619217019995059
+  //   apples: 0.6291706616789394
+  //   candy: 60.03320678316341
+  //   carrots: 60.03320678316341
+  double calcG2_viaDunning( String word ) {
+    boolean debug = false;
+    if(debug) System.out.println( "\n=== Calculating G2 via Dunning Entropy formula for \"" + word + "\" ===" );
     // Calc H_rowSums
 	// ---------------
     double row1Total = rowTotals.get(word);
