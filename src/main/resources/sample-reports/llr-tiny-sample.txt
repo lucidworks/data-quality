@@ -1,0 +1,33 @@
+Compare words between two sources.
+* Larger absolute number means more important change
+* sign (+/-) indicates direction of change
+
+
+----------- A -> B -----------
+
+Corpus A unique / total words: 4 / 195.0
+Corpus B unique / total words: 4 / 195.0
+Combined unique / total words: 5 / 390.0
+
+All Term Changes:
+    candy: -60.03320678316351
+    bananas: -0.46192170199964266
+    food: 0.0
+    apples: 0.6291706616789554
+    carrots: 60.03320678316349
+
+
+Inputs:
+  Map<String,Long> corpusA = new LinkedHashMap<String,Long>() {{
+    put( "apples",   25L );
+    put( "bananas",  30L );
+    put( "carrots",  40L );
+    put( "food",    100L );
+  }};
+  Map<String,Long> corpusB = new LinkedHashMap<String,Long>() {{
+    put( "apples",   20L ); // down by 5
+    put( "bananas",  35L ); // up by 5
+    put( "candy",    40L ); // carrots -> candy!
+    put( "food",    100L ); // unchanged, and total unchanged
+  }};
+

@@ -1,0 +1,57 @@
+Compare words between two sources.
+* Larger absolute number means more important change
+* sign (+/-) indicates direction of change
+* Note: signs may be backwards, still confirming
+
+Notice the terms with the highest absolute score are the ones
+that were added, eg: "acme", "cardboard", "box", etc.
+
+----------- A -> B -----------
+
+Corpus A unique / total words: 398 / 579.0
+Corpus B unique / total words: 385 / 593.0
+Combined unique / total words: 418 / 1172.0
+Number of p log(p) calculations: 0
+
+Term Changes, first 5 entries:
+    acme: -4.09515240975383
+    any: -4.09515240975383
+    box: -4.09515240975383
+    cardboard: -4.09515240975383
+    fits: -4.09515240975383
+Term Changes, last 5 entries:
+    silentseek: 1.4112036109151607
+    sp2514n: 1.4112036109151607
+    spinpoint: 1.4112036109151607
+    ultra: 1.4112036109151607
+    cache: 2.824159489031562
+    hard: 2.824159489031562
+
+
+Data:
+
+Corpus A is stock Solr with all exampledocs XML files submitted.
+
+Corpus B is a slightly modified version with a few docs added.
+For example, has:
+
+new.xml
+-------
+<add><doc>
+  <field name="id">NEW111</field>
+  <field name="name">New Sample Product</field>
+  <field name="manu">Acme, Inc.</field>
+  <!-- Join -->
+  <field name="manu_id_s">acme</field>
+  <field name="cat">electronics</field>
+  <field name="cat">gadget</field>
+  <field name="features">Rocket powered, sugar-free, fits in any tackle box!</field>
+  <field name="includes">cardboard box</field>
+  <field name="weight">10.5</field>
+  <field name="price">19.95</field>
+  <field name="popularity">101</field>
+  <field name="inStock">true</field>
+  <!-- Buffalo store -->
+  <field name="store">43.17614,-90.57341</field>
+</doc></add>
+
