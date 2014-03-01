@@ -85,8 +85,8 @@ public class DiffSchema {
     addSetComparisonToReport( out, patternsA, patternsB, "Dynamic-Field Patterns", true );
 
     // Types
-    Set<String> typeNamesA = schemaA.getAllSchemaFieldNames();
-    Set<String> typeNamesB = schemaB.getAllSchemaFieldNames();
+    Set<String> typeNamesA = schemaA.getAllFieldTypeNames();
+    Set<String> typeNamesB = schemaB.getAllFieldTypeNames();
     addSetComparisonToReport( out, typeNamesA, typeNamesB, "Types" );
     
     // TODO: For common fields, compare types for each field (need lookuip method)

@@ -35,10 +35,7 @@ Dynamic Field Patterns:
         Common, order in B = '[*_coordinate, ignored_*, random_*, attr_*, *_txt, *_dts, *_tdt, *_is, *_ss, *_ls, *_en, *_bs, *_fs, *_ds, *_dt, *_ti, *_tl, *_tf, *_td, *_pi, *_i, *_s, *_l, *_t, *_b, *_f, *_d, *_p, *_c]'
 
 Types:
-
-    In both = '[_version_, _root_, id, sku, name, manu, cat, features, includes, weight, price, popularity, inStock, store, title, subject, description, comments, author, keywords, category, resourcename, url, content_type, last_modified, links, content, text, text_rev, manu_exact, payloads]'
-
-    In B only = '[accessories, albumLabel, albumTitle, artistName, bundledIn, cast, categoryIds, categoryNames, categoryPath, class, color, condition, crew, customerReviewAverage, customerReviewCount, department, depthCategoryIds, depthCategoryNames, details, format, frequentlyPurchasedWith, genre, hardGoodType, image, lengthInMinutes, longDescription, manufacturer, mpaaRating, plot, product_id, regularPrice, relatedProducts, releaseDate, salePrice, salesRankLongTerm, salesRankMediumTerm, salesRankShortTerm, shippingWeight, shortDescription, softwareGrade, startDate, store_id, studio, subclass, type]'
+    In both = '[string, boolean, int, float, long, double, tint, tfloat, tlong, tdouble, date, tdate, binary, pint, plong, pfloat, pdouble, pdate, random, text_ws, text_general, text_en, text_en_splitting, text_en_splitting_tight, text_general_rev, alphaOnlySort, phonetic, payloads, lowercase, descendent_path, ancestor_path, ignored, point, location, location_rpt, currency, text_ar, text_bg, text_ca, text_cjk, text_cz, text_da, text_de, text_el, text_es, text_eu, text_fa, text_fi, text_fr, text_ga, text_gl, text_hi, text_hu, text_hy, text_id, text_it, text_ja, text_lv, text_nl, text_no, text_pt, text_ro, text_ru, text_sv, text_th, text_tr]'
 
 Copy Field Sources:
     In both = '[cat, name, manu, features, includes, price, title, author, description, keywords, content, content_type, resourcename, url]'
