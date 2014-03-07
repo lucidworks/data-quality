@@ -9,20 +9,25 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.PosixParser;
-
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.HttpSolrServer;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
 
+import com.lucidworks.dq.util.HasDescription;
 import com.lucidworks.dq.util.SetUtils;
 import com.lucidworks.dq.util.SolrUtils;
 
-public class DiffIds {
+public class DiffIds /*implements HasDescription*/ {
   static String HELP_WHAT_IS_IT = "Compare IDs between two cores/collections.";
   static String HELP_USAGE = "DiffIds";
   // final static Logger log = LoggerFactory.getLogger( TermStats.class );
+
+  public static String getShortDescription() {
+    return HELP_WHAT_IS_IT;
+  }
+  
   static Options options;
 
   // Constant fields at the bottom, after main

@@ -13,6 +13,7 @@ import com.lucidworks.dq.data.EmptyFieldStats;
 import com.lucidworks.dq.schema.Schema;
 import com.lucidworks.dq.schema.SchemaFromRest;
 import com.lucidworks.dq.schema.SchemaFromXml;
+import com.lucidworks.dq.util.HasDescription;
 import com.lucidworks.dq.util.SetUtils;
 import com.lucidworks.dq.util.SolrUtils;
 
@@ -23,10 +24,15 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.PosixParser;
 
-public class DiffEmptyFieldStats {
+public class DiffEmptyFieldStats /*implements HasDescription*/ {
   static String HELP_WHAT_IS_IT = "Compare fields that aren't fully populated between two cores/collections.";
   static String HELP_USAGE = "DiffEmptyFieldStats";
   // final static Logger log = LoggerFactory.getLogger( TermStats.class );
+
+  public static String getShortDescription() {
+    return HELP_WHAT_IS_IT;
+  }
+  
   static Options options;
 
   public static String generateReport( EmptyFieldStats fieldStatsA, EmptyFieldStats fieldStatsB, String labelA, String labelB ) throws Exception {

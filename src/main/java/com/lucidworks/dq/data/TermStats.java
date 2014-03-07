@@ -26,21 +26,27 @@ import org.apache.commons.cli.PosixParser;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.HttpSolrServer;
 
+import com.lucidworks.dq.util.HasDescription;
 import com.lucidworks.dq.util.SetUtils;
 import com.lucidworks.dq.util.SolrUtils;
 import com.lucidworks.dq.util.StatsUtils;
 
 // Using composition, not inheritance, from EmptyFieldStats
-public class TermStats {
+public class TermStats /*implements HasDescription*/ {
 
   static String HOST = "localhost";
   static int PORT = 8983;
   // static String COLL = "collection1";
   static String COLL = "demo_shard1_replica1";
 
-  static String HELP_WHAT_IS_IT = "Look at indexed tokens and lengths lengths in each field.";
+  static String HELP_WHAT_IS_IT = "Look at indexed tokens and lengths in each field.";
   static String HELP_USAGE = "TermStats";
   // final static Logger log = LoggerFactory.getLogger( TermStats.class );
+
+  public static String getShortDescription() {
+    return HELP_WHAT_IS_IT;
+  }
+
 
   static Options options;
 

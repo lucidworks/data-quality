@@ -34,9 +34,10 @@ import com.lucidworks.dq.util.DateUtils;
 import com.lucidworks.dq.util.SetUtils;
 import com.lucidworks.dq.util.SolrUtils;
 import com.lucidworks.dq.util.StatsUtils;
+import com.lucidworks.dq.util.HasDescription;
 
 // Using composition, not inheritance, from EmptyFieldStats
-public class DateChecker {
+public class DateChecker /*implements HasDescription*/ {
 
   static String HOST = "localhost";
   static int PORT = 8983;
@@ -46,6 +47,10 @@ public class DateChecker {
   static String HELP_WHAT_IS_IT = "Look at the dates stored the collection.";
   static String HELP_USAGE = "DateChecker";
   // final static Logger log = LoggerFactory.getLogger( DateChecker.class );
+
+  public static String getShortDescription() {
+    return HELP_WHAT_IS_IT;
+  }
 
   /***
    TODO: Best way to do calculations?

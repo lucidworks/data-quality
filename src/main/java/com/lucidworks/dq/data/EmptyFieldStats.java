@@ -20,10 +20,11 @@ import org.apache.commons.cli.PosixParser;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.HttpSolrServer;
 
+import com.lucidworks.dq.util.HasDescription;
 import com.lucidworks.dq.util.SetUtils;
 import com.lucidworks.dq.util.SolrUtils;
 
-public class EmptyFieldStats {
+public class EmptyFieldStats /*implements HasDescription*/ {
   static String HOST = "localhost";
   static int PORT = 8983;
   // static String COLL = "collection1";
@@ -32,6 +33,10 @@ public class EmptyFieldStats {
   static String HELP_WHAT_IS_IT = "Look for fields that aren't fully populated.";
   static String HELP_USAGE = "EmptyFieldStats -u http://localhost:8983";
   // final static Logger log = LoggerFactory.getLogger( FieldStats.class );
+
+  public static String getShortDescription() {
+    return HELP_WHAT_IS_IT;
+  }
 
   static Options options;
   

@@ -16,13 +16,19 @@ import org.apache.solr.client.solrj.impl.HttpSolrServer;
 import com.lucidworks.dq.schema.Schema;
 import com.lucidworks.dq.schema.SchemaFromRest;
 import com.lucidworks.dq.schema.SchemaFromXml;
+import com.lucidworks.dq.util.HasDescription;
 import com.lucidworks.dq.util.SetUtils;
 import com.lucidworks.dq.util.SolrUtils;
 
-public class DiffSchema {
+public class DiffSchema /*implements HasDescription*/ {
   static String HELP_WHAT_IS_IT = "Compare schemas between two cores/collections.";
   static String HELP_USAGE = "DiffSchema";
   // final static Logger log = LoggerFactory.getLogger( TermStats.class );
+
+  public static String getShortDescription() {
+    return HELP_WHAT_IS_IT;
+  }
+  
   static Options options;
 
   public static String generateReport( Schema schemaA, Schema schemaB, String labelA, String labelB ) throws Exception {

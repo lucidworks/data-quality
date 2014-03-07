@@ -32,13 +32,14 @@ import org.apache.commons.cli.PosixParser;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.HttpSolrServer;
 
+import com.lucidworks.dq.util.HasDescription;
 import com.lucidworks.dq.util.SetUtils;
 import com.lucidworks.dq.util.SolrUtils;
 import com.lucidworks.dq.util.StatsUtils;
 import com.lucidworks.dq.util.CharUtils;
 
 // Using composition, not inheritance, from EmptyFieldStats
-public class TermCodepointStats {
+public class TermCodepointStats /*implements HasDescription*/ {
 
   static String HOST = "localhost";
   static int PORT = 8983;
@@ -47,6 +48,12 @@ public class TermCodepointStats {
   
   static String HELP_WHAT_IS_IT = "Look for potentially corrupted tokens.  Assumption is corrupted data is more random and will therefore tend to span more Unicode classes.";
   static String HELP_USAGE = "TermCodepointStats";
+
+  public static String getShortDescription() {
+    return HELP_WHAT_IS_IT;
+  }
+
+  
   // final static Logger log = LoggerFactory.getLogger( TermCodepointStats.class );
   static Options options;
 
