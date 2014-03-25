@@ -174,6 +174,7 @@ All under ```src/main/java/com/lucidworks/dq/util/```
   * wrapper around **/terms**
   * wrapper around **/admin/luke**
   * wrapper around **/schema/...**
+  * wrapper around **/clustering**; requires ```-Dsolr.clustering.enabled=true``` on Java command line
   * Grabbing Facet values
   * Using Solr Stats
   * Traversing SolrJ ```NamedList``` and ```SimpleOrderedMap``` collection data types

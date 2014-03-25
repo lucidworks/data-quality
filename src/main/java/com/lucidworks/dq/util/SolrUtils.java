@@ -2,6 +2,8 @@ package com.lucidworks.dq.util;
 
 import java.net.URL;
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -105,7 +107,7 @@ public class SolrUtils {
     Set<String> actualFields = getActualFieldNames( server );
     return SetUtils.union_destructive( declaredFields, actualFields );
   }
-  // http://localhost:8985/solr/collection1/admin/luke
+  // http://localhost:8983/solr/collection1/admin/luke
   public static Set<String> getActualFieldNames( HttpSolrServer server ) throws SolrServerException {
 	Set<String> out = new LinkedHashSet<>();
 	SolrQuery q = new SolrQuery();
@@ -226,6 +228,81 @@ public class SolrUtils {
 	  }
 	  return out;
   }
+
+  public static Set<String> getClusters( HttpSolrServer server, Integer optLimit ) throws SolrServerException {
+    return getClusters( server, (Set<String>)null, (Set<String>)null, optLimit );
+  }
+  public static Set<String> getClusters( HttpSolrServer server, String titleField, String contentField, Integer optLimit ) throws SolrServerException {
+    // List<String>myList = Arrays.asList( new String[] { titleField } );
+    Set<String> titleFields = new LinkedHashSet<>();
+    if ( null!=titleField ) {
+    	titleFields.add( titleField );
+    }
+    Set<String> contentFields = new LinkedHashSet<>();
+    if ( null!=contentField ) {
+    	contentFields.add( contentField );
+    }
+    return getClusters( server, titleFields, contentFields, optLimit );
+  }
+  // http://localhost:8983/solr/collection1/clustering?q=*:*&carrot.snippet=content&carrot.title=title&rows=100
+  // WARNING: must start Solr with -Dsolr.clustering.enabled=true on Java command line
+  public static Set<String> getClusters( HttpSolrServer server, Set<String> titleFields, Set<String> contentFields, Integer optLimit ) throws SolrServerException {
+	Set<String> out = new LinkedHashSet<>();
+	SolrQuery q = new SolrQuery();
+	// Will generate 404 error if don't have -Dsolr.clustering.enabled=true
+	q.setRequestHandler("/clustering");
+	if ( null!=optLimit ) {
+      q.setRows( optLimit );
+    }
+	if ( null!=titleFields && ! titleFields.isEmpty() ) {
+      String titleFieldsCsv = SetUtils.join( titleFields, "," );
+  	  q.set( "carrot.title", titleFieldsCsv );
+	}
+	if ( null!=contentFields && ! contentFields.isEmpty() ) {
+      String contentFieldsCsv = SetUtils.join( contentFields, "," );
+      q.set( "carrot.snippet", contentFieldsCsv );
+    }
+
+    QueryResponse res = server.query( q );
+    NamedList<Object> res2 = res.getResponse();
+    // res.getResults() ... ?
+    List<SimpleOrderedMap> clusts = (List<SimpleOrderedMap>) res2.get("clusters");
+    // SimpleOrderedMap clusts = (SimpleOrderedMap) res2.get("clusters");
+    // System.out.println( "Clusters :" + clusts );
+    //for ( int i=0; i<clusts.size(); i++ )
+    for ( SimpleOrderedMap c1 : clusts )
+    {
+      for ( int j=0; j<c1.size(); j++ ) {
+        String c2name = c1.getName( j );
+        // System.out.println( "c2name: " + c2name );
+        if ( null!=c2name && "labels".equals(c2name) ) {
+          List<String> c2 = (List<String>) c1.getVal( j );
+          if ( null!=c2 && !c2.isEmpty() ) {
+            String label = c2.get(0);
+            // System.out.println( "label: " + label );
+            out.add( label );
+          }
+        }
+      }
+      // Object name = c.get( "name" );
+      // System.out.println( "Name: " + name );
+      //Object name = c.get( "labels" );
+      //System.out.println( "Labels: " + name );
+      // Object c = clusts.getName( i );
+      //out.add( name );
+    }
+    // System.out.println( "Luke Fields = " + fields );
+//    for ( Object field : fields ) {
+//       System.out.println( "Field = " + field );
+//    }
+    // out.addAll( fields.iterator())
+	return out;
+  }
+
+  
+  
+  
+  
   public static Map<Object,Long> getAllStoredValuesAndCountsForField_ViaNormalQuery( HttpSolrServer server, String fieldName ) throws SolrServerException {
 	Map<Object,Long> out = new LinkedHashMap<>();
 	SolrQuery q = new SolrQuery( "*:*" );
@@ -906,24 +983,34 @@ public class SolrUtils {
 
   public static void main( String[] argv ) throws SolrServerException, ParseException {
 	String host = "localhost";
-	int port = 8983;
-	String coll = "demo_shard1_replica1";
+	// int port = 8983;
+	// String coll = "demo_shard1_replica1";
+	int port = 8984;
+	String coll = "new-wiki";
 	// int port = 8985;
 	// String coll = "collection1";
 	HttpSolrServer s = getServer( host, port, coll );
-	
-	// getStatsForField( s, "releaseDate" );
-	// getHistogramForDateField( s, "startDate", "NOW-30YEARS", "NOW", "+5YEARS" );
-	Map<java.util.Date,Long> histo = getHistogramForDateField( s, "startDate", 5 );
-	System.out.println( "Histogram: " + histo );
-	for ( Entry<java.util.Date, Long> entry : histo.entrySet() ) {
-		java.util.Date dateRaw = entry.getKey();
-	  // String dateFmt = DateUtils.javaDefault2SolrXmlZulu_str2str( dateRaw );
-	  // String dateFmt = DateUtils.solrXmlZulu2JavaDefault_str2str( dateRaw );
-	  Long count = entry.getValue();
-	  System.out.println( "\t" + dateRaw + ": " + count );
-	  // System.out.println( "\t" + dateFmt + ": " + count );
-	}
+
+    Set<String> labels = getClusters( s, "title", "content", 100 );
+    // System.out.println( "Labels: " + labels );
+    System.out.println( "Cluster Labels:" );
+    for ( String l : labels ) {
+      //System.out.println( "\t" + l );
+      System.out.println( l );
+    }
+
+//	// getStatsForField( s, "releaseDate" );
+//	// getHistogramForDateField( s, "startDate", "NOW-30YEARS", "NOW", "+5YEARS" );
+//	Map<java.util.Date,Long> histo = getHistogramForDateField( s, "startDate", 5 );
+//	System.out.println( "Histogram: " + histo );
+//	for ( Entry<java.util.Date, Long> entry : histo.entrySet() ) {
+//		java.util.Date dateRaw = entry.getKey();
+//	  // String dateFmt = DateUtils.javaDefault2SolrXmlZulu_str2str( dateRaw );
+//	  // String dateFmt = DateUtils.solrXmlZulu2JavaDefault_str2str( dateRaw );
+//	  Long count = entry.getValue();
+//	  System.out.println( "\t" + dateRaw + ": " + count );
+//	  // System.out.println( "\t" + dateFmt + ": " + count );
+//	}
 
 //	Map<String,String> fieldTypes = getLukeFieldTypes(s);
 //	System.out.println( "Field -> Type:" );
