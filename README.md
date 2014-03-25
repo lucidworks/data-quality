@@ -155,9 +155,9 @@ The idea is that you're comparing A to B:
 
 For example, to compare IDs of 2 cores, the following commands are equivalent:
 
-```java java -jar data-quality.jar diff_ids -h localhost -p 8983 -H localhost -P 8984```
+```java -jar data-quality.jar diff_ids -h localhost -p 8983 -H localhost -P 8984```
 
-```java java -jar data-quality.jar diff_ids --host_a localhost --port_a 8983 --host_b localhost --port_b 8984```
+```java -jar data-quality.jar diff_ids --host_a localhost --port_a 8983 --host_b localhost --port_b 8984```
 
 DiffSchema can also read from XML files or automatically provide a Solr default schema.
 
