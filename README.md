@@ -53,6 +53,7 @@ Example: See what classes and commands are available:
 Example output:
 ```
 Pass a command name on the command line to see help for that class:
+            dump_ids: Dump all the IDs from a collection to standard out / stdout.
         empty_fields: Look for fields that aren't fully populated.
           term_stats: Look at indexed tokens and lengths in each field.
          code_points: Look for potentially corrupted tokens.  Assumption is corrupted data is more random and will therefore tend to span more Unicode classes.

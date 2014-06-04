@@ -13,6 +13,7 @@ public class CmdLineLauncher {
   // static final Map<String, Class<? extends HasDescription>> CLASSES = new LinkedHashMap<String,Class<? extends HasDescription>>()
   static final Map<String, Class<?>> CLASSES = new LinkedHashMap<String,Class<?>>()
   {{
+    put( "dump_ids",          com.lucidworks.dq.data.DumpIds.class             );
     put( "empty_fields",      com.lucidworks.dq.data.EmptyFieldStats.class     );
     put( "term_stats",        com.lucidworks.dq.data.TermStats.class           );
     put( "code_points",       com.lucidworks.dq.data.TermCodepointStats.class  );
