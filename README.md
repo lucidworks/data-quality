@@ -50,10 +50,9 @@ Example: See what classes and commands are available:
 
 ```java -jar data-quality.jar```
 
-Example output:
+Example output (and list of valid commands):
 ```
 Pass a command name on the command line to see help for that class:
-            dump_ids: Dump all the IDs from a collection to standard out / stdout.
         empty_fields: Look for fields that aren't fully populated.
           term_stats: Look at indexed tokens and lengths in each field.
          code_points: Look for potentially corrupted tokens.  Assumption is corrupted data is more random and will therefore tend to span more Unicode classes.
@@ -61,6 +60,8 @@ Pass a command name on the command line to see help for that class:
    diff_empty_fields: Compare fields that aren't fully populated between two cores/collections.
             diff_ids: Compare IDs between two cores/collections.
          diff_schema: Compare schemas between two cores/collections.
+            dump_ids: Dump all the IDs from a collection to standard out / stdout.
+           doc_count: Count of active documents in a collection to standard out / stdout.
 ```
 
 Example: Show the syntax for a specific command, for example ```empty_fields```:
