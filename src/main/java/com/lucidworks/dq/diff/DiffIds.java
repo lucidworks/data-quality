@@ -110,8 +110,8 @@ public class DiffIds /*implements HasDescription*/ {
 	options.addOption( "P", "port_b", true, "Port for second Solr, default=8983" );
 	options.addOption( "C", "collection_b", true, "Collection/Core for second Solr, Eg: collection1" );
 
-	options.addOption( "f", "file_a", true, "Read IDs for A from a text file (one ID per line, assumes UTF-8 encoding)" );
-	options.addOption( "F", "file_b", true, "Read IDs for B from a text file (one ID per line, assumes UTF-8 encoding)" );
+	options.addOption( "f", "file_a", true, "Read IDs for A from a text file, one ID per line (skips 0 length lines, not counting newlines)" );
+	options.addOption( "F", "file_b", true, "Read IDs for B from a text file, one ID per line (skips 0 length lines, not counting newlines)" );
 
 	options.addOption( "o", "output_file", true, "Output file to create for the full report or ID list (default or \"-\" is stdout / standard out)" );
 	options.addOption( "e", "encoding", true, "Character Encoding for reading and writing files (default is UTF-8, which enables cross-platform comparisons)" );
