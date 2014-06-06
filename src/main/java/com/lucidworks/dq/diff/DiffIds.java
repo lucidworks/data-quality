@@ -1,5 +1,7 @@
 package com.lucidworks.dq.diff;
 
+import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -23,6 +25,20 @@ public class DiffIds /*implements HasDescription*/ {
   static String HELP_WHAT_IS_IT = "Compare IDs between two cores/collections.";
   static String HELP_USAGE = "DiffIds";
   // final static Logger log = LoggerFactory.getLogger( TermStats.class );
+
+  static String MODE_REPORT = "full_report";
+  static String MODE_A_ONLY = "a_only";
+  static String MODE_B_ONLY = "b_only";
+  static String MODE_INTERSECT = "intersect";
+  static String MODE_UNION = "union";
+  static String DEFAULT_MODE = MODE_REPORT;
+  static Set<String> VALID_MODES = new LinkedHashSet<String>() {{
+    add( MODE_REPORT );
+    add( MODE_A_ONLY );
+    add( MODE_B_ONLY );
+    add( MODE_INTERSECT );
+    add( MODE_UNION );
+  }};
 
   public static String getShortDescription() {
     return HELP_WHAT_IS_IT;
@@ -88,13 +104,18 @@ public class DiffIds /*implements HasDescription*/ {
     HelpFormatter formatter = new HelpFormatter();
     if ( null==optionalError ) {
       // log.info( HELP_WHAT_IS_IT );
-      System.out.println( HELP_WHAT_IS_IT );
+      System.err.println( HELP_WHAT_IS_IT );
 	}
 	else {
 	  // log.error( optionalError );
 	  System.err.println( optionalError );
 	}
-	formatter.printHelp( HELP_USAGE, options, true );
+    // stdout
+	//formatter.printHelp( HELP_USAGE, options, true );
+    // stderr
+    PrintWriter pw = new PrintWriter(System.err);
+	formatter.printHelp( pw, 78, HELP_USAGE, null, options, 1, 0, null, true );
+	pw.flush();
 	System.exit( errorCode );
   }
 
@@ -110,15 +131,25 @@ public class DiffIds /*implements HasDescription*/ {
     **/
 
     options = new Options();
-	options.addOption( "u", "url_a", true, "URL for first Solr, OR set host, port and possibly collection" );
+	options.addOption( "u", "url_a", true, "URL for first Solr, Eg http://localhost:8983/solr/collection1, OR set host, port and possibly collection" );
 	options.addOption( "h", "host_a", true, "IP address for first Solr, default=localhost" );
 	options.addOption( "p", "port_a", true, "Port for first Solr, default=8983" );
 	options.addOption( "c", "collection_a", true, "Collection/Core for first Solr, Eg: collection1" );
-	options.addOption( "U", "url_b", true, "URL for second Solr, OR set host, port and possibly collection" );
+
+	options.addOption( "U", "url_b", true, "URL for second Solr, Eg http://localhost:8983/solr/collection2, OR set host, port and possibly collection" );
 	options.addOption( "H", "host_b", true, "IP address for second Solr, default=localhost" );
 	options.addOption( "P", "port_b", true, "Port for second Solr, default=8983" );
 	options.addOption( "C", "collection_b", true, "Collection/Core for second Solr, Eg: collection1" );
 
+	options.addOption( "m", "mode", true,
+			"What to output:"
+			+ " \"" + MODE_REPORT + "\" means fully formatted report (default)"
+			+ ", \"" + MODE_A_ONLY + "\" bare list of IDs only in A (one per line)"
+			+ ", \"" + MODE_B_ONLY + "\" IDs only in B"
+			+ ", \"" + MODE_INTERSECT + "\" IDs preent in BOTH A AND B"
+			+ ", \"" + MODE_UNION + "\" IDs in A or B or in both (combines all IDs from both, but each ID will only appear once)"
+			+ "; all modes send their output to stdout / standard out (which you can rediret to a file with \" > output.txt\")"
+			);	
     if ( argv.length < 1 ) {
       helpAndExit();
     }
@@ -158,6 +189,15 @@ public class DiffIds /*implements HasDescription*/ {
       helpAndExit( "Must not specifify both url and host for second Solr", 4 );
     }
 
+    // VALID_MODES
+    String mode = cmd.getOptionValue( "mode" );
+    if ( null!=mode ) {
+   	  mode = mode.toLowerCase().trim();
+      if ( ! VALID_MODES.contains(mode) ) {
+        helpAndExit( "Invalid mode, must be one of: " + VALID_MODES, 5 );    		
+      }
+    }
+    boolean isNormalReport = (null==mode) || mode.equals( MODE_REPORT );
 
     // Init
 	// HttpSolrServer solrA = new HttpSolrServer( URL1 );
@@ -169,7 +209,7 @@ public class DiffIds /*implements HasDescription*/ {
       // Utils handle null values
       solrA = SolrUtils.getServer( hostA, portA, collA );    
     }
-    System.out.println( "First Solr / Solr A = " + solrA.getBaseURL() );
+    if(isNormalReport) System.out.println( "First Solr / Solr A = " + solrA.getBaseURL() );
 
     // HttpSolrServer solrB = new HttpSolrServer( URL2 );
     HttpSolrServer solrB;
@@ -180,14 +220,40 @@ public class DiffIds /*implements HasDescription*/ {
       // Utils handle null values
       solrB = SolrUtils.getServer( hostB, portB, collB );    
     }
-    System.out.println( "Second Solr / Solr B = " + solrB.getBaseURL() );
+    if(isNormalReport) System.out.println( "Second Solr / Solr B = " + solrB.getBaseURL() );
 
     Set<String> aOnly = idsAOnly_fromServers( solrA, solrB );
     Set<String> bOnly = idsBOnly_fromServers( solrA, solrB );
-    
-    System.out.println( "A-only: " + aOnly );
-    System.out.println( "B-only: " + bOnly );
-    
+ 
+    if ( isNormalReport ) {
+	  System.out.println( "A-only: " + aOnly );
+	  System.out.println( "B-only: " + bOnly );
+    }
+    else {
+      Set<String> ids = null;
+      if ( mode.equals(MODE_A_ONLY) ) {
+    	ids = idsAOnly_fromServers( solrA, solrB );
+      }
+      else if ( mode.equals(MODE_B_ONLY) ) {
+      	ids = idsBOnly_fromServers( solrA, solrB );
+      }
+      else if ( mode.equals(MODE_INTERSECT) ) {
+      	ids = idsIntersection_fromServers( solrA, solrB );  
+      }
+      else if ( mode.equals(MODE_UNION) ) {
+      	ids = idsUnion_fromServers( solrA, solrB );	  
+      }
+      else {
+    	// This should never happen.
+    	// If it ever does, maybe somebody added to VALID_MODES but didn't add a case here
+    	throw new IllegalStateException( "Unknown mode \"" + mode + "\", check VALID_MODES" );
+      }
+      
+      // Print the results
+      for ( String id : ids ) {
+    	System.out.println( id );
+      }
+    }
     
   }
 
