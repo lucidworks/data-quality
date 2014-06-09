@@ -99,7 +99,7 @@ public class DeleteByIds /*implements HasDescription*/ {
 	options.addOption( "c", "collection", true, "Collection/Core for Solr, Eg: collection1" );
 	options.addOption( "f", "input_file", true, "File to read IDs from, one ID per line (skips 0 length lines, not counting newlines) (Use \"-\" for stdout / standard out)" );
 	options.addOption( "e", "encoding", true, "Character Encoding for reading and writing files (default is UTF-8, which enables cross-platform comparisons)" );
-	options.addOption( "l", "use_loose_encoding", false, "Disable strict character encoding so that problems don't throw Exceptions (NOT recommended)" );
+	options.addOption( "l", "loose_encoding", false, "Disable strict character encoding so that problems don't throw Exceptions (NOT recommended)" );
 
 	options.addOption( OptionBuilder.withLongOpt( "batch_size" )
             .withDescription( "Batch size, 1=doc-by-doc, 0=all-at-once (be careful memory-wise), default="+DEFAULT_BATCH_SIZE )
@@ -168,10 +168,10 @@ public class DeleteByIds /*implements HasDescription*/ {
       }
     }
     boolean strictEncoding = true;
-    if(cmd.hasOption("use_loose_encoding")) {
+    if(cmd.hasOption("loose_encoding")) {
       strictEncoding = false;
       if ( null == cmd.getOptionValue( "input_file" ) ) {
-      	helpAndExit( "use_loose_encoding only applicable when reading from input file or standard in / stdiin; operating system handles command line argument encoding", 7 );	    	  
+      	helpAndExit( "loose_encoding only applicable when reading from input file or standard in / stdiin; operating system handles command line argument encoding", 7 );	    	  
       }
     }
     // Setup IO encoding

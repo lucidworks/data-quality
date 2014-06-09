@@ -115,7 +115,7 @@ public class DiffIds /*implements HasDescription*/ {
 
 	options.addOption( "o", "output_file", true, "Output file to create for the full report or ID list (default or \"-\" is stdout / standard out)" );
 	options.addOption( "e", "encoding", true, "Character Encoding for reading and writing files (default is UTF-8, which enables cross-platform comparisons)" );
-	options.addOption( "l", "use_loose_encoding", false, "Disable strict character encoding so that problems don't throw Exceptions (NOT recommended)" );
+	options.addOption( "l", "loose_encoding", false, "Disable strict character encoding so that problems don't throw Exceptions (NOT recommended)" );
 
 	options.addOption( "m", "mode", true,
 			"What to output:"
@@ -191,7 +191,7 @@ public class DiffIds /*implements HasDescription*/ {
       encodingStr = "UTF-8";
     }
     boolean strictEncoding = true;
-    if(cmd.hasOption("use_loose_encoding")) {
+    if(cmd.hasOption("loose_encoding")) {
       strictEncoding = false;
     }
 
