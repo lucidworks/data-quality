@@ -60,8 +60,9 @@ Pass a command name on the command line to see help for that class:
    diff_empty_fields: Compare fields that aren't fully populated between two cores/collections.
             diff_ids: Compare IDs between two cores/collections.
          diff_schema: Compare schemas between two cores/collections.
-            dump_ids: Dump all the IDs from a collection to standard out / stdout.
            doc_count: Count of active documents in a collection to standard out / stdout.
+            dump_ids: Dump all the IDs from a collection to standard out / stdout.
+       delete_by_ids: Delete documents by their ID, either passed on the command line, or from a file, or from standard in / stdin.
 ```
 
 Example: Show the syntax for a specific command, for example ```empty_fields```:
