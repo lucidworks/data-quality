@@ -16,7 +16,7 @@ Preliminary DQ / Data Quality experiments and related utilities.
 * ```diff_schema``` - compares fields, types, dynamic field patterns, etc. _(com.lucidworks.dq.diff.DiffSchema)_
 * ```diff_empty_fields``` - compare population of collections _(com.lucidworks.dq.diff.DiffEmptyFieldStats)_
 
-## Collection Diagnosis and Maintenance:
+## Collection Diagnostics and Maintenance:
 * ```doc_count``` - Count of active documents in a collection and send to standard out / stdout _(com.lucidworks.dq.data.DocCount)_
 * ```dump_ids``` - Dump all the IDs from a collection to standard out / stdout _(com.lucidworks.dq.data.DumpIds)_
 * ```delete_by_ids``` - Delete documents by their ID, either passed on the command line, or from a file, or from standard in / stdin _(com.lucidworks.dq.data.DeleteByIds)_
@@ -39,6 +39,54 @@ To checkout and build the project you'll also need git and maven.  Issue the com
 It will create a convenient **SELF CONTAINED** jar file at ```target/data-quality-java-1.0-SNAPSHOT.jar```
 
 Henceforth we'll refer to this as just **data-quality.jar**, but substitute the full path and name of the file you created.
+
+## Build Errors
+
+Error:
+```
+[ERROR] COMPILATION ERROR :
+[INFO] -------------------------------------------------------------
+[ERROR] Failure executing javac, but could not parse the error:
+javac: invalid target release: 1.7
+```
+
+Fix: Try setting JAVA_HOME to your Java 1.7 instance.
+
+For example on Mac OS X:
+
+```export JAVA_HOME=`javahome -v 1.7````
+
+Or update ```~/.mavenrc```
+
+Or define separate Java variables for Java 6 and 7 and then call for Java 7 in the pom.xml
+
+Example Mac OS X ```~/.mavenrc```
+```
+export JAVA_HOME_6=`javahome -v 1.6`
+export JAVA_HOME_7=`javahome -v 1.7`
+```
+
+Additions to ```pom.xml``` to specifically call for Java 7:
+```
+<project ...>
+  ...
+  <build>
+    <plugins>
+      ...
+	  <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+            <!-- Set in ~/.mavenrc -->
+            <!-- export JAVA_HOME_7=`javahome -v 1.7` -->
+            <jvm>${env.JAVA_HOME_7}/bin/java</jvm>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
+```
+
+I might add this to a future version of this project's pom.xml
 
 # Running
 
@@ -81,7 +129,7 @@ Example: Show the syntax for a specific command, for example ```empty_fields```:
 
 Modified Example: Show the same thing using more traditional Java syntax:
 
-```java -Cupertino data-quality.jar com.lucidworks.dq.data.EmptyFieldStats```
+```java -jar data-quality.jar com.lucidworks.dq.data.EmptyFieldStats```
 
 Example output, using either java syntax:
 ```
@@ -345,6 +393,7 @@ All under ```src/main/java/com/lucidworks/dq/util/```
 
 * Blog posts w/ code snippets
 * Pre-Built downloadable .jar
+* Add Java 7 specific parameters to pom.xml ?
 * Consider adding ```--ids``` to more classes
 * Refactor to be more consistent about when data is actually fetched, when tabulations are actually performed, etc.  Ideally allow for an empty constructor, then setters, then a "run now" mode.
 * Then refactor command line wrapper
