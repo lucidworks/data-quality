@@ -25,6 +25,7 @@ import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.client.solrj.response.RangeFacet;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
+import org.apache.solr.common.params.CursorMarkParams;
 import org.apache.solr.common.util.NamedList;
 import org.apache.solr.common.util.SimpleOrderedMap;
 
@@ -88,7 +89,7 @@ public class SolrUtils {
   }
   
   
-  // Basic Queries and Stas
+  // Basic Queries and Stats
   // -------------------------------
 
   // Alias
@@ -787,7 +788,22 @@ public class SolrUtils {
       // float version = (float) res.getResponse().get("version");
       return op;
   }
- 
+
+  // Solr "Cursor Marks", AKA "Deep Paging" only in Solr version 4.7+
+  // see https://cwiki.apache.org/confluence/display/solr/Pagination+of+Results and SOLR-5463
+  public static boolean checkCursorMarkPagingSupport( HttpSolrServer server ) throws SolrServerException {
+	  SolrQuery q = new SolrQuery( "*:*" );
+	  q.addField( ID_FIELD );
+	  q.setRows( 0 );
+	  q.setSort( ID_FIELD, SolrQuery.ORDER.asc );
+	  String cursorMark = CursorMarkParams.CURSOR_MARK_START;
+	  // Ignored by older versions of Solr
+	  q.set( CursorMarkParams.CURSOR_MARK_PARAM, cursorMark );
+	  QueryResponse rsp = server.query( q );
+	  String nextCursorMark = rsp.getNextCursorMark();
+	  return null != nextCursorMark;
+  }
+
   public static Set<String> getAllSchemaFieldNames( HttpSolrServer server ) throws SolrServerException {
 	  Set<String> out = new LinkedHashSet<>();
 	  SolrQuery q = new SolrQuery();

@@ -15,35 +15,26 @@ import java.util.TreeSet;
 
 public class SetUtils {
 
+  /**
+   * @deprecated use {@link StringUtils#join(Collection)} instead.  
+   */
+  @Deprecated
   public static String join( Collection<String> strings ) {
-    return join( strings, ", " );
+    return StringUtils.join( strings );
   }
+  /**
+   * @deprecated use {@link StringUtils#join(Collection, String)} instead.  
+   */
+  @Deprecated
   public static String join( Collection<String> strings, String delimiter ) {
-	StringBuffer out = new StringBuffer();
-	boolean isFirst = true;
-	for ( String s : strings ) {
-	  if ( ! isFirst ) {
-		out.append( delimiter );
-	  }
-	  else {
-		isFirst = false;
-	  }
-	  out.append( s );
-	}
-	return new String( out );
+    return StringUtils.join( strings, delimiter );
   }
-  
-  // Handy for comma separated field names list, etc
+  /**
+   * @deprecated use {@link StringUtils#splitCsv(String)} instead.  
+   */
+  @Deprecated  
   public static Set<String> splitCsv( String inStr ) {
-	String[] fieldsAry = inStr.split( ",\\s*" );
-	// maintains order of insertion
-	Set<String> out = new LinkedHashSet<>();
-	for ( String f : fieldsAry ) {
-	  if ( ! f.trim().isEmpty() ) {
-		out.add( f.trim() );
-	  }
-	}
-	return out;
+    return StringUtils.splitCsv( inStr );
   }
 
   // Assumes always using LinkedHashMap which keep things in predictable insertion order

@@ -23,6 +23,7 @@ public class CmdLineLauncher {
     put( "doc_count",         com.lucidworks.dq.data.DocCount.class            );
     put( "dump_ids",          com.lucidworks.dq.data.DumpIds.class             );
     put( "delete_by_ids",     com.lucidworks.dq.data.DeleteByIds.class         );
+    put( "solr_to_solr",      com.lucidworks.dq.data.SolrToSolr.class          );
   }};
   public static void main( String[] argv ) {
     if( argv.length < 1 ) {
