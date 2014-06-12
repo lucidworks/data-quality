@@ -3,10 +3,6 @@ Data Quality
 
 Preliminary DQ / Data Quality experiments and related utilities.
 
-# Contents
-* auto-gen TOC:
-{:toc}
-
 # Commands and Class Names
 
 ## Individual Solr Cores / Collections:
