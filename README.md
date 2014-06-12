@@ -26,7 +26,14 @@ Preliminary DQ / Data Quality experiments and related utilities.
 ## Sample Reports
 See ```src/main/resources/sample-reports/```
 
-# Building
+# Download Prebuilt Binary
+
+Fully runnable 0.2 jar is available here:
+
+* https://github.com/LucidWorks/data-quality/releases/tag/0.2
+* Click the **green button** with ```data-quality-java-1.0-SNAPSHOT.jar``` and the download will start
+
+# Building From Source
 
 This project assumes Java 7 (aka Java 1.7)
 
@@ -34,7 +41,11 @@ If you were given a pre-built .jar file, skip to the section **Running**
 
 To checkout and build the project you'll also need git and maven.  Issue the command:
 
-```mvn package```
+```
+git clone git@github.com:LucidWorks/data-quality.git
+cd data-quality
+mvn package
+```
 
 It will create a convenient **SELF CONTAINED** jar file at ```target/data-quality-java-1.0-SNAPSHOT.jar```
 
