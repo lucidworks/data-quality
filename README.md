@@ -302,7 +302,9 @@ Options:
                            either, so if really need a field like _version_
                            then add the full name to include_fields not using
                            a wildcard. Solr field names should not contain
-                           commas, spaces or wildcard pattern characters. See
+                           commas, spaces or wildcard pattern characters. Does
+                           not use quite the same rules as dynamicField
+                           pattern matching, different implementation. See
                            also exclude_fields
  -F,--exclude_fields <arg> Fields to NOT copy over, Eg:
                            exclude_fields=timestamp,text_en Useful for
@@ -366,17 +368,18 @@ All under ```src/main/java/com/lucidworks/dq/util/```
 * General:
   * Mostly static methods, for easy/safe reuse
 * SolrUtils - SolrJ Wrappers!
-  * Example code showing how to use SolrJ for more than just searching
-  * get all values from a field
+  * Example code showing how to use **SolrJ** for more than just searching!
+  * Source code **comments** show some **equivalent HTTP URL syntax**
+  * Get all values from a field
   * Indexed vs. Stored fields
-  * wrapper around **/terms**
-  * wrapper around **/admin/luke**
-  * wrapper around **/schema/...**
-  * wrapper around **/clustering**; requires ```-Dsolr.clustering.enabled=true``` on Solr's Java command line
-  * Grabbing Facet values
+  * Wrapper around **/terms**
+  * Wrapper around **/admin/luke**
+  * Wrapper around **/schema/...**
+  * Wrapper around **/clustering**; requires ```-Dsolr.clustering.enabled=true``` on Solr's Java command line
+  * Grabbing **Facet values**
   * Using Solr **Stats**
   * Traversing SolrJ ```NamedList``` and ```SimpleOrderedMap``` collection data types
-  * Whether your Solr instance supports "Cursor Marks", AKA "Deep Paging", see https://cwiki.apache.org/confluence/display/solr/Pagination+of+Results and SOLR-5463
+  * Whether your Solr instance supports new **"Cursor Marks"**, AKA "Deep Paging", see https://cwiki.apache.org/confluence/display/solr/Pagination+of+Results and SOLR-5463
 * SetUtils:
   * inAOnly, inBOnly
   * Union, Intersection
@@ -407,6 +410,9 @@ All under ```src/main/java/com/lucidworks/dq/util/```
 * Add Java 7 specific parameters to pom.xml ?
 * Consider adding ```--ids``` to more classes
 * Refactor to be more consistent about when data is actually fetched, when tabulations are actually performed, etc.  Ideally allow for an empty constructor, then setters, then a "run now" mode.
+* Call for "is clustering enabled"
+* Call to enable dynamic schemas, field guessing, etc.
+* Maybe wrappers for simple collection maint, aliases, etc
 * Then refactor command line wrapper
 * util.SolrUtils is getting pretty large...
 * Maybe use logging instead of println... although that drags in library and config issues, warning messages, etc.  Dealing with slf4j warnings if you're a bit new to command line java is a hassle.

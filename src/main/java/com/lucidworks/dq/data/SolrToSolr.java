@@ -412,6 +412,7 @@ public class SolrToSolr {
                 + " Patterns do NOT match system fields either, so if really need a field like _version_"
                 + " then add the full name to include_fields not using a wildcard."
                 + " Solr field names should not contain commas, spaces or wildcard pattern characters."
+                + " Does not use quite the same rules as dynamicField pattern matching, different implementation."
                 + " See also exclude_fields");
     options.addOption( "F", "exclude_fields", true,
             "Fields to NOT copy over, Eg: exclude_fields=timestamp,text_en"
