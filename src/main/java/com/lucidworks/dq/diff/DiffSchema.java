@@ -35,51 +35,50 @@ public class DiffSchema /*implements HasDescription*/ {
     StringWriter sw = new StringWriter();
     PrintWriter out = new PrintWriter(sw);
 
-	out.println( "========== Differences Report ==========" );
-	out.println( "Schema A = " + labelA );
-	out.println( "Schema B = " + labelB );
+    out.println( "========== Differences Report ==========" );
+    out.println( "Schema A = " + labelA );
+    out.println( "Schema B = " + labelB );
 
-	out.println();
+    out.println();
 
-	// Simple Values
-	// -------------
+    // Simple Values
+    // -------------
 
-	// Name
-	String nameA = schemaA.getSchemaName();
-	String nameB = schemaB.getSchemaName();
-	addStringComparisionToReport( out, nameA, nameB, "Schema Name" );
+    // Name
+    String nameA = schemaA.getSchemaName();
+    String nameB = schemaB.getSchemaName();
+    addStringComparisionToReport(out, nameA, nameB, "Schema Name");
 
     // Version
-	float versA = schemaA.getSchemaVersion();
-	float versB = schemaB.getSchemaVersion();
-	out.print( "Schema Version: " );
-	if ( versA == versB ) {
-	  out.println( "Both = '" + versA + "'" );
-	}
-	else {
-	  out.println( "\tA = '" + versA + "'" );
-	  out.println( "\tB = '" + versB + "'" );
-	}
+    float versA = schemaA.getSchemaVersion();
+    float versB = schemaB.getSchemaVersion();
+    out.print("Schema Version: ");
+    if (versA == versB) {
+      out.println("Both = '" + versA + "'");
+    } else {
+      out.println("\tA = '" + versA + "'");
+      out.println("\tB = '" + versB + "'");
+    }
 	
-	// Key Field
+    // Key Field
     String keyA = schemaA.getUniqueKeyFieldName();
     String keyB = schemaB.getUniqueKeyFieldName();
-	addStringComparisionToReport( out, keyA, keyB, "Key Field" );
+    addStringComparisionToReport( out, keyA, keyB, "Key Field" );
 
-	// Default Operator
+    // Default Operator
     String defOpA = schemaA.getDefaultOperator();
     String defOpB = schemaB.getDefaultOperator();
-	addStringComparisionToReport( out, defOpA, defOpB, "Default Operator" );
+    addStringComparisionToReport( out, defOpA, defOpB, "Default Operator" );
 
-	// Similarity
+    // Similarity
     String simA = schemaA.getSimilarityModelClassName();
     String simB = schemaB.getSimilarityModelClassName();
-	addStringComparisionToReport( out, simA, simB, "Similarity Class Name" );
+    addStringComparisionToReport( out, simA, simB, "Similarity Class Name" );
 
-	// Complex Values
-	// --------------
+    // Complex Values
+    // --------------
 
-	// Fields
+    // Fields
     Set<String> fieldsA = schemaA.getAllSchemaFieldNames();
     Set<String> fieldsB = schemaB.getAllSchemaFieldNames();
     addSetComparisonToReport( out, fieldsA, fieldsB, "Fields" );
@@ -98,33 +97,32 @@ public class DiffSchema /*implements HasDescription*/ {
     // TODO: For common fields, compare types for each field (need lookuip method)
     // TODO: For common fileds, compare other attrs (not yet visibile here)
 
-	// Copy Sources
+    // Copy Sources
     Set<String> sourcesA = schemaA.getAllCopyFieldSourceNames();
     Set<String> sourcesB = schemaB.getAllCopyFieldSourceNames();
     addSetComparisonToReport( out, sourcesA, sourcesB, "Copy-Field Sources" );
 
-	// Copy Destinations
+    // Copy Destinations
     Set<String> destsA = schemaA.getAllCopyFieldDestinationNames();
     Set<String> destsB = schemaB.getAllCopyFieldDestinationNames();
     addSetComparisonToReport( out, destsA, destsB, "Copy-Field Destinations" );
 
     // TODO: For common copy field sources, compare destinations
 
-	String outStr = sw.toString();
+    String outStr = sw.toString();
     return outStr;
-
   }
 
   static void addStringComparisionToReport( PrintWriter out, String thingA, String thingB, String attrLabel ) {
-	out.print( attrLabel + ":" );
-	if ( null!=thingA && null!=thingB && thingA.equals(thingB) ) {
-	  out.println( " Both = '" + thingA + "'" );
-	}
-	else {
+    out.print( attrLabel + ":" );
+    if ( null!=thingA && null!=thingB && thingA.equals(thingB) ) {
+      out.println( " Both = '" + thingA + "'" );
+    }
+    else {
       out.println();
-	  out.println( "\tA = '" + thingA + "'" );
-	  out.println( "\tB = '" + thingB + "'" );
-	}  
+      out.println( "\tA = '" + thingA + "'" );
+      out.println( "\tB = '" + thingB + "'" );
+    }  
   }
   static void addSetComparisonToReport( PrintWriter out, Set<String> setA, Set<String> setB, String attrLabel ) {
 	  addSetComparisonToReport( out, setA, setB, attrLabel, false );
