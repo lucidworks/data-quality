@@ -31,7 +31,8 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 public class SchemaFromXml extends SchemaBase implements Schema {
-  static String SCHEMA_FILE_NAME = "schema-461.xml";
+  // get from resources folder
+  static String SCHEMA_FILE_NAME = "schema-481.xml";
   
   Document document;
   XPathFactory xpathFactory = XPathFactory.newInstance();
@@ -58,10 +59,9 @@ public class SchemaFromXml extends SchemaBase implements Schema {
   public SchemaFromXml( URL schemaPath ) throws ParserConfigurationException, IOException, SAXException {
 	  init( schemaPath );
   }
-  // InputStream is = new FileInputstream("test.xml");
   void init( URL schemaPath ) throws ParserConfigurationException, IOException, SAXException {
     if ( null==schemaPath ) {
-      schemaPath = this.getClass().getResource( SCHEMA_FILE_NAME );
+      schemaPath = this.getClass().getClassLoader().getResource( SCHEMA_FILE_NAME );
     }
     InputStream is = schemaPath.openConnection().getInputStream();
     init( is );
