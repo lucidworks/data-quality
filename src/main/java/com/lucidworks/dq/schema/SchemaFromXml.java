@@ -60,14 +60,14 @@ public class SchemaFromXml extends SchemaBase implements Schema {
   }
   // InputStream is = new FileInputstream("test.xml");
   void init( URL schemaPath ) throws ParserConfigurationException, IOException, SAXException {
-	if ( null==schemaPath ) {
+    if ( null==schemaPath ) {
       schemaPath = this.getClass().getResource( SCHEMA_FILE_NAME );
-	}
-	InputStream is = schemaPath.openConnection().getInputStream();
+    }
+    InputStream is = schemaPath.openConnection().getInputStream();
     init( is );
   }
   void init( InputStream in ) throws ParserConfigurationException, SAXException, IOException {
-	DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
     DocumentBuilder builder = factory.newDocumentBuilder();
     this.document = builder.parse( in );
     xpathFactory = XPathFactory.newInstance();
@@ -75,10 +75,10 @@ public class SchemaFromXml extends SchemaBase implements Schema {
  
   // Parts copied from Solr's IndexSchema .loadFields
   public Set<String> getAllSchemaFieldNames() throws XPathExpressionException {
-	Set<String> out = new LinkedHashSet<>();
-	XPath xpath = xpathFactory.newXPath();
+    Set<String> out = new LinkedHashSet<>();
+    XPath xpath = xpathFactory.newXPath();
     // /schema/fields/field | /schema/fields/dynamicField
-	// Note: could remove OR and eliminate node name check, but this is closer to Solr code
+    // Note: could remove OR and eliminate node name check, but this is closer to Solr code
     String expression = stepsToPath(SCHEMA, FIELDS, FIELD)
            + XPATH_OR + stepsToPath(SCHEMA, FIELDS, DYNAMIC_FIELD);
     NodeList nodes = (NodeList)xpath.evaluate(expression, document, XPathConstants.NODESET);
@@ -96,9 +96,9 @@ public class SchemaFromXml extends SchemaBase implements Schema {
   }
   // Parts copied from Solr's IndexSchema .loadFields
   public Set<String> getAllDynamicFieldPatterns() throws XPathExpressionException {
-	Set<String> out = new LinkedHashSet<>();
-	XPath xpath = xpathFactory.newXPath();
-	// Note: could remove OR and eliminate node name check, but this is closer to Solr code
+    Set<String> out = new LinkedHashSet<>();
+    XPath xpath = xpathFactory.newXPath();
+    // Note: could remove OR and eliminate node name check, but this is closer to Solr code
     // /schema/fields/field | /schema/fields/dynamicField
     String expression = stepsToPath(SCHEMA, FIELDS, FIELD)
            + XPATH_OR + stepsToPath(SCHEMA, FIELDS, DYNAMIC_FIELD);
@@ -117,13 +117,13 @@ public class SchemaFromXml extends SchemaBase implements Schema {
     return out;	  
   }
   public Set<String> getAllFieldTypeNames() throws XPathExpressionException {
-	Set<String> out = new LinkedHashSet<>();
-	XPath xpath = xpathFactory.newXPath();
+    Set<String> out = new LinkedHashSet<>();
+    XPath xpath = xpathFactory.newXPath();
     // "/schema/types/fieldtype | /schema/types/fieldType"
     String expression = stepsToPath(SCHEMA, TYPES, FIELD_TYPE.toLowerCase(Locale.ROOT))
           + XPATH_OR + stepsToPath(SCHEMA, TYPES, FIELD_TYPE);
-	NodeList nodes = (NodeList) xpath.evaluate(expression, document, XPathConstants.NODESET);
-	for( int i = 0; i < nodes.getLength(); i++ ) {
+    NodeList nodes = (NodeList) xpath.evaluate(expression, document, XPathConstants.NODESET);
+    for( int i = 0; i < nodes.getLength(); i++ ) {
       Node node = nodes.item(i);
       // String name = node.getNodeValue();
       // String name = node.
@@ -131,11 +131,11 @@ public class SchemaFromXml extends SchemaBase implements Schema {
       Node attrNode = attrs.getNamedItem( NAME );
       String name = attrNode.getTextContent();
       out.add( name );
-	}
-	return out;
+    }
+    return out;
   }
   Map<String,Set<String>> getAllCopyFieldsDictionary() throws XPathExpressionException {
-	Map<String,Set<String>> out = new LinkedHashMap<>();
+    Map<String,Set<String>> out = new LinkedHashMap<>();
     XPath xpath = xpathFactory.newXPath();
     String expression = "//" + COPY_FIELD;
     NodeList nodes = (NodeList) xpath.evaluate(expression, document, XPathConstants.NODESET);
@@ -161,8 +161,8 @@ public class SchemaFromXml extends SchemaBase implements Schema {
     return out;
   }
   Map<String,Set<String>> invertDictionary( Map<String,Set<String>> in ) {
-	Map<String,Set<String>> out = new LinkedHashMap<>();
-	for ( Entry<String, Set<String>> pair : in.entrySet() ) {
+    Map<String,Set<String>> out = new LinkedHashMap<>();
+    for ( Entry<String, Set<String>> pair : in.entrySet() ) {
       String oldSource = pair.getKey();                 // AKA: newDest
       Set<String> oldDestList = pair.getValue(); // AKA: newSourceList
       // for newSource in newSourceList
@@ -171,23 +171,23 @@ public class SchemaFromXml extends SchemaBase implements Schema {
     	  // newSource .add newDest
           out.get( oldDest ).add( oldSource );
         }
-    	else {
-    	  Set<String> newDestList = new LinkedHashSet<>();
-    	  newDestList.add( oldSource );
-    	  out.put( oldDest, newDestList );
-    	}
+    	  else {
+    	    Set<String> newDestList = new LinkedHashSet<>();
+    	    newDestList.add( oldSource );
+    	    out.put( oldDest, newDestList );
+    	  }
       }
-	}
+    }
     return out;
   }
 
   public Set<String> getAllCopyFieldSourceNames() throws XPathExpressionException {
-	Map<String,Set<String>> copyFields = getAllCopyFieldsDictionary();
+    Map<String,Set<String>> copyFields = getAllCopyFieldsDictionary();
     return copyFields.keySet();
   }
   public Set<String> getAllCopyFieldDestinationNames() throws XPathExpressionException {
-	Map<String,Set<String>> copyFields = getAllCopyFieldsDictionary();
-	// Slightly less efficient to copy entire dict, but benefit is only 1 code path
+    Map<String,Set<String>> copyFields = getAllCopyFieldsDictionary();
+    // Slightly less efficient to copy entire dict, but benefit is only 1 code path
     Map<String,Set<String>> invertedHash = invertDictionary( copyFields );
     return invertedHash.keySet(); 
 //	Set<String> out = new LinkedHashSet<>();
@@ -198,35 +198,35 @@ public class SchemaFromXml extends SchemaBase implements Schema {
 //    	  out.add( dest );
 //      }
 //	}
-//    return out;
+//  return out;
   }
   public Set<String> getCopyFieldDestinationsForSource( String sourceName ) throws XPathExpressionException {
-	Map<String,Set<String>> copyFields = getAllCopyFieldsDictionary();
-	if ( copyFields.containsKey(sourceName) ) {
-		return copyFields.get(sourceName);
-	}
-	else {
-		return new LinkedHashSet<>();
-	}
+    Map<String,Set<String>> copyFields = getAllCopyFieldsDictionary();
+    if ( copyFields.containsKey(sourceName) ) {
+      return copyFields.get(sourceName);
+    }
+    else {
+      return new LinkedHashSet<>();
+    }
   }
   public Set<String> getCopyFieldSourcesForDestination( String destName ) throws XPathExpressionException {
-	Map<String,Set<String>> copyFields = getAllCopyFieldsDictionary();
+    Map<String,Set<String>> copyFields = getAllCopyFieldsDictionary();
     Map<String,Set<String>> invertedHash = invertDictionary( copyFields );
-	if ( invertedHash.containsKey(destName) ) {
-		return invertedHash.get(destName);
-	}
-	else {
-		return new LinkedHashSet<>();
-	}	
+    if ( invertedHash.containsKey(destName) ) {
+      return invertedHash.get(destName);
+    }
+    else {
+      return new LinkedHashSet<>();
+    }
   }
   public float getSchemaVersion() throws Exception {
     // "/schema/@version"
     String expression = stepsToPath(SCHEMA, AT + VERSION);
     float version = /*schemaConf.*/ getFloat(expression, 1.0f);
-	return version;
+    return version;
   }
   public String getSchemaName() throws Exception {
-	XPath xpath = xpathFactory.newXPath();
+    XPath xpath = xpathFactory.newXPath();
     String expression = stepsToPath(SCHEMA, AT + NAME);
     Node nd = (Node) xpath.evaluate(expression, document, XPathConstants.NODE);
     // In real Solr they have a fallback where you can get the name from
@@ -266,8 +266,8 @@ public class SchemaFromXml extends SchemaBase implements Schema {
     return queryParserDefaultOperator;
   }
   public String getSimilarityModelClassName() throws XPathExpressionException {
-	// Default: org.apache.solr.search.similarities.DefaultSimilarityFactory
-	XPath xpath = xpathFactory.newXPath();
+    // Default: org.apache.solr.search.similarities.DefaultSimilarityFactory
+    XPath xpath = xpathFactory.newXPath();
     // /schema/similarity
     String expression = stepsToPath(SCHEMA, SIMILARITY);
     Node nd = (Node) xpath.evaluate(expression, document, XPathConstants.NODE);
@@ -281,7 +281,7 @@ public class SchemaFromXml extends SchemaBase implements Schema {
     return name;
   }
   public String getDefaultSearchField() throws XPathExpressionException {
-	XPath xpath = xpathFactory.newXPath();
+    XPath xpath = xpathFactory.newXPath();
     //  /schema/defaultSearchField/@text()
     String expression = stepsToPath(SCHEMA, DEFAULT_SEARCH_FIELD, TEXT_FUNCTION);
     Node node = (Node) xpath.evaluate(expression, document, XPathConstants.NODE);
@@ -387,10 +387,10 @@ public class SchemaFromXml extends SchemaBase implements Schema {
 
 
   public static void main( String[] argv ) throws Exception {
-	SchemaFromXml s = new SchemaFromXml();
+    SchemaFromXml s = new SchemaFromXml();
 
-	float version = s.getSchemaVersion();
-	System.out.println( "Version = " + version );
+    float version = s.getSchemaVersion();
+    System.out.println( "Version = " + version );
     String name = s.getSchemaName();
     System.out.println( "Schema Name: " + name );
     String key = s.getUniqueKeyFieldName();
@@ -402,7 +402,7 @@ public class SchemaFromXml extends SchemaBase implements Schema {
     String defField = s.getDefaultSearchField();
     System.out.println( "Default Search Field: " + defField );
 
-	Set<String> fields = s.getAllSchemaFieldNames();
+    Set<String> fields = s.getAllSchemaFieldNames();
     System.out.println( "Fields: " + fields );
 
     Set<String> dynFields = s.getAllDynamicFieldPatterns();
