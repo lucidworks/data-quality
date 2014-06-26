@@ -78,9 +78,13 @@ public class SchemaFromXml extends SchemaBase implements Schema {
     Set<String> out = new LinkedHashSet<>();
     XPath xpath = xpathFactory.newXPath();
     // /schema/fields/field | /schema/fields/dynamicField
+    // | /schema/field | /schema/dynamicField
     // Note: could remove OR and eliminate node name check, but this is closer to Solr code
     String expression = stepsToPath(SCHEMA, FIELDS, FIELD)
-           + XPATH_OR + stepsToPath(SCHEMA, FIELDS, DYNAMIC_FIELD);
+           + XPATH_OR + stepsToPath(SCHEMA, FIELDS, DYNAMIC_FIELD)
+           + XPATH_OR + stepsToPath(SCHEMA, FIELD)
+           + XPATH_OR + stepsToPath(SCHEMA, DYNAMIC_FIELD)
+           ;
     NodeList nodes = (NodeList)xpath.evaluate(expression, document, XPathConstants.NODESET);
     for (int i=0; i<nodes.getLength(); i++) {
       Node node = nodes.item(i);
@@ -101,7 +105,10 @@ public class SchemaFromXml extends SchemaBase implements Schema {
     // Note: could remove OR and eliminate node name check, but this is closer to Solr code
     // /schema/fields/field | /schema/fields/dynamicField
     String expression = stepsToPath(SCHEMA, FIELDS, FIELD)
-           + XPATH_OR + stepsToPath(SCHEMA, FIELDS, DYNAMIC_FIELD);
+           + XPATH_OR + stepsToPath(SCHEMA, FIELDS, DYNAMIC_FIELD)
+           + XPATH_OR + stepsToPath(SCHEMA, FIELD)
+           + XPATH_OR + stepsToPath(SCHEMA, DYNAMIC_FIELD)
+           ;
     NodeList nodes = (NodeList)xpath.evaluate(expression, document, XPathConstants.NODESET);
     for (int i=0; i<nodes.getLength(); i++) {
       Node node = nodes.item(i);
@@ -121,7 +128,10 @@ public class SchemaFromXml extends SchemaBase implements Schema {
     XPath xpath = xpathFactory.newXPath();
     // "/schema/types/fieldtype | /schema/types/fieldType"
     String expression = stepsToPath(SCHEMA, TYPES, FIELD_TYPE.toLowerCase(Locale.ROOT))
-          + XPATH_OR + stepsToPath(SCHEMA, TYPES, FIELD_TYPE);
+          + XPATH_OR + stepsToPath(SCHEMA, TYPES, FIELD_TYPE)
+          + XPATH_OR + stepsToPath(SCHEMA, FIELD_TYPE.toLowerCase(Locale.ROOT))
+          + XPATH_OR + stepsToPath(SCHEMA, FIELD_TYPE)
+          ;
     NodeList nodes = (NodeList) xpath.evaluate(expression, document, XPathConstants.NODESET);
     for( int i = 0; i < nodes.getLength(); i++ ) {
       Node node = nodes.item(i);
