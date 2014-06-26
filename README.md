@@ -28,9 +28,9 @@ See ```src/main/resources/sample-reports/```
 
 # Download Prebuilt Binary
 
-Fully runnable 0.2 jar is available here:
+Fully runnable jar is available here:
 
-* https://github.com/LucidWorks/data-quality/releases/tag/0.2
+* https://github.com/LucidWorks/data-quality/releases/tag/untagged-ee3d2e21ff918e4c7fe1
 * Click the **green button** with ```data-quality-java-1.0-SNAPSHOT.jar``` and the download will start
 
 # Building From Source
