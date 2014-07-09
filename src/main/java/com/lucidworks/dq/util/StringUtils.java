@@ -10,6 +10,15 @@ public class StringUtils {
 
   public static String NL = System.getProperty("line.separator");
 
+  // AKA multiplyString
+  // TODO: Or use org.apache.commons.lang.StringUtils.repeat(...) ???
+  public static String repeatString( String s, int n ) {
+    if ( n <= 0 ) { return ""; }
+    // http://stackoverflow.com/questions/1235179/simple-way-to-repeat-a-string-in-java
+    return new String(new char[n]).replace("\0", s);
+    // return String.format(String.format("%%0%dd", n), 0).replace("0",s);
+  }
+
   public static String join( Collection<String> strings ) {
     return join( strings, ", " );
   }
