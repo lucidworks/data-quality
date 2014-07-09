@@ -15,8 +15,8 @@ public abstract class SchemaBase implements Schema {
     // Singular Values
     String name = getSchemaName();
     out.println( "Schema Name: " + name );
-	float vers = getSchemaVersion();
-	out.println( "Schema Version: " + vers );
+    float vers = getSchemaVersion();
+    out.println("Schema Version: " + vers);
     String key = getUniqueKeyFieldName();
     out.println( "Key Field: " + key );
     String defOp = getDefaultOperator();
@@ -27,20 +27,20 @@ public abstract class SchemaBase implements Schema {
     out.println( "Default Search Field: " + defField );
 
     // Complex Values
-	Set<String> fields = getAllSchemaFieldNames();
-	out.println();
+    Set<String> fields = getAllSchemaFieldNames();
+    out.println();
     out.println( "Fields: " + fields );
 
     Set<String> dynFields = getAllDynamicFieldPatterns();
-	out.println();
+    out.println();
     out.println( "Dynamic Field Patterns: " + dynFields );
 
     Set<String> typeNames = getAllFieldTypeNames();
-	out.println();
+    out.println();
     out.println( "Types: " + typeNames );
-    
+
     Set<String> sourceNames = getAllCopyFieldSourceNames();
-	out.println();
+    out.println();
     out.println( "Copy Sources: " + sourceNames );
     for ( String source : sourceNames ) {
     	Set<String> tmpDests = getCopyFieldDestinationsForSource(source);
@@ -48,7 +48,7 @@ public abstract class SchemaBase implements Schema {
     }
 
     Set<String> destNames = getAllCopyFieldDestinationNames();
-	out.println();
+    out.println();
     out.println( "Copy Destinations: " + destNames );
     for ( String dest : destNames ) {
     	Set<String> tmpSrcs = getCopyFieldSourcesForDestination( dest );
