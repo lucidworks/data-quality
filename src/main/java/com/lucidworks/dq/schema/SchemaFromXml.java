@@ -46,8 +46,9 @@ public class SchemaFromXml extends SchemaBase implements Schema {
 
   public SchemaFromXml() throws ParserConfigurationException, IOException, SAXException {
 	// this( SCHEMA_FILE_NAME );
-    URL schemaPath = this.getClass().getResource( SCHEMA_FILE_NAME );
-    init( schemaPath );
+    // URL schemaPath = this.getClass().getResource( SCHEMA_FILE_NAME );
+    // init( schemaPath );
+    init( (URL) null );
   }
   public SchemaFromXml( File schemaPath ) throws ParserConfigurationException, SAXException, IOException {
 	  // URI uri = schemaPath.toURI();
@@ -242,7 +243,10 @@ public class SchemaFromXml extends SchemaBase implements Schema {
     // In real Solr they have a fallback where you can get the name from
     // loader.getCoreProperties().getProperty(SOLR_CORE_NAME) where
     // SOLR_CORE_NAME = "solr.core.name"
-    String name = nd.getNodeValue();
+    String name = null;
+    if ( null != nd ) {
+      name = nd.getNodeValue();
+    }
     return name;
   }
   public String getUniqueKeyFieldName() throws XPathExpressionException {
@@ -283,7 +287,8 @@ public class SchemaFromXml extends SchemaBase implements Schema {
     Node nd = (Node) xpath.evaluate(expression, document, XPathConstants.NODE);
     String name = null;
     if ( null!=nd ) {
-    	name = nd.getNodeValue();
+    	//name = nd.getNodeValue();
+      name = nd.getTextContent();
     }
     if ( null==name || name.trim().equals("") ) {
     	name = "org.apache.solr.search.similarities.DefaultSimilarityFactory";
@@ -301,6 +306,8 @@ public class SchemaFromXml extends SchemaBase implements Schema {
     }
     return defaultSearchFieldName;
   }
+
+  // from solr/core/src/java/org/apache/solr/schema/IndexSchema.java
   /**
    * Converts a sequence of path steps into a rooted path, by inserting slashes in front of each step.
    * @param steps The steps to join with slashes to form a path
