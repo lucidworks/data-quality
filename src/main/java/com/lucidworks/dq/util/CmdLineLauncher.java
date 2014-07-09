@@ -20,6 +20,7 @@ public class CmdLineLauncher {
     put( "diff_empty_fields", com.lucidworks.dq.diff.DiffEmptyFieldStats.class );
     put( "diff_ids",          com.lucidworks.dq.diff.DiffIds.class             );
     put( "diff_schema",       com.lucidworks.dq.diff.DiffSchema.class          );
+    put( "diff_config",       com.lucidworks.dq.diff.DiffSolrConfig.class      );
     put( "doc_count",         com.lucidworks.dq.data.DocCount.class            );
     put( "dump_ids",          com.lucidworks.dq.data.DumpIds.class             );
     put( "delete_by_ids",     com.lucidworks.dq.data.DeleteByIds.class         );
