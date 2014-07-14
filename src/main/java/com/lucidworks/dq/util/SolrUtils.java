@@ -118,6 +118,20 @@ public class SolrUtils {
     SimpleOrderedMap fields = (SimpleOrderedMap) res2.get("fields");
     for ( int i=0; i<fields.size(); i++ ) {
       String name = fields.getName( i );
+
+      // Need to double check for obsolete fields
+      // Avoid entries like: format={type=null,schema=----------------},
+      // because Solr will later give errors if you try to use them
+      SimpleOrderedMap val = (SimpleOrderedMap) fields.getVal( i );
+      String type = (String) val.get( "type" );
+      String schemaFlags = (String) val.get( "schema" );
+      // String indexFlags = (String) val.get( "index" );
+      // TODO: could offer an option to report these as orphan or ghost fields
+      // TODO: check other luke methods for same problem
+      // TODO: schemaFlags is 16 hyphens, but fragile if Luke format ever changes, could use regex
+      if ( null==type && ( null==schemaFlags || schemaFlags.equals("----------------") ) ) {
+        continue;
+      }
       out.add( name );
     }
     // System.out.println( "Luke Fields = " + fields );
