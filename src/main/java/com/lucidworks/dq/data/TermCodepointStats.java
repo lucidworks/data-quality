@@ -475,12 +475,12 @@ public class TermCodepointStats /*implements HasDescription*/ {
 	// TODO: adding IDs would be hard since we don't get those back from calls
 	// AND searching for some tokens might have syntax error issues
 	// options.addOption( "i", "ids", false, "Include IDs of docs when displaying sample values." );
-	options.addOption( "s", "stored-fields", false, "Also check stats of Stored fields. WARNING: may take lots of time and memory for large collections" );
-	options.addOption( "S", "no-stored-fields", false, "Don't check stats of Stored fields; this is the default." );
-	// TODO: -i for --indexed-fields conflicts with -i for --ids for including IDs in EmptyFieldStats
+	options.addOption( "s", "stored_fields", false, "Also check stats of Stored fields. WARNING: may take lots of time and memory for large collections" );
+	options.addOption( "S", "no_stored_fields", false, "Don't check stats of Stored fields; this is the default." );
+	// TODO: -i for --indexed_fields conflicts with -i for --ids for including IDs in EmptyFieldStats
 	// but here we really might want to focus on only stored values
-	options.addOption( "i", "indexed-fields", false, "Check stats of Indexed fields; this is the default." );
-	options.addOption( "I", "no-indexed-fields", false, "Don't check stats of Indexed fields.  Used with --stored-fields to only get Stored Fields info." );
+	options.addOption( "i", "indexed_fields", false, "Check stats of Indexed fields; this is the default." );
+	options.addOption( "I", "no_indexed_fields", false, "Don't check stats of Indexed fields.  Used with --stored_fields to only get Stored Fields info." );
 	// TODO: add option for sample size
 	options.addOption( "f", "fields", true, "Fields to analyze, Eg: fields=name,category, default is all indexed/stored fields" );
 	if ( argv.length < 1 ) {
@@ -512,31 +512,31 @@ public class TermCodepointStats /*implements HasDescription*/ {
 
     // Indexed fields, default is Yes
     Boolean indexedFieldsFlagObj = null;
-    if( cmd.hasOption("indexed-fields")) {
+    if( cmd.hasOption("indexed_fields")) {
       // Can't do yes and no for same option
-      if( cmd.hasOption("no-indexed-fields")) {
-    	helpAndExit( "Can't specifify --indexed-fields AND --no-indexed-fields", 4 );
+      if( cmd.hasOption("no_indexed_fields")) {
+    	helpAndExit( "Can't specifify --indexed_fields AND --no_indexed_fields", 4 );
       }
       else {
     	indexedFieldsFlagObj = new Boolean( true );
       }
     }
-    else if( cmd.hasOption("no-indexed-fields")) {
+    else if( cmd.hasOption("no_indexed_fields")) {
       indexedFieldsFlagObj = new Boolean( false );
     }
 
     // Stored fields, default is No
     Boolean storedFieldsFlagObj = null;
-    if(cmd.hasOption("stored-fields")) {
+    if(cmd.hasOption("stored_fields")) {
       // Can't do yes and no for same option
-      if(cmd.hasOption("no-stored-fields")) {
-    	helpAndExit( "Can't specifify --stored-fields AND --no-stored-fields", 4 );
+      if(cmd.hasOption("no_stored_fields")) {
+    	helpAndExit( "Can't specifify --stored_fields AND --no_stored_fields", 4 );
       }
       else {
     	storedFieldsFlagObj = new Boolean( true );
       }
     }
-    else if(cmd.hasOption("no-stored-fields")) {
+    else if(cmd.hasOption("no_stored_fields")) {
       storedFieldsFlagObj = new Boolean( false );
     }
 

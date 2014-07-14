@@ -545,7 +545,7 @@ public class EmptyFieldStats /*implements HasDescription*/ {
     options.addOption( "h", "host", true, "IP address for Solr, default=localhost" );
     options.addOption( "p", "port", true, "Port for Solr, default=8983" );
     options.addOption( "c", "collection", true, "Collection/Core for Solr, Eg: collection1" );
-    options.addOption( "s", "stored-fields", false, "Also check stats of Stored fields. WARNING: may take lots of time and memory for large collections" );
+    options.addOption( "s", "stored_fields", false, "Also check stats of Stored fields. WARNING: may take lots of time and memory for large collections" );
     options.addOption( "i", "ids", false, "Include IDs of docs with empty fields. WARNING: may create large report" );
     // TODO: could add option for number of IDs to include...
     options.addOption( "f", "fields", true, "Fields to analyze, Eg: fields=name,category, default is all fields" );
@@ -587,7 +587,7 @@ public class EmptyFieldStats /*implements HasDescription*/ {
     }
     // Options
     boolean includeStoredFields = false;
-    if(cmd.hasOption("stored-fields")) {
+    if(cmd.hasOption("stored_fields")) {
       includeStoredFields = true;
     }
     boolean showIds = false;

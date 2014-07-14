@@ -153,7 +153,7 @@ usage: EmptyFieldStats -u http://localhost:8983 [-c <arg>] [-f <arg>] [-h
  -i,--ids                Include IDs of docs with empty fields. WARNING:
                          may create large report
  -p,--port <arg>         Port for Solr, default=8983
- -s,--stored-fields      Also check stats of Stored fields. WARNING: may
+ -s,--stored_fields      Also check stats of Stored fields. WARNING: may
                          take lots of time and memory for large
                          collections
  -u,--url <arg>          URL for Solr, OR set host, port and possibly
