@@ -72,20 +72,20 @@ public class SolrUtils {
 	  return getServer( url );
   }
   public static HttpSolrServer getServer( String host, String port, String collection ) {
-	  if ( null==host ) {
-		host = DEFAULT_HOST;
-	  }
-	  if ( null==port ) {
-		port = "" + DEFAULT_PORT;		  
-	  }
-	  String url = null;
-	  if ( null==collection ) {
-        url = "http://" + host + ":" + port + "/solr";
-	  }
-	  else {
-        url = "http://" + host + ":" + port + "/solr/" + collection;		  
-	  }
-	  return getServer( url );
+    if ( null==host ) {
+      host = DEFAULT_HOST;
+    }
+    if ( null==port ) {
+      port = "" + DEFAULT_PORT;		  
+    }
+    String url = null;
+    if ( null==collection ) {
+      url = "http://" + host + ":" + port + "/solr";
+    }
+    else {
+      url = "http://" + host + ":" + port + "/solr/" + collection;		  
+    }
+    return getServer( url );
   }
   
   
@@ -110,9 +110,9 @@ public class SolrUtils {
   }
   // http://localhost:8983/solr/collection1/admin/luke
   public static Set<String> getActualFieldNames( HttpSolrServer server ) throws SolrServerException {
-	Set<String> out = new LinkedHashSet<>();
-	SolrQuery q = new SolrQuery();
-	q.setRequestHandler("/admin/luke");
+    Set<String> out = new LinkedHashSet<>();
+    SolrQuery q = new SolrQuery();
+    q.setRequestHandler("/admin/luke");
     QueryResponse res = server.query( q );
     NamedList<Object> res2 = res.getResponse();
     SimpleOrderedMap fields = (SimpleOrderedMap) res2.get("fields");
@@ -121,16 +121,16 @@ public class SolrUtils {
       out.add( name );
     }
     // System.out.println( "Luke Fields = " + fields );
-//    for ( Object field : fields ) {
-//       System.out.println( "Field = " + field );
-//    }
+    //    for ( Object field : fields ) {
+    //       System.out.println( "Field = " + field );
+    //    }
     // out.addAll( fields.iterator())
-	return out;
+    return out;
   }
   public static Set<String> getLukeFieldsWithStoredValues( HttpSolrServer server ) throws SolrServerException {
-	Set<String> out = new LinkedHashSet<>();
-	SolrQuery q = new SolrQuery();
-	q.setRequestHandler("/admin/luke");
+    Set<String> out = new LinkedHashSet<>();
+    SolrQuery q = new SolrQuery();
+    q.setRequestHandler("/admin/luke");
     QueryResponse res = server.query( q );
     NamedList<Object> res2 = res.getResponse();
     SimpleOrderedMap fields = (SimpleOrderedMap) res2.get("fields");
@@ -143,19 +143,19 @@ public class SolrUtils {
       // Integer numDocs = (Integer) val.get( "docs" );
       // Look at 3rd character, offset 2
       if ( null!=schemaFlags && schemaFlags.length() >= 3 ) {
-    	String flag = schemaFlags.substring( 2, 3 );
-    	if ( flag.equalsIgnoreCase("S") ) {
-    	   out.add( name );    		
-    	}
+        String flag = schemaFlags.substring( 2, 3 );
+        if ( flag.equalsIgnoreCase("S") ) {
+          out.add( name );    		
+        }
       }
     }
-	return out;
+    return out;
   }
   // field name -> type name
   public static Map<String,String> getLukeFieldTypes( HttpSolrServer server ) throws SolrServerException {
-	Map<String,String> out = new LinkedHashMap<>();
-	SolrQuery q = new SolrQuery();
-	q.setRequestHandler("/admin/luke");
+    Map<String,String> out = new LinkedHashMap<>();
+    SolrQuery q = new SolrQuery();
+    q.setRequestHandler("/admin/luke");
     QueryResponse res = server.query( q );
     NamedList<Object> res2 = res.getResponse();
     SimpleOrderedMap fields = (SimpleOrderedMap) res2.get("fields");
@@ -165,12 +165,12 @@ public class SolrUtils {
       String type = (String) val.get( "type" );
       out.put( name, type );
     }
-	return out;
+    return out;
   }
   public static Set<String> getLukeFieldsWithIndexedValues( HttpSolrServer server ) throws SolrServerException {
-	Set<String> out = new LinkedHashSet<>();
-	SolrQuery q = new SolrQuery();
-	q.setRequestHandler("/admin/luke");
+    Set<String> out = new LinkedHashSet<>();
+    SolrQuery q = new SolrQuery();
+    q.setRequestHandler("/admin/luke");
     QueryResponse res = server.query( q );
     NamedList<Object> res2 = res.getResponse();
     SimpleOrderedMap fields = (SimpleOrderedMap) res2.get("fields");
@@ -182,27 +182,27 @@ public class SolrUtils {
       String indexFlags = (String) val.get( "index" );
       // Look at 1st character, offset 0
       if ( null!=schemaFlags && schemaFlags.length() >= 1 ) {
-    	String flag = schemaFlags.substring( 0, 1 );
-    	if ( flag.equalsIgnoreCase("I") ) {
-    	   out.add( name );    		
-    	}
+        String flag = schemaFlags.substring( 0, 1 );
+        if ( flag.equalsIgnoreCase("I") ) {
+          out.add( name );    		
+        }
       }
     }
-	return out;
+    return out;
   }
   public static Set<String> _getActualFieldNames( HttpSolrServer server ) throws SolrServerException {
-	Set<String> out = new LinkedHashSet<>();
+    Set<String> out = new LinkedHashSet<>();
     // Look at the first real document
     SolrQuery query = new SolrQuery( "*:*" );
     query.addField( "*" );
     query.setRows( 1 );
     QueryResponse res = server.query( query );
-	SolrDocumentList docs = res.getResults();
-	if ( ! docs.isEmpty() ) {
-	  SolrDocument firstDoc = docs.get(0);
-	  out.addAll( firstDoc.getFieldNames() );
-	}
-	return out;
+    SolrDocumentList docs = res.getResults();
+    if ( ! docs.isEmpty() ) {
+      SolrDocument firstDoc = docs.get(0);
+      out.addAll( firstDoc.getFieldNames() );
+    }
+    return out;
   }
   // Alias
   public static Set<String> getDeclaredDynamicFieldPatterns( HttpSolrServer server ) throws SolrServerException {
@@ -248,18 +248,18 @@ public class SolrUtils {
   // http://localhost:8983/solr/collection1/clustering?q=*:*&carrot.snippet=content&carrot.title=title&rows=100
   // WARNING: must start Solr with -Dsolr.clustering.enabled=true on Java command line
   public static Set<String> getClusters( HttpSolrServer server, Set<String> titleFields, Set<String> contentFields, Integer optLimit ) throws SolrServerException {
-	Set<String> out = new LinkedHashSet<>();
-	SolrQuery q = new SolrQuery();
-	// Will generate 404 error if don't have -Dsolr.clustering.enabled=true
-	q.setRequestHandler("/clustering");
-	if ( null!=optLimit ) {
+    Set<String> out = new LinkedHashSet<>();
+    SolrQuery q = new SolrQuery();
+    // Will generate 404 error if don't have -Dsolr.clustering.enabled=true
+    q.setRequestHandler("/clustering");
+    if ( null!=optLimit ) {
       q.setRows( optLimit );
     }
-	if ( null!=titleFields && ! titleFields.isEmpty() ) {
+    if ( null!=titleFields && ! titleFields.isEmpty() ) {
       String titleFieldsCsv = SetUtils.join( titleFields, "," );
-  	  q.set( "carrot.title", titleFieldsCsv );
-	}
-	if ( null!=contentFields && ! contentFields.isEmpty() ) {
+      q.set( "carrot.title", titleFieldsCsv );
+    }
+    if ( null!=contentFields && ! contentFields.isEmpty() ) {
       String contentFieldsCsv = SetUtils.join( contentFields, "," );
       q.set( "carrot.snippet", contentFieldsCsv );
     }
@@ -293,92 +293,88 @@ public class SolrUtils {
       //out.add( name );
     }
     // System.out.println( "Luke Fields = " + fields );
-//    for ( Object field : fields ) {
-//       System.out.println( "Field = " + field );
-//    }
+    //    for ( Object field : fields ) {
+    //       System.out.println( "Field = " + field );
+    //    }
     // out.addAll( fields.iterator())
-	return out;
+    return out;
   }
 
-  
-  
-  
-  
   public static Map<Object,Long> getAllStoredValuesAndCountsForField_ViaNormalQuery( HttpSolrServer server, String fieldName ) throws SolrServerException {
-	Map<Object,Long> out = new LinkedHashMap<>();
-	SolrQuery q = new SolrQuery( "*:*" );
-	q.addField( fieldName );
-	q.setRows( ALL_ROWS );
-	QueryResponse res = server.query( q );
-	for ( SolrDocument doc : res.getResults() ) {
-	  Object value = doc.get( fieldName );
-	  Long oldCount = 0L;
-	  if ( out.containsKey(value) ) {
-		oldCount = out.get(value);
-	  }
-	  out.put( value, oldCount + 1L );
-	}
-	return out;
+    Map<Object,Long> out = new LinkedHashMap<>();
+    SolrQuery q = new SolrQuery( "*:*" );
+    q.addField( fieldName );
+    q.setRows( ALL_ROWS );
+    QueryResponse res = server.query( q );
+    for ( SolrDocument doc : res.getResults() ) {
+      Object value = doc.get( fieldName );
+      Long oldCount = 0L;
+      if ( out.containsKey(value) ) {
+        oldCount = out.get(value);
+      }
+      out.put( value, oldCount + 1L );
+    }
+    return out;
   }
   public static Map<Object,Long> getAllStoredValuesAndCountsForField_ViaGroupedQuery( HttpSolrServer server, String fieldName ) throws SolrServerException {
-	Map<Object,Long> out = new LinkedHashMap<>();
-	SolrQuery q = new SolrQuery( "*:*" );
-	q.addField( fieldName );
-	q.set( "group", true );
-	q.set( "group.field", fieldName );
-	q.set( "group.limit", 0 );  // No docs, we just want counts
-	// q.addField( ID_FIELD );  // moot if not getting docs
-	q.setRows( ALL_ROWS );   // All *Groups*
-	QueryResponse res = server.query( q );
-	GroupResponse groups = res.getGroupResponse();
-	List<GroupCommand> grpVals = groups.getValues();
-	for ( GroupCommand cmd : grpVals ) {
-	  String name = cmd.getName();
-	  int numTotalDocMatches = cmd.getMatches();
-	  List<Group> cmdVals = cmd.getValues();
-	  for ( Group gVal : cmdVals ) {
-		String val = gVal.getGroupValue();
-		SolrDocumentList grpRes = gVal.getResult();
-		long valCount = grpRes.getNumFound();
-		out.put( val, valCount );
-	  }
-	}  
-	return out;
+    Map<Object,Long> out = new LinkedHashMap<>();
+    SolrQuery q = new SolrQuery( "*:*" );
+    q.addField( fieldName );
+    q.set( "group", true );
+    q.set( "group.field", fieldName );
+    q.set( "group.limit", 0 );  // No docs, we just want counts
+    // q.addField( ID_FIELD );  // moot if not getting docs
+    q.setRows( ALL_ROWS );   // All *Groups*
+    QueryResponse res = server.query( q );
+    GroupResponse groups = res.getGroupResponse();
+    List<GroupCommand> grpVals = groups.getValues();
+    for ( GroupCommand cmd : grpVals ) {
+      String name = cmd.getName();
+      int numTotalDocMatches = cmd.getMatches();
+      List<Group> cmdVals = cmd.getValues();
+      for ( Group gVal : cmdVals ) {
+        String val = gVal.getGroupValue();
+        SolrDocumentList grpRes = gVal.getResult();
+        long valCount = grpRes.getNumFound();
+        out.put( val, valCount );
+      }
+    }  
+    return out;
   }
 
   public static long getTotalDocCount( HttpSolrServer server ) throws SolrServerException {
 	  return getDocCountForQuery( server, "*:*" );
   }
   public static long getDocCountForField( HttpSolrServer server, String fieldName ) throws SolrServerException {
-	// NullPointerException for location
-	// com.spatial4j.core.io.ParseUtils.parsePoint(ParseUtils.java:42)
-	String queryStr = fieldName + ":[* TO *]";
-	try {
-	  return getDocCountForQuery( server, queryStr );
-	}
-	catch( Exception e ) {
-	  // TODO: will this wildcard expand to all terms?
-	  queryStr = fieldName + ":*";
-	  return getDocCountForQuery( server, queryStr );		  
-	}
+    // NullPointerException for location
+    // com.spatial4j.core.io.ParseUtils.parsePoint(ParseUtils.java:42)
+    String queryStr = fieldName + ":[* TO *]";
+    try {
+      return getDocCountForQuery( server, queryStr );
+    }
+    catch( Exception e ) {
+      // TODO: will this wildcard expand to all terms?
+      queryStr = fieldName + ":*";
+      return getDocCountForQuery( server, queryStr );		  
+    }
   }
   public static long getStoredDocCountForField( HttpSolrServer server, String fieldName ) throws SolrServerException {
-	long out = 0L;
-	String queryStr = "*:*";
-	SolrQuery q = new SolrQuery( queryStr );
-	q.addField( fieldName );
-	// q.setRows( ALL_ROWS );
-	q.setRows( 1000 );
-	QueryResponse res = server.query( q );
-	for ( SolrDocument doc : res.getResults() ) {
-	  Object value = doc.get( fieldName );
-	  // TODO: could check for data types and do specific checks
-	  // Eg: if string, do a trim, see if length > 0
-	  if ( null!=value ) {
-		out++;
-	  }
-	}
-	return out;
+    long out = 0L;
+    String queryStr = "*:*";
+    SolrQuery q = new SolrQuery( queryStr );
+    q.addField( fieldName );
+    // q.setRows( ALL_ROWS );
+    q.setRows( 1000 );
+    QueryResponse res = server.query( q );
+    for ( SolrDocument doc : res.getResults() ) {
+      Object value = doc.get( fieldName );
+      // TODO: could check for data types and do specific checks
+      // Eg: if string, do a trim, see if length > 0
+      if ( null!=value ) {
+        out++;
+      }
+    }
+    return out;
   }
   public static Set<String> getEmptyFieldDocIds( HttpSolrServer server, String fieldName ) throws SolrServerException {
 	  // NullPointerException for location
@@ -420,24 +416,24 @@ public class SolrUtils {
   // http://localhost:8985/solr/collection1/terms
   // TODO: not returning term counts for now, not really what we're looking at
   public static Set<String> getAllTermsForField_ViaTermsRequest( HttpSolrServer server, String fieldName ) throws SolrServerException {
-	return getTermsForField_ViaTermsRequest( server, fieldName, -1 );
+    return getTermsForField_ViaTermsRequest( server, fieldName, -1 );
   }
   // Get multiple fields at once
   public static Map<String,Map<String,Long>> getAllTermsForFields_ViaTermsRequest( HttpSolrServer server, Set<String> fieldNames ) throws SolrServerException {
-	return getTermsForFields_ViaTermsRequest( server, fieldNames, -1 );
+    return getTermsForFields_ViaTermsRequest( server, fieldNames, -1 );
   }
   // By default we'll get the top 10
   public static Set<String> getTermsForField_ViaTermsRequest( HttpSolrServer server, String fieldName ) throws SolrServerException {
-	return getTermsForField_ViaTermsRequest( server, fieldName, null );
+    return getTermsForField_ViaTermsRequest( server, fieldName, null );
   }
   public static Set<String> getTermsForField_ViaTermsRequest( HttpSolrServer server, String fieldName, Integer optLimit ) throws SolrServerException {
-	Set<String> out = new LinkedHashSet<>();
-	SolrQuery q = new SolrQuery();
-	q.setRequestHandler("/terms");
-	q.addTermsField( fieldName );
-	if ( null!=optLimit ) {
-		q.setTermsLimit( optLimit );
-	}
+    Set<String> out = new LinkedHashSet<>();
+    SolrQuery q = new SolrQuery();
+    q.setRequestHandler("/terms");
+    q.addTermsField( fieldName );
+    if ( null!=optLimit ) {
+      q.setTermsLimit( optLimit );
+    }
     QueryResponse res = server.query( q );
     NamedList<Object> res2 = res.getResponse();
     SimpleOrderedMap res3 = (SimpleOrderedMap) res2.get("terms");
@@ -446,66 +442,65 @@ public class SolrUtils {
       String name = terms.getName( i );
       out.add( name );
     }
-	return out;
+    return out;
   }
 
   // By default gets the top 10
   public static Map<String,Long> getAllTermsAndCountsForField_ViaTermsRequest( HttpSolrServer server, String fieldName ) throws SolrServerException {
-	return getTermsAndCountsForField_ViaTermsRequest( server, fieldName, -1 );
+    return getTermsAndCountsForField_ViaTermsRequest( server, fieldName, -1 );
   }
   public static Map<String,Long> getTermsAndCountsForField_ViaTermsRequest( HttpSolrServer server, String fieldName ) throws SolrServerException {
-	return getTermsAndCountsForField_ViaTermsRequest( server, fieldName, null );
+    return getTermsAndCountsForField_ViaTermsRequest( server, fieldName, null );
   }
   // Includes deleted Docs
   public static Map<String,Long> getTermsAndCountsForField_ViaTermsRequest( HttpSolrServer server, String fieldName, Integer optLimit ) throws SolrServerException {
-	Map<String,Long> out = new LinkedHashMap<>();
-	SolrQuery q = new SolrQuery();
-	q.setRequestHandler("/terms");
+    Map<String,Long> out = new LinkedHashMap<>();
+    SolrQuery q = new SolrQuery();
+    q.setRequestHandler("/terms");
     q.addTermsField( fieldName );
-	if ( null!=optLimit ) {
-	  q.setTermsLimit( optLimit );
-	}
+    if ( null!=optLimit ) {
+      q.setTermsLimit( optLimit );
+    }
     QueryResponse res = server.query( q );
     NamedList<Object> res2 = res.getResponse();
     SimpleOrderedMap res3 = (SimpleOrderedMap) res2.get("terms");
     NamedList terms = (NamedList) res3.get( fieldName );
-	for ( int i=0; i<terms.size(); i++ ) {
-	  String name = terms.getName( i );
-	  Integer count = (Integer) terms.getVal( i );
-	  out.put( name, new Long(count) );
-	}
+    for ( int i=0; i<terms.size(); i++ ) {
+      String name = terms.getName( i );
+      Integer count = (Integer) terms.getVal( i );
+      out.put( name, new Long(count) );
+    }
     return out;
   }
 
-
   // By default gets the top 10
   public static Map<String,Map<String,Long>> getTermsForFields_ViaTermsRequest( HttpSolrServer server, Set<String> fieldNames ) throws SolrServerException {
-	return getTermsForFields_ViaTermsRequest( server, fieldNames, null );
+    return getTermsForFields_ViaTermsRequest( server, fieldNames, null );
   }
   // Includes deleted Docs
   public static Map<String,Map<String,Long>> getTermsForFields_ViaTermsRequest( HttpSolrServer server, Set<String> fieldNames, Integer optLimit ) throws SolrServerException {
-	Map<String,Map<String,Long>> out = new LinkedHashMap<>();
-	SolrQuery q = new SolrQuery();
-	q.setRequestHandler("/terms");
-	for ( String fieldName : fieldNames ) {
-	  q.addTermsField( fieldName );
-	}
-	if ( null!=optLimit ) {
-	  q.setTermsLimit( optLimit );
-	}
+    Map<String,Map<String,Long>> out = new LinkedHashMap<>();
+    SolrQuery q = new SolrQuery();
+    q.setRequestHandler("/terms");
+    for ( String fieldName : fieldNames ) {
+      q.addTermsField( fieldName );
+    }
+    if ( null!=optLimit ) {
+      q.setTermsLimit( optLimit );
+    }
     QueryResponse res = server.query( q );
     NamedList<Object> res2 = res.getResponse();
     SimpleOrderedMap res3 = (SimpleOrderedMap) res2.get("terms");
-	for ( String fieldName : fieldNames ) {
+    for ( String fieldName : fieldNames ) {
       NamedList terms = (NamedList) res3.get( fieldName );
       Map<String,Long> termVector = new LinkedHashMap<>();
-	  for ( int i=0; i<terms.size(); i++ ) {
-	    String name = terms.getName( i );
-	    Integer count = (Integer) terms.getVal( i );
-	    termVector.put( name, new Long(count) );
-	  }
+      for ( int i=0; i<terms.size(); i++ ) {
+        String name = terms.getName( i );
+        Integer count = (Integer) terms.getVal( i );
+        termVector.put( name, new Long(count) );
+      }
       out.put( fieldName, termVector );
-	}
+    }
     return out;
   }
 
@@ -513,52 +508,52 @@ public class SolrUtils {
   // BUT slow for large sets
   // http://localhost:8983/solr/collection1/select?q=*:*&rows=0&facet=true&fl=id&facet.limit=-1&facet.field=class&facet.field=type&rows=0
   public static Map<String,Map<String,Long>> getTermsForFields_ViaSearchFacets( HttpSolrServer server, Set<String> fieldNames, Integer optLimit ) throws SolrServerException {
-	Map<String,Map<String,Long>> out = new LinkedHashMap<>();
-	SolrQuery q = new SolrQuery( "*:*" );
-	q.addField( ID_FIELD );    // Minimize data
-	q.setRows( 0 );            // Minimize data
-	for ( String fieldName : fieldNames ) {
-	  q.addFacetField( fieldName );
-	}
-	if ( null!=optLimit ) {
-	  q.setFacetLimit( optLimit );
-	}
-	QueryResponse res = server.query( q );
-	List<FacetField> facets = res.getFacetFields();
-	// Foreach Field
-	for ( FacetField facet : facets ) {
+    Map<String,Map<String,Long>> out = new LinkedHashMap<>();
+    SolrQuery q = new SolrQuery( "*:*" );
+    q.addField( ID_FIELD );    // Minimize data
+    q.setRows( 0 );            // Minimize data
+    for ( String fieldName : fieldNames ) {
+      q.addFacetField( fieldName );
+    }
+    if ( null!=optLimit ) {
+      q.setFacetLimit( optLimit );
+    }
+    QueryResponse res = server.query( q );
+    List<FacetField> facets = res.getFacetFields();
+    // Foreach Field
+    for ( FacetField facet : facets ) {
       Map<String,Long> termVector = new LinkedHashMap<>();
       String fieldName = facet.getName();
       Integer facetValuesCount = (Integer) facet.getValueCount();
       List<Count> vals = facet.getValues();
       System.out.println( fieldName + " has " + facetValuesCount + " entries" );
-	  for ( Count val : facet.getValues() ) {
-		String term = val.getName();
-		// seems to always return 0 ?
-		long termCount = val.getCount();
-		termVector.put( term, new Long(termCount) );
-		// FacetField ffield = val.getFacetField();
-		// Class<? extends Count> fclass = val.getClass();
-		// String filter = val.getAsFilterQuery();
-	  }
-	  out.put( fieldName, termVector );
-	}
-	return out;
+      for ( Count val : facet.getValues() ) {
+        String term = val.getName();
+        // seems to always return 0 ?
+        long termCount = val.getCount();
+        termVector.put( term, new Long(termCount) );
+        // FacetField ffield = val.getFacetField();
+        // Class<? extends Count> fclass = val.getClass();
+        // String filter = val.getAsFilterQuery();
+      }
+      out.put( fieldName, termVector );
+    }
+    return out;
   }
 
   public static Map< String, Map<String, Collection<Object>> > getAllStoredValuesForFields_ByDocument( HttpSolrServer server, Set<String> fieldNames ) throws SolrServerException {
-	return getStoredValuesForFields_ByDocument( server, fieldNames, ALL_ROWS );
+    return getStoredValuesForFields_ByDocument( server, fieldNames, ALL_ROWS );
   }
   // returns Map: docId -> fieldName -> values
   // Mirrors SolrJ structure
   public static Map< String, Map<String,Collection<Object>> > getStoredValuesForFields_ByDocument( HttpSolrServer server, Set<String> fieldNames, Integer optLimit  ) throws SolrServerException {
-	Map< String, Map<String, Collection<Object>> > out = new LinkedHashMap<>();
-	SolrQuery q = new SolrQuery( "*:*" );
-	boolean forcedId = false;
-	boolean sawWildcard = false;
-	if ( null!=fieldNames && ! fieldNames.isEmpty() ) {
-	  boolean haveSeenId = false;
-	  for ( String fieldName : fieldNames ) {
+    Map< String, Map<String, Collection<Object>> > out = new LinkedHashMap<>();
+    SolrQuery q = new SolrQuery( "*:*" );
+    boolean forcedId = false;
+    boolean sawWildcard = false;
+    if ( null!=fieldNames && ! fieldNames.isEmpty() ) {
+      boolean haveSeenId = false;
+      for ( String fieldName : fieldNames ) {
         q.addField( fieldName );
         if ( fieldName.equals("*") ) {
           sawWildcard = true;
@@ -567,69 +562,69 @@ public class SolrUtils {
         else if ( fieldName.equals(ID_FIELD) ) {
           haveSeenId = true;
         }
-	  }
-	  if ( ! haveSeenId ) {
-		// TODO: lookup real ID field
-	    q.addField( ID_FIELD );
-		forcedId = true;
-	  }
-	}
-	else {
-	  q.addField( "*" );	
-	}
-	if ( null!=optLimit ) {
-	  q.setRows( optLimit );
-	}
-	QueryResponse res = server.query( q );
-	for ( SolrDocument doc : res.getResults() ) {
-	  // TODO: lookup real ID field
-	  String id = doc.getFirstValue( ID_FIELD ).toString();
-	  // doc.getFieldNames();
-	  Map<String, Collection<Object>> values = doc.getFieldValuesMap();
-	  // If they really didn't want the ID, then remove it
-	  if ( forcedId ) {
-		values.remove( ID_FIELD );
-	  }
-	  out.put( id, values );
-	}
-	return out;
+      }
+      if ( ! haveSeenId ) {
+        // TODO: lookup real ID field
+        q.addField( ID_FIELD );
+        forcedId = true;
+      }
+    }
+    else {
+      q.addField( "*" );	
+    }
+    if ( null!=optLimit ) {
+      q.setRows( optLimit );
+    }
+    QueryResponse res = server.query( q );
+    for ( SolrDocument doc : res.getResults() ) {
+      // TODO: lookup real ID field
+      String id = doc.getFirstValue( ID_FIELD ).toString();
+      // doc.getFieldNames();
+      Map<String, Collection<Object>> values = doc.getFieldValuesMap();
+      // If they really didn't want the ID, then remove it
+      if ( forcedId ) {
+        values.remove( ID_FIELD );
+      }
+      out.put( id, values );
+    }
+    return out;
   }
   public static Map< String, Map<String,Collection<Object>> > getAllStoredValuesForFields_ByField( HttpSolrServer server, Set<String> fieldNames ) throws SolrServerException {
-	return getStoredValuesForFields_ByField( server, fieldNames, ALL_ROWS );
+    return getStoredValuesForFields_ByField( server, fieldNames, ALL_ROWS );
   }
   public static Map< String, Map<String,Collection<Object>> > getStoredValuesForFields_ByField( HttpSolrServer server, Set<String> fieldNames, Integer optLimit ) throws SolrServerException {
-	return transformStoredValuesData_ByDocument2ByField(
-		       getStoredValuesForFields_ByDocument( server, fieldNames, optLimit )
-		   );
+    return transformStoredValuesData_ByDocument2ByField(
+        getStoredValuesForFields_ByDocument( server, fieldNames, optLimit )
+        );
   }
   // Input Map: docId -> fieldName -> values
   // returns Map: fieldName -> docId -> values
   static Map< String, Map<String,Collection<Object>> > transformStoredValuesData_ByDocument2ByField( Map< String, Map<String,Collection<Object>> > byDocValues ) {
-	Map< String, Map<String,Collection<Object>> > out = new LinkedHashMap<>();
+    Map< String, Map<String,Collection<Object>> > out = new LinkedHashMap<>();
     // Foreach Document
     for ( Entry<String, Map<String, Collection<Object>>> docEntry : byDocValues.entrySet() ) {
-  	  String docId = docEntry.getKey();
-	  Map<String, Collection<Object>> docValuesRaw = docEntry.getValue();
-	  // java.lang.UnsupportedOperationException
-	  // Map<String, Collection<Object>> docValues = new LinkedHashMap<>();
-	  // java.lang.UnsupportedOperationException
-	  // docValues.putAll( docValuesRaw );
-	  // for ( Entry<String, Collection<Object>> fieldEntry : docValues.entrySet() )
-	  for ( String fieldName : docValuesRaw.keySet() )
-	  {
-		// String fieldName = fieldEntry.getKey();
-		// Collection<Object> values = fieldEntry.getValue();
-		Collection<Object> values = docValuesRaw.get( fieldName );
-		Map<String,Collection<Object>> aggregatedFieldVector = null;
-		if ( out.containsKey(fieldName) ) {
-		  aggregatedFieldVector = out.get( fieldName );
-		}
-		else {
-		  aggregatedFieldVector = new LinkedHashMap<>();
-		  out.put( fieldName, aggregatedFieldVector );
-		}
-		aggregatedFieldVector.put( docId, values );
-	  }
+      String docId = docEntry.getKey();
+      Map<String, Collection<Object>> docValuesRaw = docEntry.getValue();
+      // java.lang.UnsupportedOperationException
+      // Map<String, Collection<Object>> docValues = new LinkedHashMap<>();
+      // java.lang.UnsupportedOperationException
+      // docValues.putAll( docValuesRaw );
+      // for ( Entry<String, Collection<Object>> fieldEntry : docValues.entrySet() )
+      for ( String fieldName : docValuesRaw.keySet() )
+      {
+        // String fieldName = fieldEntry.getKey();
+        // Collection<Object> values = fieldEntry.getValue();
+        Collection<Object> values = docValuesRaw.get( fieldName );
+        Map<String,Collection<Object>> aggregatedFieldVector = null;
+        if ( out.containsKey(fieldName) ) {
+          aggregatedFieldVector = out.get( fieldName );
+        }
+        else {
+          aggregatedFieldVector = new LinkedHashMap<>();
+          out.put( fieldName, aggregatedFieldVector );
+        }
+        aggregatedFieldVector.put( docId, values );
+      }
     }
     return out;
   }
@@ -641,53 +636,53 @@ public class SolrUtils {
   // Do NOT pass in data directly from getStoredValuesForFields_ByDocument, it's in the wrong format
   // even though the generic signatures might match.
   public static Map< String, Map<String,Long> > flattenStoredValues_ValueToTotalCount( Map< String, Map<String,Collection<Object>> > storedValues_ByField ) {
-	Map< String, Map<String,Long> > out = new LinkedHashMap<>();
-	// Foreach field
-	for ( Entry<String, Map<String, Collection<Object>>> fieldEntry : storedValues_ByField.entrySet() ) {
-	  String fieldName = fieldEntry.getKey();
-	  Map<String,Collection<Object>> data = fieldEntry.getValue();
-	  // Map: valueStr -> count
-	  Map<String,Long> valueCounts = new LinkedHashMap<>();
-	  // Foreach doc
-	  for ( Entry<String, Collection<Object>> docEntry : data.entrySet() ) {
-		String docId = docEntry.getKey();
-		Collection<Object> values = docEntry.getValue();
-		for ( Object v : values ) {
-		  String valKey = v.toString();
-		  if ( valueCounts.containsKey(valKey) ) {
-			Long prevCount = valueCounts.get( valKey );
-			valueCounts.put( valKey, prevCount + 1L );
-		  }
-		  else {
-			  valueCounts.put( valKey, 1L );
-		  }
-		}
-	  }  // End foreach doc
-	  out.put( fieldName, valueCounts );
-	}  // End foreach field
-	return out;
+    Map< String, Map<String,Long> > out = new LinkedHashMap<>();
+    // Foreach field
+    for ( Entry<String, Map<String, Collection<Object>>> fieldEntry : storedValues_ByField.entrySet() ) {
+      String fieldName = fieldEntry.getKey();
+      Map<String,Collection<Object>> data = fieldEntry.getValue();
+      // Map: valueStr -> count
+      Map<String,Long> valueCounts = new LinkedHashMap<>();
+      // Foreach doc
+      for ( Entry<String, Collection<Object>> docEntry : data.entrySet() ) {
+        String docId = docEntry.getKey();
+        Collection<Object> values = docEntry.getValue();
+        for ( Object v : values ) {
+          String valKey = v.toString();
+          if ( valueCounts.containsKey(valKey) ) {
+            Long prevCount = valueCounts.get( valKey );
+            valueCounts.put( valKey, prevCount + 1L );
+          }
+          else {
+            valueCounts.put( valKey, 1L );
+          }
+        }
+      }  // End foreach doc
+      out.put( fieldName, valueCounts );
+    }  // End foreach field
+    return out;
   }
   // Uses FieldName-first layered Map
   // Input: fieldName -> docId -> values
   // Returns Map: fieldName -> document count
   public static Map<String, Long> flattenStoredValues_ToDocCount( Map< String, Map<String,Collection<Object>> > storedValues_ByField ) {
-	Map<String, Long> out = new LinkedHashMap<>();
-	// Intermediate Map: fieldName -> fieldValue -> docIds
-	Map< String, Map<String,Set<String>> > intermediateData = flattenStoredValues_ValueToDocIds( storedValues_ByField );
-	// Foreach Field
-	for ( Entry<String, Map<String, Set<String>>> fieldEntry : intermediateData.entrySet() ) {
-	  String fieldName = fieldEntry.getKey();
-	  Map<String, Set<String>> values = fieldEntry.getValue();
-	  // Tabulate Doc IDs across all values for this field
-	  Set<String> overallIds = new LinkedHashSet<>();
-	  for ( Entry<String, Set<String>> valueEntry : values.entrySet() ) {
-		String valueStr = valueEntry.getKey();
-		Set<String> docIds = valueEntry.getValue();
-		overallIds.addAll( docIds );
-	  }
-	  out.put( fieldName, new Long(overallIds.size()) );
-	}
-	return out;
+    Map<String, Long> out = new LinkedHashMap<>();
+    // Intermediate Map: fieldName -> fieldValue -> docIds
+    Map< String, Map<String,Set<String>> > intermediateData = flattenStoredValues_ValueToDocIds( storedValues_ByField );
+    // Foreach Field
+    for ( Entry<String, Map<String, Set<String>>> fieldEntry : intermediateData.entrySet() ) {
+      String fieldName = fieldEntry.getKey();
+      Map<String, Set<String>> values = fieldEntry.getValue();
+      // Tabulate Doc IDs across all values for this field
+      Set<String> overallIds = new LinkedHashSet<>();
+      for ( Entry<String, Set<String>> valueEntry : values.entrySet() ) {
+        String valueStr = valueEntry.getKey();
+        Set<String> docIds = valueEntry.getValue();
+        overallIds.addAll( docIds );
+      }
+      out.put( fieldName, new Long(overallIds.size()) );
+    }
+    return out;
   }
   // Uses FieldName-first layered Map
   // Input: fieldName -> docId -> values
@@ -696,33 +691,33 @@ public class SolrUtils {
   // Do NOT pass in data directly from getStoredValuesForFields_ByDocument, it's in the wrong format
   // even though the generic signatures might match.
   public static Map< String, Map<String,Set<String>> > flattenStoredValues_ValueToDocIds( Map< String, Map<String,Collection<Object>> > storedValues_ByField ) {
-	Map< String, Map<String,Set<String>> > out = new LinkedHashMap<>();
-	// Foreach field
-	for ( Entry<String, Map<String, Collection<Object>>> fieldEntry : storedValues_ByField.entrySet() ) {
-	  String fieldName = fieldEntry.getKey();
-	  Map<String,Collection<Object>> data = fieldEntry.getValue();
-	  // Map: valueStr -> set<docIds>
-	  Map<String,Set<String>> valueToDocIds = new LinkedHashMap<>();
-	  // Foreach doc
-	  for ( Entry<String, Collection<Object>> docEntry : data.entrySet() ) {
-		String docId = docEntry.getKey();
-		Collection<Object> values = docEntry.getValue();
-		for ( Object v : values ) {
-		  String valKey = v.toString();
-		  Set<String> docIdsForValue = null;
-		  if ( valueToDocIds.containsKey(valKey) ) {
-			docIdsForValue = valueToDocIds.get(valKey);
-		  }
-		  else {
-			docIdsForValue = new LinkedHashSet<>();
-			valueToDocIds.put( valKey, docIdsForValue );
-		  }
-		  docIdsForValue.add( docId );
-		}
-	  }  // End foreach doc
-	  out.put( fieldName, valueToDocIds );
-	}  // End foreach field
-	return out;
+    Map< String, Map<String,Set<String>> > out = new LinkedHashMap<>();
+    // Foreach field
+    for ( Entry<String, Map<String, Collection<Object>>> fieldEntry : storedValues_ByField.entrySet() ) {
+      String fieldName = fieldEntry.getKey();
+      Map<String,Collection<Object>> data = fieldEntry.getValue();
+      // Map: valueStr -> set<docIds>
+      Map<String,Set<String>> valueToDocIds = new LinkedHashMap<>();
+      // Foreach doc
+      for ( Entry<String, Collection<Object>> docEntry : data.entrySet() ) {
+        String docId = docEntry.getKey();
+        Collection<Object> values = docEntry.getValue();
+        for ( Object v : values ) {
+          String valKey = v.toString();
+          Set<String> docIdsForValue = null;
+          if ( valueToDocIds.containsKey(valKey) ) {
+            docIdsForValue = valueToDocIds.get(valKey);
+          }
+          else {
+            docIdsForValue = new LinkedHashSet<>();
+            valueToDocIds.put( valKey, docIdsForValue );
+          }
+          docIdsForValue.add( docId );
+        }
+      }  // End foreach doc
+      out.put( fieldName, valueToDocIds );
+    }  // End foreach field
+    return out;
   }
 
   
@@ -736,22 +731,22 @@ public class SolrUtils {
   //   Eg: getSimilarityModelClassName, getDefaultOperator
 
   public static float getSchemaVersion( HttpSolrServer server ) throws SolrServerException {
-	  SolrQuery q = new SolrQuery();
-	  q.setRequestHandler("/schema/version"); 
-      QueryResponse res = server.query( q );
-      NamedList<Object> res2 = res.getResponse();
-      float version = (float) res2.get("version");
-      // float version = (float) res.getResponse().get("version");
-      return version;
+    SolrQuery q = new SolrQuery();
+    q.setRequestHandler("/schema/version"); 
+    QueryResponse res = server.query( q );
+    NamedList<Object> res2 = res.getResponse();
+    float version = (float) res2.get("version");
+    // float version = (float) res.getResponse().get("version");
+    return version;
   }
   public static String getSchemaName( HttpSolrServer server ) throws SolrServerException {
-	  SolrQuery q = new SolrQuery();
-	  q.setRequestHandler("/schema/name"); 
-      QueryResponse res = server.query( q );
-      NamedList<Object> res2 = res.getResponse();
-      String name = (String) res2.get("name");
-      // float version = (float) res.getResponse().get("version");
-      return name;
+    SolrQuery q = new SolrQuery();
+    q.setRequestHandler("/schema/name"); 
+    QueryResponse res = server.query( q );
+    NamedList<Object> res2 = res.getResponse();
+    String name = (String) res2.get("name");
+    // float version = (float) res.getResponse().get("version");
+    return name;
   }
   // Alias
   // Common Name
@@ -760,33 +755,33 @@ public class SolrUtils {
   }
   // REST Name
   public static String getUniqueKeyFieldName( HttpSolrServer server ) throws SolrServerException {
-	  SolrQuery q = new SolrQuery();
-	  q.setRequestHandler("/schema/uniquekey");
-      QueryResponse res = server.query( q );
-      NamedList<Object> res2 = res.getResponse();
-      String key = (String) res2.get("uniqueKey");
-      // float version = (float) res.getResponse().get("version");
-      return key;
+    SolrQuery q = new SolrQuery();
+    q.setRequestHandler("/schema/uniquekey");
+    QueryResponse res = server.query( q );
+    NamedList<Object> res2 = res.getResponse();
+    String key = (String) res2.get("uniqueKey");
+    // float version = (float) res.getResponse().get("version");
+    return key;
   }
   public static String getSimilarityModelClassName( HttpSolrServer server ) throws SolrServerException {
-	  SolrQuery q = new SolrQuery();
-	  q.setRequestHandler("/schema/similarity");
-      QueryResponse res = server.query( q );
-      NamedList<Object> res2 = res.getResponse();
-      NamedList<Object> sim = (NamedList<Object>) res2.get("similarity");
-      String className = (String) sim.get("class");
-      // float version = (float) res.getResponse().get("version");
-      // return sim;
-      return className;
+    SolrQuery q = new SolrQuery();
+    q.setRequestHandler("/schema/similarity");
+    QueryResponse res = server.query( q );
+    NamedList<Object> res2 = res.getResponse();
+    NamedList<Object> sim = (NamedList<Object>) res2.get("similarity");
+    String className = (String) sim.get("class");
+    // float version = (float) res.getResponse().get("version");
+    // return sim;
+    return className;
   }
   public static String getDefaultOperator( HttpSolrServer server ) throws SolrServerException {
-	  SolrQuery q = new SolrQuery();
-	  q.setRequestHandler("/schema/solrqueryparser/defaultoperator");
-      QueryResponse res = server.query( q );
-      NamedList<Object> res2 = res.getResponse();
-      String op = (String) res2.get("defaultOperator");
-      // float version = (float) res.getResponse().get("version");
-      return op;
+    SolrQuery q = new SolrQuery();
+    q.setRequestHandler("/schema/solrqueryparser/defaultoperator");
+    QueryResponse res = server.query( q );
+    NamedList<Object> res2 = res.getResponse();
+    String op = (String) res2.get("defaultOperator");
+    // float version = (float) res.getResponse().get("version");
+    return op;
   }
 
   // Solr "Cursor Marks", AKA "Deep Paging" only in Solr version 4.7+
@@ -808,52 +803,52 @@ public class SolrUtils {
 	  Set<String> out = new LinkedHashSet<>();
 	  SolrQuery q = new SolrQuery();
 	  q.setRequestHandler("/schema/fields");
-      QueryResponse res = server.query( q );
-      NamedList<Object> res2 = res.getResponse();
-      Collection<SimpleOrderedMap> fields = (Collection<SimpleOrderedMap>)res2.get("fields");
-      //System.out.println( "fields=" + fields );
-      for ( SimpleOrderedMap f : fields ) {
-    	  //System.out.println( "f=" + f );
-    	  String name = (String)f.get( "name" );
-    	  out.add( name );
-      }
-      return out;
+	  QueryResponse res = server.query( q );
+	  NamedList<Object> res2 = res.getResponse();
+	  Collection<SimpleOrderedMap> fields = (Collection<SimpleOrderedMap>)res2.get("fields");
+	  //System.out.println( "fields=" + fields );
+	  for ( SimpleOrderedMap f : fields ) {
+	    //System.out.println( "f=" + f );
+	    String name = (String)f.get( "name" );
+	    out.add( name );
+	  }
+	  return out;
   }
   public static Set<String> getAllDynamicFieldPatterns( HttpSolrServer server ) throws SolrServerException {
-	  Set<String> out = new LinkedHashSet<>();
-	  SolrQuery q = new SolrQuery();
-	  q.setRequestHandler("/schema/dynamicfields");
-      QueryResponse res = server.query( q );
-      NamedList<Object> res2 = res.getResponse();
-      Collection<SimpleOrderedMap> fields = (Collection<SimpleOrderedMap>)res2.get("dynamicFields");
-      // System.out.println( "fields=" + fields );
-      for ( SimpleOrderedMap f : fields ) {
-    	  // System.out.println( "f=" + f );
-    	  String name = (String)f.get( "name" );
-    	  out.add( name );
-      }
-      return out;
+    Set<String> out = new LinkedHashSet<>();
+    SolrQuery q = new SolrQuery();
+    q.setRequestHandler("/schema/dynamicfields");
+    QueryResponse res = server.query( q );
+    NamedList<Object> res2 = res.getResponse();
+    Collection<SimpleOrderedMap> fields = (Collection<SimpleOrderedMap>)res2.get("dynamicFields");
+    // System.out.println( "fields=" + fields );
+    for ( SimpleOrderedMap f : fields ) {
+      // System.out.println( "f=" + f );
+      String name = (String)f.get( "name" );
+      out.add( name );
+    }
+    return out;
   }
   public static Set<String> getAllFieldTypeNames( HttpSolrServer server ) throws SolrServerException {
-	  Set<String> out = new LinkedHashSet<>();
-	  SolrQuery q = new SolrQuery();
-	  q.setRequestHandler("/schema/fieldtypes");
-      QueryResponse res = server.query( q );
-      NamedList<Object> res2 = res.getResponse();
-      Collection<SimpleOrderedMap> fields = (Collection<SimpleOrderedMap>)res2.get("fieldTypes");
-      // System.out.println( "fields=" + fields );
-      for ( SimpleOrderedMap f : fields ) {
-    	  // System.out.println( "f=" + f );
-    	  String name = (String)f.get( "name" );
-    	  out.add( name );
-      }
-      return out;
+    Set<String> out = new LinkedHashSet<>();
+    SolrQuery q = new SolrQuery();
+    q.setRequestHandler("/schema/fieldtypes");
+    QueryResponse res = server.query( q );
+    NamedList<Object> res2 = res.getResponse();
+    Collection<SimpleOrderedMap> fields = (Collection<SimpleOrderedMap>)res2.get("fieldTypes");
+    // System.out.println( "fields=" + fields );
+    for ( SimpleOrderedMap f : fields ) {
+      // System.out.println( "f=" + f );
+      String name = (String)f.get( "name" );
+      out.add( name );
+    }
+    return out;
   }
 
   public static Set<String> getAllCopyFieldSourceNames( HttpSolrServer server ) throws SolrServerException {
-	Set<String> out = new LinkedHashSet<>();
-	SolrQuery q = new SolrQuery();
-	q.setRequestHandler("/schema/copyfields");
+    Set<String> out = new LinkedHashSet<>();
+    SolrQuery q = new SolrQuery();
+    q.setRequestHandler("/schema/copyfields");
     QueryResponse res = server.query( q );
     NamedList<Object> res2 = res.getResponse();
     Collection<SimpleOrderedMap> fields = (Collection<SimpleOrderedMap>)res2.get("copyFields");
@@ -866,9 +861,9 @@ public class SolrUtils {
     return out;
   }
   public static Set<String> getAllCopyFieldDestinationNames( HttpSolrServer server ) throws SolrServerException {
-	Set<String> out = new LinkedHashSet<>();
-	SolrQuery q = new SolrQuery();
-	q.setRequestHandler("/schema/copyfields");
+    Set<String> out = new LinkedHashSet<>();
+    SolrQuery q = new SolrQuery();
+    q.setRequestHandler("/schema/copyfields");
     QueryResponse res = server.query( q );
     NamedList<Object> res2 = res.getResponse();
     Collection<SimpleOrderedMap> fields = (Collection<SimpleOrderedMap>)res2.get("copyFields");
@@ -881,9 +876,9 @@ public class SolrUtils {
     return out;
   }
   public static Set<String> getCopyFieldDestinationsForSource( HttpSolrServer server, String sourceName ) throws SolrServerException {
-	Set<String> out = new LinkedHashSet<>();
-	SolrQuery q = new SolrQuery();
-	q.setRequestHandler("/schema/copyfields");
+    Set<String> out = new LinkedHashSet<>();
+    SolrQuery q = new SolrQuery();
+    q.setRequestHandler("/schema/copyfields");
     QueryResponse res = server.query( q );
     NamedList<Object> res2 = res.getResponse();
     Collection<SimpleOrderedMap> fields = (Collection<SimpleOrderedMap>)res2.get("copyFields");
@@ -893,15 +888,15 @@ public class SolrUtils {
       String source = (String)f.get( "source" );
       String dest = (String)f.get( "dest" );
       if ( source.equals(sourceName) ) {
-    	  out.add( dest );
+        out.add( dest );
       }
     }
     return out;
   }
   public static Set<String> getCopyFieldSourcesForDestination( HttpSolrServer server, String sourceName ) throws SolrServerException {
-	Set<String> out = new LinkedHashSet<>();
-	SolrQuery q = new SolrQuery();
-	q.setRequestHandler("/schema/copyfields");
+    Set<String> out = new LinkedHashSet<>();
+    SolrQuery q = new SolrQuery();
+    q.setRequestHandler("/schema/copyfields");
     QueryResponse res = server.query( q );
     NamedList<Object> res2 = res.getResponse();
     Collection<SimpleOrderedMap> fields = (Collection<SimpleOrderedMap>)res2.get("copyFields");
@@ -911,7 +906,7 @@ public class SolrUtils {
       String source = (String)f.get( "source" );
       String dest = (String)f.get( "dest" );
       if ( dest.equals(sourceName) ) {
-    	  out.add( source );
+        out.add( source );
       }
     }
     return out;
@@ -919,11 +914,11 @@ public class SolrUtils {
 
   // http://localhost:8983/solr/demo_shard1_replica1/select?q=*:*&stats=true&stats.field=releaseDate&stats.field=startDate&rows=0
   public static FieldStatsInfo getStatsForField( HttpSolrServer server, String fieldName ) throws SolrServerException {
-	SolrQuery q = new SolrQuery( "*:*" );
-	q.set( "stats", true );
-	q.set( "stats.field", fieldName );
-	q.setRows( 0 );
-	QueryResponse res = server.query( q );
+    SolrQuery q = new SolrQuery( "*:*" );
+    q.set( "stats", true );
+    q.set( "stats.field", fieldName );
+    q.setRows( 0 );
+    QueryResponse res = server.query( q );
     Map<String, FieldStatsInfo> fieldStats = res.getFieldStatsInfo();
     return fieldStats.get( fieldName );
 //    for ( Entry<String, FieldStatsInfo> entry : fieldStats.entrySet() ) {
@@ -942,70 +937,69 @@ public class SolrUtils {
   }
 
   public static Map<java.util.Date,Long> getHistogramForDateField( HttpSolrServer server, String fieldName, int gapInYears ) throws SolrServerException, ParseException {
-	FieldStatsInfo stats = getStatsForField( server, fieldName );
-	java.util.Date startObj = (java.util.Date) stats.getMin();
-	java.util.Date endObj = (java.util.Date) stats.getMax();
-	System.out.println( "Stats, Objs: Start/Stop: " + startObj + " / " + endObj );
-	String start = DateUtils.date2SolrXmlZulu_date2str( startObj );
-	String end = DateUtils.date2SolrXmlZulu_date2str( endObj );
-	System.out.println( "Stats, Strs: Start/Stop: " + start + " / " + end );
+    FieldStatsInfo stats = getStatsForField( server, fieldName );
+    java.util.Date startObj = (java.util.Date) stats.getMin();
+    java.util.Date endObj = (java.util.Date) stats.getMax();
+    System.out.println( "Stats, Objs: Start/Stop: " + startObj + " / " + endObj );
+    String start = DateUtils.date2SolrXmlZulu_date2str( startObj );
+    String end = DateUtils.date2SolrXmlZulu_date2str( endObj );
+    System.out.println( "Stats, Strs: Start/Stop: " + start + " / " + end );
 
     // http://lucene.apache.org/solr/4_0_0/solr-core/org/apache/solr/util/DateMathParser.html
-	String gap = "+" + gapInYears + "YEARS";  // Eg: "+5YEARS"
+    String gap = "+" + gapInYears + "YEARS";  // Eg: "+5YEARS"
 
-	// return getHistogramForDateField( server, fieldName, start.toString(), end.toString(), gap );
-	// Mon Jul 10 17:00:00 PDT 2006
-	// 2012-07-29T00:00:00Z
-	// return getHistogramForDateField( server, fieldName, "2006-07-10T17:00:00Z", end.toString(), gap ); 
-	return getHistogramForDateField( server, fieldName, start, end, gap );
+    // return getHistogramForDateField( server, fieldName, start.toString(), end.toString(), gap );
+    // Mon Jul 10 17:00:00 PDT 2006
+    // 2012-07-29T00:00:00Z
+    // return getHistogramForDateField( server, fieldName, "2006-07-10T17:00:00Z", end.toString(), gap ); 
+    return getHistogramForDateField( server, fieldName, start, end, gap );
   }
 
   // Input needs to be strings so we can also use Solr date math
   // https://lucene.apache.org/solr/4_0_0/solr-solrj/org/apache/solr/client/solrj/response/RangeFacet.html
   // http://localhost:8983/solr/demo_shard1_replica1/select?q=*:*&rows=0&facet=true&facet.range=releaseDate&facet.range=startDate&facet.range.start=NOW-30YEARS&facet.range.end=NOW&facet.range.gap=%2B5YEARS
   public static Map<java.util.Date,Long> getHistogramForDateField( HttpSolrServer server, String fieldName, String start, String end, String gap ) throws SolrServerException, ParseException {
-	Map<java.util.Date,Long> out = new LinkedHashMap<>();
+    Map<java.util.Date,Long> out = new LinkedHashMap<>();
     SolrQuery q = new SolrQuery( "*:*" );
     // q.addField( ID_FIELD );    // Minimize data
     q.setRows( 0 );            // Minimize data
     q.setFacetLimit( -1 );     // all values
-	q.set( "facet", true );
-	q.set( "facet.range", fieldName );
-	q.set( "facet.range.start", start );
-	q.set( "facet.range.end", end );
-	q.set( "facet.range.gap", gap );
-	QueryResponse res = server.query( q );
+    q.set( "facet", true );
+    q.set( "facet.range", fieldName );
+    q.set( "facet.range.start", start );
+    q.set( "facet.range.end", end );
+    q.set( "facet.range.gap", gap );
+    QueryResponse res = server.query( q );
     // List<FacetField> facets = res.getFacetFields();
-	List<RangeFacet> facets = res.getFacetRanges();
-	// Foreach Facet
-	// for ( FacetField f : facets )
-	for ( RangeFacet f : facets )
-	{
-	  System.out.println( "Facet: " + f );
-	  List counts = f.getCounts();
-	  for ( Object c : counts ) {
-		RangeFacet.Count c2 = (RangeFacet.Count) c;
-		int countI = c2.getCount();
-		String val = c2.getValue();
-		// System.out.println( "\tval / count: " + val + " / " + countI );
-		java.util.Date valDate = DateUtils.solrXmlZulu2Date_str2date( val );
-		out.put( valDate, new Long(countI) );
-	  }
-	  // System.out.println( "Facet: " + f + ", counts=" + counts );
-	}
-	return out;
+    List<RangeFacet> facets = res.getFacetRanges();
+    // Foreach Facet
+    // for ( FacetField f : facets )
+    for ( RangeFacet f : facets )
+    {
+      System.out.println( "Facet: " + f );
+      List counts = f.getCounts();
+      for ( Object c : counts ) {
+        RangeFacet.Count c2 = (RangeFacet.Count) c;
+        int countI = c2.getCount();
+        String val = c2.getValue();
+        // System.out.println( "\tval / count: " + val + " / " + countI );
+        java.util.Date valDate = DateUtils.solrXmlZulu2Date_str2date( val );
+        out.put( valDate, new Long(countI) );
+      }
+      // System.out.println( "Facet: " + f + ", counts=" + counts );
+    }
+    return out;
   }
 
-
   public static void main( String[] argv ) throws SolrServerException, ParseException {
-	String host = "localhost";
-	// int port = 8983;
-	// String coll = "demo_shard1_replica1";
-	int port = 8984;
-	String coll = "new-wiki";
-	// int port = 8985;
-	// String coll = "collection1";
-	HttpSolrServer s = getServer( host, port, coll );
+    String host = "localhost";
+    // int port = 8983;
+    // String coll = "demo_shard1_replica1";
+    int port = 8984;
+    String coll = "new-wiki";
+    // int port = 8985;
+    // String coll = "collection1";
+    HttpSolrServer s = getServer( host, port, coll );
 
     Set<String> labels = getClusters( s, "title", "content", 100 );
     // System.out.println( "Labels: " + labels );
