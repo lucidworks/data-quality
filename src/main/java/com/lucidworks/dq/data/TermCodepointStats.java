@@ -23,6 +23,7 @@ import java.util.Vector;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.PosixParser;
@@ -61,6 +62,8 @@ public class TermCodepointStats /*implements HasDescription*/ {
   EmptyFieldStats fieldStats;
 
   boolean includeIndexedFields;
+  int rows = 0;
+  int start = 0;
 
   // Indexed Terms
   // -------------
@@ -79,13 +82,15 @@ public class TermCodepointStats /*implements HasDescription*/ {
   Map<  String,  Map<String, Set<String>>  > categorizedValues;
 
   public TermCodepointStats( HttpSolrServer server ) throws SolrServerException {
-	this( server, null, null, null );
+	this( server, null, null, null, 0, 0 );
   }
-  public TermCodepointStats( HttpSolrServer server, Set<String> targetFields, Boolean includeIndexedFields, Boolean includeStoredFields ) throws SolrServerException {
+  public TermCodepointStats( HttpSolrServer server, Set<String> targetFields, Boolean includeIndexedFields, Boolean includeStoredFields, int rows, int start ) throws SolrServerException {
+    this.rows = rows;
+    this.start = start;
 	// this.server = server;
 	// this.fieldStats = new EmptyFieldStats( server );
 	// Target Fields and includeStoredFields handled by fieldsStats  
-	this.fieldStats = new EmptyFieldStats( server, targetFields, includeStoredFields, null );
+	this.fieldStats = new EmptyFieldStats( server, targetFields, includeStoredFields, null, rows, start );
 
     // TODO: a bit of mismatch about Indexed Fields vs Stored Fields
 	// In this class we let you turn off Indexed fields if you only want Stored fields
@@ -235,17 +240,18 @@ public class TermCodepointStats /*implements HasDescription*/ {
 
   void tabulateStoredFields( Set<String> fieldNames ) throws SolrServerException {
 	System.out.println( "Fetching ALL values, this may take a while ..." );
-	long start = System.currentTimeMillis();
+	long startTime = System.currentTimeMillis();
 
 	// Does NOT includes Deleted Docs
 	// Note: report includes statement about whether deleted docs are included or not
 	// so if you change the impl, also change the report text
 	// rawTermsMap = SolrUtils.getAllTermsForFields_ViaTermsRequest( fieldStats.getSolrServer(), fieldNames );
-	Map<String, Map<String, Collection<Object>>> docsByField = SolrUtils.getAllStoredValuesForFields_ByField( getSolrServer(), fieldNames );
+	// Map<String, Map<String, Collection<Object>>> docsByField = SolrUtils.getAllStoredValuesForFields_ByField( getSolrServer(), fieldNames );
+  Map<String, Map<String, Collection<Object>>> docsByField = SolrUtils.getAllStoredValuesForFields_ByField( getSolrServer(), fieldNames, rows, start );
 	rawValuesMap = SolrUtils.flattenStoredValues_ValueToTotalCount( docsByField );
 
-	long stop = System.currentTimeMillis();
-	long diff = stop - start;
+	long stopTime = System.currentTimeMillis();
+	long diff = stopTime - startTime;
 	System.out.println( "Via Search Request took " + diff + " ms" );
 
 	System.out.println( "Tabulating retrieved values ..." );
@@ -483,6 +489,17 @@ public class TermCodepointStats /*implements HasDescription*/ {
 	options.addOption( "I", "no_indexed_fields", false, "Don't check stats of Indexed fields.  Used with --stored_fields to only get Stored Fields info." );
 	// TODO: add option for sample size
 	options.addOption( "f", "fields", true, "Fields to analyze, Eg: fields=name,category, default is all indexed/stored fields" );
+
+  // rows and start
+  options.addOption(
+      OptionBuilder.withLongOpt("rows")
+        .withDescription( "Limit number of rows to check for stored values; useful for low memory, see also start" )
+        .create());
+  options.addOption(
+      OptionBuilder.withLongOpt("start")
+        .withDescription( "Offset of row to start checking for stored values; useful for low memory, see also rows" )
+        .create());
+
 	if ( argv.length < 1 ) {
 	  helpAndExit();
 	}
@@ -570,8 +587,25 @@ public class TermCodepointStats /*implements HasDescription*/ {
     }
     System.out.println( "Solr = " + solr.getBaseURL() );
 
-    
-    TermCodepointStats tcp = new TermCodepointStats( solr, targetFields, indexedFieldsFlagObj, storedFieldsFlagObj );
+    int rows = 0;
+    Integer rowsObj = (Integer) cmd.getParsedOptionValue("rows");
+    if (null != rowsObj) {
+      if (rowsObj.intValue() <= 0) {
+        helpAndExit("rows must be > 0", 5);
+      }
+      rows = rowsObj.intValue();
+    }
+
+    int start = 0;
+    Integer startObj = (Integer) cmd.getParsedOptionValue("start");
+    if (null != startObj) {
+      if (startObj.intValue() <= 0) {
+        helpAndExit("start must be > 0", 6);
+      }
+      start = startObj.intValue();
+    }
+       
+    TermCodepointStats tcp = new TermCodepointStats( solr, targetFields, indexedFieldsFlagObj, storedFieldsFlagObj, rows, start );
 
 	String report = tcp.generateReport( solr.getBaseURL() );
 	System.out.println( report );

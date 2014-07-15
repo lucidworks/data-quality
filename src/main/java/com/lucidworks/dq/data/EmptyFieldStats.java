@@ -14,6 +14,7 @@ import java.util.Set;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.PosixParser;
@@ -44,6 +45,8 @@ public class EmptyFieldStats /*implements HasDescription*/ {
   boolean includeStoredFields = false;
   boolean showIds = false;
   Set<String> targetFields = null;
+  int rows = 0;
+  int start = 0;
 
   HttpSolrServer solrServer;
   Long totalDocs;
@@ -75,10 +78,11 @@ public class EmptyFieldStats /*implements HasDescription*/ {
   Map<String,Double> fieldStatsStoredValuePercentages;
 
   public EmptyFieldStats( HttpSolrServer server ) throws SolrServerException {
-    this( server, null, null, null );
+    this( server, null, null, null, 0, 0 );
   }
   // TODO: refactor to allow options to be settable after constructor is run
-  public EmptyFieldStats( HttpSolrServer server, Set<String> targetFields, Boolean includeStoredFields, Boolean showIds ) throws SolrServerException {
+  public EmptyFieldStats( HttpSolrServer server, Set<String> targetFields,
+      Boolean includeStoredFields, Boolean showIds, int rows, int start ) throws SolrServerException {
     this.solrServer = server;
     if ( null!=targetFields && ! targetFields.isEmpty() ) {
       this.targetFields = targetFields;
@@ -89,6 +93,8 @@ public class EmptyFieldStats /*implements HasDescription*/ {
     if ( null!=showIds && showIds.booleanValue() ) {
       this.showIds = true;
     }
+    this.rows = rows;
+    this.start = start;
     resetData();
     // TODO: should defer these?  Nice sanity check...
     doAllTabulations();  
@@ -241,8 +247,11 @@ public class EmptyFieldStats /*implements HasDescription*/ {
     int fieldCount = 0;
 
     // Map<String, Map<String, Collection<Object>>> docsByField = SolrUtils.getStoredValuesForFields_ByField( server, fieldNames, 100000 );
-    Map<String, Map<String, Collection<Object>>> docsByField = SolrUtils.getAllStoredValuesForFields_ByField( solrServer, fieldNames );
     // Map<String, Map<String, Long>> stats = SolrUtils.flattenStoredValues_ValueToTotalCount( docsByField );
+    // Calling for all fields at once is a huge memory hog, can cause OOM
+    // *or* is that we're trying to store all the values in memory in one structure, regardless of how we fetch them
+    // Map<String, Map<String, Collection<Object>>> docsByField = SolrUtils.getAllStoredValuesForFields_ByField( solrServer, fieldNames );
+    Map<String, Map<String, Collection<Object>>> docsByField = SolrUtils.getAllStoredValuesForFields_ByField( solrServer, fieldNames, rows, start );
 
     // Gives us: field name -> doc count
     Map<String,Long> stats = SolrUtils.flattenStoredValues_ToDocCount( docsByField );
@@ -549,6 +558,17 @@ public class EmptyFieldStats /*implements HasDescription*/ {
     options.addOption( "i", "ids", false, "Include IDs of docs with empty fields. WARNING: may create large report" );
     // TODO: could add option for number of IDs to include...
     options.addOption( "f", "fields", true, "Fields to analyze, Eg: fields=name,category, default is all fields" );
+
+    // rows and start
+    options.addOption(
+        OptionBuilder.withLongOpt("rows")
+          .withDescription( "Limit number of rows to check for stored values; useful for low memory, see also start" )
+          .create());
+    options.addOption(
+        OptionBuilder.withLongOpt("start")
+          .withDescription( "Offset of row to start checking for stored values; useful for low memory, see also rows" )
+          .create());
+    
     if ( argv.length < 1 ) {
       helpAndExit();
     }
@@ -603,10 +623,28 @@ public class EmptyFieldStats /*implements HasDescription*/ {
       }
     }
 
+    int rows = 0;
+    Integer rowsObj = (Integer) cmd.getParsedOptionValue("rows");
+    if (null != rowsObj) {
+      if (rowsObj.intValue() <= 0) {
+        helpAndExit("rows must be > 0", 5);
+      }
+      rows = rowsObj.intValue();
+    }
+
+    int start = 0;
+    Integer startObj = (Integer) cmd.getParsedOptionValue("start");
+    if (null != startObj) {
+      if (startObj.intValue() <= 0) {
+        helpAndExit("start must be > 0", 6);
+      }
+      start = startObj.intValue();
+    }
+    
 
     System.out.println( "Solr = " + solr.getBaseURL() );
     // EmptyFieldStats fs = new EmptyFieldStats( solr );
-    EmptyFieldStats fs = new EmptyFieldStats( solr, targetFields, includeStoredFields, showIds );
+    EmptyFieldStats fs = new EmptyFieldStats( solr, targetFields, includeStoredFields, showIds, rows, start );
 
     String report = fs.generateReport( solr.getBaseURL() );
     System.out.println( report );

@@ -556,11 +556,11 @@ public class SolrUtils {
   }
 
   public static Map< String, Map<String, Collection<Object>> > getAllStoredValuesForFields_ByDocument( HttpSolrServer server, Set<String> fieldNames ) throws SolrServerException {
-    return getStoredValuesForFields_ByDocument( server, fieldNames, ALL_ROWS );
+    return getStoredValuesForFields_ByDocument( server, fieldNames, ALL_ROWS, 0 );
   }
   // returns Map: docId -> fieldName -> values
   // Mirrors SolrJ structure
-  public static Map< String, Map<String,Collection<Object>> > getStoredValuesForFields_ByDocument( HttpSolrServer server, Set<String> fieldNames, Integer optLimit  ) throws SolrServerException {
+  public static Map< String, Map<String,Collection<Object>> > getStoredValuesForFields_ByDocument( HttpSolrServer server, Set<String> fieldNames, int optLimitRows, int optStartOffset ) throws SolrServerException {
     Map< String, Map<String, Collection<Object>> > out = new LinkedHashMap<>();
     SolrQuery q = new SolrQuery( "*:*" );
     boolean forcedId = false;
@@ -586,8 +586,11 @@ public class SolrUtils {
     else {
       q.addField( "*" );	
     }
-    if ( null!=optLimit ) {
-      q.setRows( optLimit );
+    if ( optLimitRows > 0 ) {
+      q.setRows( optLimitRows );
+    }
+    if ( optStartOffset > 0 ) {
+      q.setStart( optStartOffset );
     }
     QueryResponse res = server.query( q );
     for ( SolrDocument doc : res.getResults() ) {
@@ -604,11 +607,14 @@ public class SolrUtils {
     return out;
   }
   public static Map< String, Map<String,Collection<Object>> > getAllStoredValuesForFields_ByField( HttpSolrServer server, Set<String> fieldNames ) throws SolrServerException {
-    return getStoredValuesForFields_ByField( server, fieldNames, ALL_ROWS );
+    return getAllStoredValuesForFields_ByField( server, fieldNames, ALL_ROWS, 0 );
   }
-  public static Map< String, Map<String,Collection<Object>> > getStoredValuesForFields_ByField( HttpSolrServer server, Set<String> fieldNames, Integer optLimit ) throws SolrServerException {
+  public static Map< String, Map<String,Collection<Object>> > getAllStoredValuesForFields_ByField( HttpSolrServer server, Set<String> fieldNames, int optLimitRows, int optStartOffset ) throws SolrServerException {
+    return getStoredValuesForFields_ByField( server, fieldNames, optLimitRows, optStartOffset );
+  }
+  public static Map< String, Map<String,Collection<Object>> > getStoredValuesForFields_ByField( HttpSolrServer server, Set<String> fieldNames, int optLimitRows, int optStartOffset ) throws SolrServerException {
     return transformStoredValuesData_ByDocument2ByField(
-        getStoredValuesForFields_ByDocument( server, fieldNames, optLimit )
+        getStoredValuesForFields_ByDocument( server, fieldNames, optLimitRows, optStartOffset )
         );
   }
   // Input Map: docId -> fieldName -> values
