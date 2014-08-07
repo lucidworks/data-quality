@@ -147,7 +147,7 @@ public class DeleteByIds /*implements HasDescription*/ {
     }
 
     int batchSize = DEFAULT_BATCH_SIZE;
-    Integer batchObj = (Integer) cmd.getParsedOptionValue( "batch_size" );
+    Long batchObj = (Long) cmd.getParsedOptionValue( "batch_size" );
     if ( null!=batchObj ) {
       if ( batchObj.longValue() < 0L ) {
     	helpAndExit( "batch_size must be >= 0", 5 );	

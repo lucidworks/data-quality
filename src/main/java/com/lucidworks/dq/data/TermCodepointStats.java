@@ -491,13 +491,21 @@ public class TermCodepointStats /*implements HasDescription*/ {
 
     // rows and start
     options.addOption(
-        OptionBuilder.withLongOpt("rows")
-        .withDescription( "Limit number of rows to check for stored values; useful for low memory, see also start" )
-        .create());
+        OptionBuilder
+          .withLongOpt("rows")
+          .withDescription( "Limit number of rows to check for stored values; useful for low memory, see also start" )
+          .hasArg()
+          .withType(Number.class) // NOT Long.class
+          .create()
+          );
     options.addOption(
-        OptionBuilder.withLongOpt("start")
-        .withDescription( "Offset of row to start checking for stored values; useful for low memory, see also rows" )
-        .create());
+        OptionBuilder
+          .withLongOpt("start")
+          .withDescription( "Offset of row to start checking for stored values; useful for low memory, see also rows" )
+          .hasArg()
+          .withType(Number.class) // NOT Long.class
+          .create()
+          );
 
     if ( argv.length < 1 ) {
       helpAndExit();
@@ -587,7 +595,8 @@ public class TermCodepointStats /*implements HasDescription*/ {
     System.out.println( "Solr = " + solr.getBaseURL() );
 
     int rows = 0;
-    Integer rowsObj = (Integer) cmd.getParsedOptionValue("rows");
+    // Don't use Integer
+    Long rowsObj = (Long) cmd.getParsedOptionValue("rows");
     if (null != rowsObj) {
       if (rowsObj.intValue() <= 0) {
         helpAndExit("rows must be > 0", 5);
@@ -596,7 +605,8 @@ public class TermCodepointStats /*implements HasDescription*/ {
     }
 
     int start = 0;
-    Integer startObj = (Integer) cmd.getParsedOptionValue("start");
+    // Don't use Integer
+    Long startObj = (Long) cmd.getParsedOptionValue("start");
     if (null != startObj) {
       if (startObj.intValue() <= 0) {
         helpAndExit("start must be > 0", 6);
