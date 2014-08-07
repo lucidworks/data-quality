@@ -433,6 +433,10 @@ public class EmptyFieldStats /*implements HasDescription*/ {
       if ( fieldStatsIndexedValuePercentages.containsKey(name) ) {
         percent = fieldStatsIndexedValuePercentages.get( name );
       }
+      // this shouldn't happen, parent loop shouldn't be requesting this field
+      else if ( lukeIndexedFields.contains(name) ) {
+        percent = 0.0D;
+      }
       addStatAndOptionalPercentToReport( out, name, count, percent, "\t" );
 	  
       if ( getShowIds() ) {
@@ -470,23 +474,49 @@ public class EmptyFieldStats /*implements HasDescription*/ {
         if ( fieldStatsStoredValuePercentages.containsKey(name) ) {
           percent = fieldStatsStoredValuePercentages.get( name );
         }
+        // this shouldn't happen, parent loop shouldn't be requesting this field
+        else if ( lukeStoredFields.contains(name) ) {
+          percent = 0.0D;
+        }
         addStatAndOptionalPercentToReport( out, name, count, percent, "\t" );
       }
 
       // Comparison / Joined
       out.println();
       out.println( "Comparision: Indexed and Stored Fields: (Indexed / Stored)" );
+      if ( rows > 0 || start > 0 ) {
+        // See also tabulateFieldsWithIndexedValues
+        out.println( "\tREMINDER: Indexed stats are for all rows but Stored stats were restricted" );
+      }
       Set<String> lowFieldsCombined = SetUtils.union_nonDestructive( lowFieldsIndexed, lowFieldsStored );
       for ( String name : lowFieldsCombined ) {
+
+        // Indexed
         Long indexedCount = fieldStatsIndexedValueCounts.get( name );
+        if ( null==indexedCount && lukeIndexedFields.contains(name) ) {
+          indexedCount = 0L;
+        }
         Double indexedPercent = null;
         if ( fieldStatsIndexedValuePercentages.containsKey(name) ) {
           indexedPercent = fieldStatsIndexedValuePercentages.get( name );
         }
+        // common scenario since loop uses combined list, distinguish between 0 and n/a
+        else if ( lukeIndexedFields.contains(name) ) {
+          indexedPercent = 0.0D;
+        }
+
+        // Stored
         Long storedCount = fieldStatsStoredValueCounts.get( name );
+        if ( null==storedCount && lukeStoredFields.contains(name) ) {
+          storedCount = 0L;
+        }
         Double storedPercent = null;
         if ( fieldStatsStoredValuePercentages.containsKey(name) ) {
           storedPercent = fieldStatsStoredValuePercentages.get( name );
+        }
+        // common scenario since loop uses combined list, distinguish between 0 and n/a
+        else if ( lukeStoredFields.contains(name) ) {
+          storedPercent = 0.0D;
         }
         addDualStatsAndPercentsToReport( out, name, indexedCount, indexedPercent, storedCount, storedPercent, "\t" );
       }
