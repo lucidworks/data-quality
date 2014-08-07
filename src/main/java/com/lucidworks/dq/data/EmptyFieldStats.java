@@ -256,15 +256,46 @@ public class EmptyFieldStats /*implements HasDescription*/ {
     // Gives us: field name -> doc count
     Map<String,Long> stats = SolrUtils.flattenStoredValues_ToDocCount( docsByField );
 
+    // See also second half of addAllFieldStatsToReport
+    // TODO: could move this to a method
+    long expectedDocCount = getTotalDocCount();
+    // If we limited number of rows or skipped over some
+    // then adjust our expectations
+    if ( rows > 0 || start > 0 ) {
+      // can't expect fewer than 0
+      if ( expectedDocCount > 0 ) {
+        // If skipping earlier records, than that reduces potential total
+        // Eg: 15 docs in collection, but told to start at offset 5,
+        // so can only see docs at offsets [5, 6, 7, 8, 9, 10, 11, 12, 13, 14] = *10*
+        if ( start > 0 ) {
+          expectedDocCount -= start;
+          // bounds check
+          expectedDocCount = expectedDocCount<0 ? 0 : expectedDocCount;
+        }
+        // Eg: 15 docs but rows=5 yields offsets [0, 1, 2, 3, 4], total of 5
+        // Eg: 15 docs, start=5 & rows=5 yields [5, 6, 7, 8, 9], still total of 5
+        // harmless if expectedDocs already 0
+        if ( rows > 0 && rows < expectedDocCount ) {
+          expectedDocCount = rows;
+        }
+      }
+    }
+
     // Foreach field
     for ( Entry<String, Long> item : stats.entrySet() ) {
       fieldCount++;
       String fieldName = item.getKey();
       Long stat = item.getValue();
+      // Record raw stat
+      fieldStatsStoredValueCounts.put( fieldName, stat );
+      // Any Stored Values?
       if ( stat > 0L ) {
         fieldsWithStoredValues.add( fieldName );
+        // If not an empty Collection
         if ( getTotalDocCount() > 0L ) {
-          if ( stat >= getTotalDocCount() ) {
+          //if ( stat >= getTotalDocCount() )
+          if ( stat >= expectedDocCount )
+          {
             fullCountStoredValues.add( fieldName );
           }
           else {
@@ -272,17 +303,21 @@ public class EmptyFieldStats /*implements HasDescription*/ {
           }
         }
       }
+      // Else No Stored Values
       else {
         fieldsWithNoStoredValues.add( fieldName );
       }
-      fieldStatsStoredValueCounts.put( fieldName, stat );
       // Shouldn't be negative
-      fieldStatsStoredValueDeficits.put( fieldName, getTotalDocCount() - stat );
+      //fieldStatsStoredValueDeficits.put( fieldName, getTotalDocCount() - stat );
+      fieldStatsStoredValueDeficits.put( fieldName, expectedDocCount - stat );
+      // If not an empty Collection
       if ( getTotalDocCount() > 0L ) {
         // TODO: could just insert 0% if stat is 0, save calculation
-        double percent = (double) stat / (double) getTotalDocCount();
+        //double percent = (double) stat / (double) getTotalDocCount();
+        double percent = (double) stat / (double) expectedDocCount;
         fieldStatsStoredValuePercentages.put( fieldName, percent );
       }
+      // Else empty Collection
       else {
         // TODO: If no total docs, default to 0% ?  Or could leave empty
         fieldStatsStoredValuePercentages.put( fieldName, 0.0D );
@@ -414,6 +449,13 @@ public class EmptyFieldStats /*implements HasDescription*/ {
     if ( getIncludeStoredFields() ) {
 
       // Stored (vs. Indexed)
+
+      if ( rows > 0 || start > 0 ) {
+        // See also tabulateFieldsWithIndexedValues
+        out.println();
+        out.println( "WARNING: *Stored* Field statistics might only be ESTIMATES since samples were restricted:" );
+        out.println( "\t--rows=" + rows + ", --start=" + start + ", see also --stored_fields" );
+      }
       out.println();
       out.println( "Stored Values at 100%: " + getFullyPopulatedStoredFields() );
       out.println();
@@ -563,7 +605,7 @@ public class EmptyFieldStats /*implements HasDescription*/ {
     options.addOption(
         OptionBuilder
           .withLongOpt("rows")
-          .withDescription( "Limit number of rows to check for stored values; useful for low memory, see also start" )
+          .withDescription( "Limit number of rows to check for *Stored* values, useful for low memory; doesn't affect Indexed stats. See also --stored_fields and --start" )
           .hasArg()
           .withType(Number.class) // NOT Long.class
           .create()
@@ -571,7 +613,7 @@ public class EmptyFieldStats /*implements HasDescription*/ {
     options.addOption(
         OptionBuilder
           .withLongOpt("start")
-          .withDescription( "Offset of row to start checking for stored values; useful for low memory, see also rows" )
+          .withDescription( "Offset of row to start checking *Stored* values, useful for low memory; doesn't affect Indexed stats. See also --stored_fields and --rows" )
           .hasArg()
           .withType(Number.class) // NOT Long.class
           .create()
