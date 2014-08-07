@@ -394,10 +394,19 @@ public class EmptyFieldStats /*implements HasDescription*/ {
     addSimpleStatToReport( out, "Total Active Docs", getTotalDocCount() );
 
     out.println();
-    out.println( "All Fields: " + getAllFieldNames() );
+    out.println( "All Fields"
+        + " (" + getAllFieldNames().size() + ")"
+        + ": " + getAllFieldNames()
+        );
     out.println();
-    out.println( "Luke Indexed but not Stored: " + lukeIndexedButNotStored );
-    out.println( "Luke Stored but not Indexed: " + lukeStoredButNotIndexed );
+    out.println( "Luke Indexed but not Stored"
+        + " (" + lukeIndexedButNotStored.size() + ")"
+        + ": " + lukeIndexedButNotStored
+        );
+    out.println( "Luke Stored but not Indexed"
+        + " (" + lukeStoredButNotIndexed.size() + ")"
+        + ": " + lukeStoredButNotIndexed
+        );
 
     if ( null!=getTargetFields() ) {
       out.println();
@@ -420,12 +429,19 @@ public class EmptyFieldStats /*implements HasDescription*/ {
   void addAllFieldStatsToReport( PrintWriter out ) throws SolrServerException {
 
     // Indexed (vs. Stored)
-    out.println( "Indexed at 100%: " + getFullyPopulatedIndexedFields() );
+    out.println( "Indexed at 100%"
+        + " (" + getFullyPopulatedIndexedFields().size() + ")"
+        + ": " + getFullyPopulatedIndexedFields()
+        );
     out.println();
-    out.println( "No Indexed Values / 0%: " + getFieldsWithNoIndexedValues() );
+    out.println( "No Indexed Values / 0%"
+        + " (" + getFieldsWithNoIndexedValues().size() + ")"
+        + ": " + getFieldsWithNoIndexedValues()
+        );
     out.println();
     // TODO: might be nice to sort by percent desc + name asc
     out.println( "Partially Indexed Fields / Percentages:" );
+    out.println( "\t(" + getPartiallyPopulatedIndexedFields().size() + ")" );
     Set<String> lowFieldsIndexed = getPartiallyPopulatedIndexedFields();
     for ( String name : lowFieldsIndexed ) {
       Long count = fieldStatsIndexedValueCounts.get( name );
@@ -461,12 +477,19 @@ public class EmptyFieldStats /*implements HasDescription*/ {
         out.println( "\t--rows=" + rows + ", --start=" + start + ", see also --stored_fields" );
       }
       out.println();
-      out.println( "Stored Values at 100%: " + getFullyPopulatedStoredFields() );
+      out.println( "Stored Values at 100%"
+          + " (" + getFullyPopulatedStoredFields().size() + ")"
+          + ": " + getFullyPopulatedStoredFields()
+          );
       out.println();
-      out.println( "No Stored Values / 0%: " + getFieldsWithNoStoredValues() );
+      out.println( "No Stored Values / 0%"
+          + " (" + getFieldsWithNoStoredValues().size() + ")"
+          + ": " + getFieldsWithNoStoredValues()
+          );
       out.println();
       // TODO: might be nice to sort by percent desc + name asc
       out.println( "Partially Stored Fields / Percentages:" );
+      out.println( "\t(" + getPartiallyPopulatedStoredFields().size() + ")" );
       Set<String> lowFieldsStored = getPartiallyPopulatedStoredFields();
       for ( String name : lowFieldsStored ) {
         Long count = fieldStatsStoredValueCounts.get( name );
@@ -489,6 +512,7 @@ public class EmptyFieldStats /*implements HasDescription*/ {
         out.println( "\tREMINDER: Indexed stats are for all rows but Stored stats were restricted" );
       }
       Set<String> lowFieldsCombined = SetUtils.union_nonDestructive( lowFieldsIndexed, lowFieldsStored );
+      out.println( "\t(" + lowFieldsCombined.size() + ")" );
       for ( String name : lowFieldsCombined ) {
 
         // Indexed
