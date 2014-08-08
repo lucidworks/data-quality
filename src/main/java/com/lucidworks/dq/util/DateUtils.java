@@ -15,9 +15,9 @@ public class DateUtils {
   public static final String ZULU_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
 
   public static String javaDefault2SolrXmlZulu_str2str( String inDate ) throws ParseException {
-	java.util.Date dateObj = javaDefault2Date_str2date( inDate );
-	String outDateStr = date2SolrXmlZulu_date2str( dateObj );
-	return outDateStr;
+    java.util.Date dateObj = javaDefault2Date_str2date( inDate );
+    String outDateStr = date2SolrXmlZulu_date2str( dateObj );
+    return outDateStr;
   }
   public static String solrXmlZulu2JavaDefault_str2str( String inDate ) throws ParseException {
     java.util.Date dateObj = solrXmlZulu2Date_str2date( inDate );
@@ -26,19 +26,19 @@ public class DateUtils {
   }
   public static String _javaDefault2SolrXmlZulu_str2str( String inDate ) throws ParseException {
     DateFormat javaFormatter = new SimpleDateFormat( JAVA_FORMAT );
-	DateFormat zuluFormatter = new SimpleDateFormat( ZULU_FORMAT );
+    DateFormat zuluFormatter = new SimpleDateFormat( ZULU_FORMAT );
     zuluFormatter.setTimeZone( TimeZone.getTimeZone("GMT") );
-	java.util.Date tmpDate = javaFormatter.parse( inDate );
-	String outDate = zuluFormatter.format( tmpDate );
-	return outDate;
+    java.util.Date tmpDate = javaFormatter.parse( inDate );
+    String outDate = zuluFormatter.format( tmpDate );
+    return outDate;
   }
   public static String _solrXmlZulu2JavaDefault_str2str( String inDate ) throws ParseException {
-	DateFormat zuluFormatter = new SimpleDateFormat( ZULU_FORMAT );
+    DateFormat zuluFormatter = new SimpleDateFormat( ZULU_FORMAT );
     zuluFormatter.setTimeZone( TimeZone.getTimeZone("GMT") );
-	DateFormat javaFormatter = new SimpleDateFormat( JAVA_FORMAT );
-	java.util.Date tmpDate = zuluFormatter.parse( inDate );
-	String outDate = javaFormatter.format( tmpDate );
-	return outDate;
+    DateFormat javaFormatter = new SimpleDateFormat( JAVA_FORMAT );
+    java.util.Date tmpDate = zuluFormatter.parse( inDate );
+    String outDate = javaFormatter.format( tmpDate );
+    return outDate;
   }
 
   public static String date2SolrXmlZulu_date2str( java.util.Date inDate ) throws ParseException {
@@ -49,8 +49,8 @@ public class DateUtils {
   }
   public static String date2JavaDefault_date2str( java.util.Date inDate ) throws ParseException {
     DateFormat javaFormatter = new SimpleDateFormat( JAVA_FORMAT );
-	String outDate = javaFormatter.format( inDate );
-	return outDate;
+    String outDate = javaFormatter.format( inDate );
+    return outDate;
   }
 
   public static java.util.Date javaDefault2Date_str2date( String inDate ) throws ParseException {
@@ -66,13 +66,13 @@ public class DateUtils {
   }
 
   public static List<Double> dates2Doubles( Collection<Date> dates ) {
-	List<Double> out = new ArrayList<>();
-	for ( Date d : dates ) {
-	  out.add(  new Double( d.getTime() )  );
-	}
-	return out;
+    List<Double> out = new ArrayList<>();
+    for ( Date d : dates ) {
+      out.add(  new Double( d.getTime() )  );
+    }
+    return out;
   }
   public static Double date2Double( Date d ) {
-	return new Double( d.getTime() ).doubleValue();
+    return new Double( d.getTime() ).doubleValue();
   }
 }
