@@ -356,13 +356,24 @@ public class SolrUtils {
     return out;
   }
 
+  public static String escapeFieldName( String inFieldName ) {
+    // Tika fields from GIF files?
+    String outFieldName = inFieldName;
+    // "attr_Chroma BlackIsZero_"
+    outFieldName = StringUtils.escapeSpaces( outFieldName );
+    // attr_cp:subject_
+    outFieldName = StringUtils.escapeColons( outFieldName );
+    return outFieldName;
+  }
+
   public static long getTotalDocCount( HttpSolrServer server ) throws SolrServerException {
 	  return getDocCountForQuery( server, "*:*" );
   }
   public static long getDocCountForField( HttpSolrServer server, String fieldName ) throws SolrServerException {
     // NullPointerException for location
     // com.spatial4j.core.io.ParseUtils.parsePoint(ParseUtils.java:42)
-    String queryStr = fieldName + ":[* TO *]";
+    // String queryStr = fieldName + ":[* TO *]";
+    String queryStr = escapeFieldName(fieldName) + ":[* TO *]";
     try {
       return getDocCountForQuery( server, queryStr );
     }
@@ -568,7 +579,12 @@ public class SolrUtils {
     if ( null!=fieldNames && ! fieldNames.isEmpty() ) {
       boolean haveSeenId = false;
       for ( String fieldName : fieldNames ) {
-        q.addField( fieldName );
+        // q.addField( fieldName );
+        // Tika GIF meta fields, ex: "attr_meta:save-date_"
+        // escapeFieldName does NOT escape the asterisk, which we wouldn't want
+        // q.addField( escapeFieldName(fieldName) );
+        // try double escaping
+        q.addField( escapeFieldName(escapeFieldName(fieldName)) );
         if ( fieldName.equals("*") ) {
           sawWildcard = true;
           haveSeenId = true;

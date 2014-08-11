@@ -50,6 +50,19 @@ public class StringUtils {
     return out;
   }
 
+  public static String escapeSpaces( String inStr ) {
+    if ( null==inStr ) {
+      return null;
+    }
+    return inStr.replaceAll( "[ ]", "\\\\ " );
+  }
+  public static String escapeColons( String inStr ) {
+    if ( null==inStr ) {
+      return null;
+    }
+    return inStr.replaceAll( "[:]", "\\\\:" );
+  }
+
   /**
    * Based on code from:
    * http://stackoverflow.com/questions/1247772 and
