@@ -13,7 +13,20 @@ public class DateUtils {
 
   public static final String JAVA_FORMAT = "EEE MMM dd HH:mm:ss z yyyy";
   public static final String ZULU_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
+  // public static final String COMPACT_LOG_FORMAT = "yyyy-MM-dd_HH:mm:ss.S";
+  public static final String COMPACT_LOG_FORMAT = "yyyy-MM-dd_HH:mm:ss.SSS";
 
+  public static String getLocalTimestamp( Date inDate ) {
+    DateFormat compactFormatter = new SimpleDateFormat( COMPACT_LOG_FORMAT );
+    // NOT setting timezone
+    return compactFormatter.format( inDate );
+  }
+  public static String getLocalTimestamp() {
+    return getLocalTimestamp( new Date() );
+  }
+  public static String getLocalTimestamp( long ms ) {
+    return getLocalTimestamp( new Date(ms) );
+  }
   public static String javaDefault2SolrXmlZulu_str2str( String inDate ) throws ParseException {
     java.util.Date dateObj = javaDefault2Date_str2date( inDate );
     String outDateStr = date2SolrXmlZulu_date2str( dateObj );
