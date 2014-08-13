@@ -8,7 +8,7 @@ Preliminary DQ / Data Quality experiments and related utilities.
 ## Individual Solr Cores / Collections:
 * ```empty_fields``` - generally which fields are populated, including percentages _(com.lucidworks.dq.data.EmptyFieldStats)_
 * ```term_stats``` - token length, and terms > 3 standard deviations from average _(com.lucidworks.dq.data.TermStats)_
-* ```data_checker``` - report on date fields, fit to idealized exponential growth curve _(com.lucidworks.dq.data.DateChecker)_
+* ```date_checker``` - report on date fields, fit to idealized exponential growth curve _(com.lucidworks.dq.data.DateChecker)_
 * ```code_points``` - look for potentially corrupted tokens by looking for strings that span the most Unicode classes _(com.lucidworks.dq.data.TermCodepointStats)_
 
 ## Differences Between Cores / Collections:

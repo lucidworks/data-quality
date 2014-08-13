@@ -16,7 +16,7 @@ public class CmdLineLauncher {
     put( "empty_fields",      com.lucidworks.dq.data.EmptyFieldStats.class     );
     put( "term_stats",        com.lucidworks.dq.data.TermStats.class           );
     put( "code_points",       com.lucidworks.dq.data.TermCodepointStats.class  );
-    put( "data_checker",      com.lucidworks.dq.data.DateChecker.class         );
+    put( "date_checker",      com.lucidworks.dq.data.DateChecker.class         );
     put( "diff_empty_fields", com.lucidworks.dq.diff.DiffEmptyFieldStats.class );
     put( "diff_ids",          com.lucidworks.dq.diff.DiffIds.class             );
     put( "diff_schema",       com.lucidworks.dq.diff.DiffSchema.class          );
