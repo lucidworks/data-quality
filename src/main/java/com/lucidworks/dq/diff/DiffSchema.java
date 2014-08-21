@@ -59,7 +59,7 @@ public class DiffSchema /*implements HasDescription*/ {
       out.println("\tA = '" + versA + "'");
       out.println("\tB = '" + versB + "'");
     }
-	
+
     // Key Field
     String keyA = schemaA.getUniqueKeyFieldName();
     String keyB = schemaB.getUniqueKeyFieldName();
@@ -125,7 +125,7 @@ public class DiffSchema /*implements HasDescription*/ {
     }  
   }
   static void addSetComparisonToReport( PrintWriter out, Set<String> setA, Set<String> setB, String attrLabel ) {
-	  addSetComparisonToReport( out, setA, setB, attrLabel, false );
+    addSetComparisonToReport( out, setA, setB, attrLabel, false );
   }
   static void addSetComparisonToReport( PrintWriter out, Set<String> setA, Set<String> setB, String attrLabel, boolean checkOrder ) {
     Set<String> inBoth = SetUtils.intersection_nonDestructive( setA, setB );
@@ -134,73 +134,73 @@ public class DiffSchema /*implements HasDescription*/ {
     out.println();
     out.print( attrLabel + ":" );
     if ( inBoth.isEmpty() && inAOnly.isEmpty() && inBOnly.isEmpty() ) {
-    	out.println( " None!" );
+      out.println( " None!" );
     }
     else {
-    	out.println();
-    	if ( ! inBoth.isEmpty() ) {
-    	  if ( ! checkOrder ) {
-    		out.println( "\tIn both = '" + inBoth + "'" );
-    	  }
-    	  else {
-    		// Note: Sets don't normally perserve order but I've been careful
-    		// to use LinkedHashSet and LinkedHashMap, which DO
-    		Set<String> commonA = SetUtils.intersection_nonDestructive( setA, setB );
-    		Set<String> commonB = SetUtils.intersection_nonDestructive( setB, setA );
-    		boolean inSameOrder = SetUtils.sameAndInSameOrder( commonA, commonB );
-    		if ( inSameOrder ) {
-    		  out.println( "\tIn both and SAME relative order = '" + inBoth + "'" );   			
-    		}
-    		else {
-    		  out.println( "\tIn both but DIFFERENT relative order:" );			
-    		  out.println( "\t\tCommon, order in A = '" + commonA + "'" );
-    		  out.println( "\t\tCommon, order in B = '" + commonB + "'" );    			
-    		}
-    	  }
-    	}
-    	if ( ! inAOnly.isEmpty() ) {
-	      out.println( "\tA only = '" + inAOnly + "'" );		
-    	}
-    	if ( ! inBOnly.isEmpty() ) {
-	      out.println( "\tB only = '" + inBOnly + "'" );		
-    	}    	
+      out.println();
+      if ( ! inBoth.isEmpty() ) {
+        if ( ! checkOrder ) {
+          out.println( "\tIn both = '" + inBoth + "'" );
+        }
+        else {
+          // Note: Sets don't normally perserve order but I've been careful
+          // to use LinkedHashSet and LinkedHashMap, which DO
+          Set<String> commonA = SetUtils.intersection_nonDestructive( setA, setB );
+          Set<String> commonB = SetUtils.intersection_nonDestructive( setB, setA );
+          boolean inSameOrder = SetUtils.sameAndInSameOrder( commonA, commonB );
+          if ( inSameOrder ) {
+            out.println( "\tIn both and SAME relative order = '" + inBoth + "'" );
+          }
+          else {
+            out.println( "\tIn both but DIFFERENT relative order:" );
+            out.println( "\t\tCommon, order in A = '" + commonA + "'" );
+            out.println( "\t\tCommon, order in B = '" + commonB + "'" );
+          }
+        }
+      }
+      if ( ! inAOnly.isEmpty() ) {
+        out.println( "\tA only = '" + inAOnly + "'" );
+      }
+      if ( ! inBOnly.isEmpty() ) {
+        out.println( "\tB only = '" + inBOnly + "'" );
+      }
     }
-	  
+
   }
 
   static void helpAndExit() {
-	helpAndExit( null, 1 );
+    helpAndExit( null, 1 );
   }
   static void helpAndExit( String optionalError, int errorCode ) {
     HelpFormatter formatter = new HelpFormatter();
     if ( null==optionalError ) {
       // log.info( HELP_WHAT_IS_IT );
       System.out.println( HELP_WHAT_IS_IT );
-	}
-	else {
-	  // log.error( optionalError );
-	  System.err.println( optionalError );
-	}
-	formatter.printHelp( HELP_USAGE, options, true );
-	System.exit( errorCode );
+    }
+    else {
+      // log.error( optionalError );
+      System.err.println( optionalError );
+    }
+    formatter.printHelp( HELP_USAGE, options, true );
+    System.exit( errorCode );
   }
 
   public static void main( String[] argv ) throws Exception {
-	options = new Options();
+    options = new Options();
 
-	options.addOption( "u", "url_a", true, "URL for first Solr, OR set host, port and possibly collection" );
-	options.addOption( "h", "host_a", true, "IP address for first Solr, default=localhost" );
-	options.addOption( "p", "port_a", true, "Port for first Solr, default=8983" );
-	options.addOption( "c", "collection_a", true, "Collection/Core for first Solr, Eg: collection1" );
-	options.addOption( "f", "file_a", true, "Path to schema.xml file for first Solr" );
-	options.addOption( "d", "default_a", false, "Use Solr's default schema.xml for the first one." );
+    options.addOption( "u", "url_a", true, "URL for first Solr, OR set host, port and possibly collection" );
+    options.addOption( "h", "host_a", true, "IP address for first Solr, default=localhost" );
+    options.addOption( "p", "port_a", true, "Port for first Solr, default=8983" );
+    options.addOption( "c", "collection_a", true, "Collection/Core for first Solr, Eg: collection1" );
+    options.addOption( "f", "file_a", true, "Path to schema.xml file for first Solr" );
+    options.addOption( "d", "default_a", false, "Use Solr's default schema.xml for the first one." );
 
-	options.addOption( "U", "url_b", true, "URL for second Solr, OR set host, port and possibly collection" );
-	options.addOption( "H", "host_b", true, "IP address for second Solr, default=localhost" );
-	options.addOption( "P", "port_b", true, "Port for second Solr, default=8983" );
-	options.addOption( "C", "collection_b", true, "Collection/Core for second Solr, Eg: collection1" );
-	options.addOption( "F", "file_b", true, "Path to schema.xml file for second Solr" );
-	options.addOption( "D", "default_b", false, "Use Solr's default schema.xml for the second one." );
+    options.addOption( "U", "url_b", true, "URL for second Solr, OR set host, port and possibly collection" );
+    options.addOption( "H", "host_b", true, "IP address for second Solr, default=localhost" );
+    options.addOption( "P", "port_b", true, "Port for second Solr, default=8983" );
+    options.addOption( "C", "collection_b", true, "Collection/Core for second Solr, Eg: collection1" );
+    options.addOption( "F", "file_b", true, "Path to schema.xml file for second Solr" );
+    options.addOption( "D", "default_b", false, "Use Solr's default schema.xml for the second one." );
 
     if ( argv.length < 1 ) {
       helpAndExit();
@@ -263,7 +263,7 @@ public class DiffSchema /*implements HasDescription*/ {
       labelA = "Default Solr 4.6.1 Schema";
       schemaA = new SchemaFromXml();
     }
-	  
+
     // Schema B
     String fullUrlB = cmd.getOptionValue( "url_b" );
     String hostB = cmd.getOptionValue( "host_b" );
@@ -309,18 +309,18 @@ public class DiffSchema /*implements HasDescription*/ {
       schemaB = new SchemaFromXml();
     }
 
-	String reportA = schemaA.generateReport();
-	String reportB = schemaB.generateReport();
-	
-	System.out.println( "========== Individual Reports ==========" );
-	System.out.println();
-	System.out.println( "---------- A: " + labelA + " ----------" );
-	System.out.println( reportA );
-	System.out.println( "---------- B: " + labelB + " ----------" );
-	System.out.println( reportB );
-	
-	String report = generateReport( schemaA, schemaB, labelA, labelB );
-	System.out.println( report );
+    String reportA = schemaA.generateReport();
+    String reportB = schemaB.generateReport();
+
+    System.out.println( "========== Individual Reports ==========" );
+    System.out.println();
+    System.out.println( "---------- A: " + labelA + " ----------" );
+    System.out.println( reportA );
+    System.out.println( "---------- B: " + labelB + " ----------" );
+    System.out.println( reportB );
+
+    String report = generateReport( schemaA, schemaB, labelA, labelB );
+    System.out.println( report );
   }
 
 
@@ -328,7 +328,7 @@ public class DiffSchema /*implements HasDescription*/ {
   static String PORT0 = "8983";
   static String COLL0 = "demo_shard1_replica1";
   static String URL0 = "http://" + HOST0 + ":" + PORT0 + "/solr/" + COLL0;
-	  // + "/select?q=*:*&rows=" + ROWS + "&fl=id&wt=json&indent=on"
+  // + "/select?q=*:*&rows=" + ROWS + "&fl=id&wt=json&indent=on"
 
   static String HOST1 = "localhost";
   static String PORT1 = "8984"; // "8983";

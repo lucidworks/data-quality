@@ -68,7 +68,7 @@ public class DiffSolrConfig /*implements HasDescription*/ {
     String versA = configA.getLuceneMatchVersion();
     String versB = configB.getLuceneMatchVersion();
     addStringComparisionToReport( out, versA, versB, "Lucene Version", mode );
-	
+
     // Abort on Config Error
     String abortA = configA.getAbortOnConfigurationError();
     String abortB = configB.getAbortOnConfigurationError();
@@ -100,7 +100,7 @@ public class DiffSolrConfig /*implements HasDescription*/ {
     }  
   }
   static void addSetComparisonToReport( PrintWriter out, Collection<String> setA, Collection<String> setB, String attrLabel, String mode ) {
-	  addSetComparisonToReport( out, setA, setB, attrLabel, mode, false );
+    addSetComparisonToReport( out, setA, setB, attrLabel, mode, false );
   }
   static void addSetComparisonToReport( PrintWriter out, Collection<String> setA, Collection<String> setB, String attrLabel, String mode, boolean checkOrder ) {
     Collection<String> inBoth = SetUtils.intersection_nonDestructive( setA, setB );
@@ -114,31 +114,31 @@ public class DiffSolrConfig /*implements HasDescription*/ {
         out.println();
         out.println( attrLabel + ":" );
         haveShownHeader = true;
-      	// out.println( " None!" );
+        // out.println( " None!" );
         addNestedListToReport( out, "Both", null );
       }
     }
     else {
-    	// out.println();
+      // out.println();
 
-    	if ( ! inBoth.isEmpty() ) {
+      if ( ! inBoth.isEmpty() ) {
         //out.println();
-    	  if ( ! checkOrder ) {
+        if ( ! checkOrder ) {
           if ( mode.equals(MODE_DIFF_ALL) ) {
             out.println();
             out.println( attrLabel + ":" );
             haveShownHeader = true;
-      	    // out.println( "\tIn both = '" + inBoth + "'" );
+            // out.println( "\tIn both = '" + inBoth + "'" );
             addNestedListToReport( out, "In Both", inBoth );
           }
-    	  }
-    	  else {
-    	    // Note: Sets don't normally perserve order but I've been careful
-    	    // to use LinkedHashSet and LinkedHashMap, which DO
-    	    Collection<String> commonA = SetUtils.intersection_nonDestructive( setA, setB );
-    	    Collection<String> commonB = SetUtils.intersection_nonDestructive( setB, setA );
-    	    boolean inSameOrder = SetUtils.sameAndInSameOrder( commonA, commonB );
-    	    if ( inSameOrder ) {
+        }
+        else {
+          // Note: Sets don't normally perserve order but I've been careful
+          // to use LinkedHashSet and LinkedHashMap, which DO
+          Collection<String> commonA = SetUtils.intersection_nonDestructive( setA, setB );
+          Collection<String> commonB = SetUtils.intersection_nonDestructive( setB, setA );
+          boolean inSameOrder = SetUtils.sameAndInSameOrder( commonA, commonB );
+          if ( inSameOrder ) {
             if ( mode.equals(MODE_DIFF_ALL) ) {
               out.println();
               out.println( attrLabel + ":" );
@@ -146,47 +146,47 @@ public class DiffSolrConfig /*implements HasDescription*/ {
               //out.println( "\tIn both and SAME relative order = '" + inBoth + "'" );
               addNestedListToReport( out, "In both and SAME relative order", inBoth );
             }
-    	    }
-    	    else {
-    	      // Always print differences, regardless of mode
-    	      // In this case call told us that ordering DOES matter and it was found to be different
+          }
+          else {
+            // Always print differences, regardless of mode
+            // In this case call told us that ordering DOES matter and it was found to be different
             out.println();
             out.println( attrLabel + ":" );
             haveShownHeader = true;
-    	      out.println( "\tIn both but DIFFERENT relative order:" );			
-    	      //out.println( "\t\tCommon, order in A = '" + commonA + "'" );
+            out.println( "\tIn both but DIFFERENT relative order:" );
+            //out.println( "\t\tCommon, order in A = '" + commonA + "'" );
             addNestedListToReport( out, "Common, order in A", commonA, 2 );
-    	      //out.println( "\t\tCommon, order in B = '" + commonB + "'" );
+            //out.println( "\t\tCommon, order in B = '" + commonB + "'" );
             addNestedListToReport( out, "Common, order in B", commonB, 2 );
-    	    }
-    	  }
-    	}
-
-    	// Always print differences, regardless of mode
-    	if ( ! inAOnly.isEmpty() ) {
-    	  if ( ! haveShownHeader ) {
-          out.println();
-          out.println( attrLabel + ":" );
-          haveShownHeader = true;
-    	  }
-	      //out.println( "\tA only = '" + inAOnly + "'" );
-        addNestedListToReport( out, "A only", inAOnly );
-    	}
+          }
+        }
+      }
 
       // Always print differences, regardless of mode
-    	if ( ! inBOnly.isEmpty() ) {
+      if ( ! inAOnly.isEmpty() ) {
         if ( ! haveShownHeader ) {
           out.println();
           out.println( attrLabel + ":" );
           haveShownHeader = true;
         }
-	      //out.println( "\tB only = '" + inBOnly + "'" );		
+        //out.println( "\tA only = '" + inAOnly + "'" );
+        addNestedListToReport( out, "A only", inAOnly );
+      }
+
+      // Always print differences, regardless of mode
+      if ( ! inBOnly.isEmpty() ) {
+        if ( ! haveShownHeader ) {
+          out.println();
+          out.println( attrLabel + ":" );
+          haveShownHeader = true;
+        }
+        //out.println( "\tB only = '" + inBOnly + "'" );
         addNestedListToReport( out, "B only", inBOnly );
-    	}
+      }
 
 
     }
-	  
+
   }
   static void addNestedListToReport( PrintWriter out, String subLabel, Collection<String> optList ) {
     addNestedListToReport( out, subLabel, optList, 1 );
@@ -221,22 +221,22 @@ public class DiffSolrConfig /*implements HasDescription*/ {
       out.println( indent2 + "None!" );
     }    
   }
-  
+
   static void helpAndExit() {
-	helpAndExit( null, 1 );
+    helpAndExit( null, 1 );
   }
   static void helpAndExit( String optionalError, int errorCode ) {
     HelpFormatter formatter = new HelpFormatter();
     if ( null==optionalError ) {
       // log.info( HELP_WHAT_IS_IT );
       System.out.println( HELP_WHAT_IS_IT );
-	}
-	else {
-	  // log.error( optionalError );
-	  System.err.println( optionalError );
-	}
-	formatter.printHelp( HELP_USAGE, options, true );
-	System.exit( errorCode );
+    }
+    else {
+      // log.error( optionalError );
+      System.err.println( optionalError );
+    }
+    formatter.printHelp( HELP_USAGE, options, true );
+    System.exit( errorCode );
   }
 
   public static void main( String[] argv ) throws Exception {
@@ -259,9 +259,9 @@ public class DiffSolrConfig /*implements HasDescription*/ {
 
     options.addOption( "m", "mode", true,
         "What to output:"
-        + " \"" + MODE_FULL + "\" = Full reports for all of Config A, then Config B, and then full *Diff* Report (default/verbose mode)"
-        + ", \"" + MODE_DIFF_ALL + "\" = Only the full Diff Report"
-        + ", \"" + MODE_DIFF_MIN + "\" = Only actual differences, items in common NOT SHOWN"
+            + " \"" + MODE_FULL + "\" = Full reports for all of Config A, then Config B, and then full *Diff* Report (default/verbose mode)"
+            + ", \"" + MODE_DIFF_ALL + "\" = Only the full Diff Report"
+            + ", \"" + MODE_DIFF_MIN + "\" = Only actual differences, items in common NOT SHOWN"
         );  
 
     if ( argv.length < 1 ) {
@@ -309,18 +309,18 @@ public class DiffSolrConfig /*implements HasDescription*/ {
     // String labelA = "Default Solr 4.6.1 Schema";
     SolrConfig configA = null;
     String labelA = null;
-//    if ( null!=fullUrlA ) {
-//      HttpSolrServer solrA = SolrUtils.getServer( fullUrlA );
-//      labelA = solrA.getBaseURL();
-//      configA = new SolrConfigFromRest( solrA );
-//    }
-//    else if ( null!=hostA ) {
-//      // util handles null values
-//      HttpSolrServer solrA = SolrUtils.getServer( hostA, portA, collA );
-//      labelA = solrA.getBaseURL();
-//      configA = new SolrConfigFromRest( solrA );
-//    }
-//    else
+    //    if ( null!=fullUrlA ) {
+    //      HttpSolrServer solrA = SolrUtils.getServer( fullUrlA );
+    //      labelA = solrA.getBaseURL();
+    //      configA = new SolrConfigFromRest( solrA );
+    //    }
+    //    else if ( null!=hostA ) {
+    //      // util handles null values
+    //      HttpSolrServer solrA = SolrUtils.getServer( hostA, portA, collA );
+    //      labelA = solrA.getBaseURL();
+    //      configA = new SolrConfigFromRest( solrA );
+    //    }
+    //    else
     if ( null!=fileA ) {
       labelA = "XML File: " + fileA;
       configA = new SolrConfigFromXml( new File(fileA) );
@@ -331,10 +331,10 @@ public class DiffSolrConfig /*implements HasDescription*/ {
     }
 
     // Config B
-//    String fullUrlB = cmd.getOptionValue( "url_b" );
-//    String hostB = cmd.getOptionValue( "host_b" );
-//    String portB = cmd.getOptionValue( "port_b" );
-//    String collB = cmd.getOptionValue( "collection_b" );
+    //    String fullUrlB = cmd.getOptionValue( "url_b" );
+    //    String hostB = cmd.getOptionValue( "host_b" );
+    //    String portB = cmd.getOptionValue( "port_b" );
+    //    String collB = cmd.getOptionValue( "collection_b" );
     String fileB = cmd.getOptionValue( "file_b" );
     boolean useDefaultB = false;
     if( cmd.hasOption("default_b") ) {
@@ -358,18 +358,18 @@ public class DiffSolrConfig /*implements HasDescription*/ {
     // String labelB = "Apollo demo plus local changes";
     SolrConfig configB = null;
     String labelB = null;
-//    if ( null!=fullUrlB ) {
-//      HttpSolrServer solrB = SolrUtils.getServer( fullUrlB );
-//      labelB = solrB.getBaseURL();
-//      schemaB = new SchemaFromRest( solrB );
-//    }
-//    else if ( null!=hostB ) {
-//      // util handles null values
-//      HttpSolrServer solrB = SolrUtils.getServer( hostB, portB, collB );
-//      labelB = solrB.getBaseURL();
-//      schemaB = new SchemaFromRest( solrB );
-//    }
-//    else
+    //    if ( null!=fullUrlB ) {
+    //      HttpSolrServer solrB = SolrUtils.getServer( fullUrlB );
+    //      labelB = solrB.getBaseURL();
+    //      schemaB = new SchemaFromRest( solrB );
+    //    }
+    //    else if ( null!=hostB ) {
+    //      // util handles null values
+    //      HttpSolrServer solrB = SolrUtils.getServer( hostB, portB, collB );
+    //      labelB = solrB.getBaseURL();
+    //      schemaB = new SchemaFromRest( solrB );
+    //    }
+    //    else
     if ( null!=fileB ) {
       labelB = "XML File: " + fileB;
       configB = new SolrConfigFromXml( new File(fileB) );
@@ -412,7 +412,7 @@ public class DiffSolrConfig /*implements HasDescription*/ {
   static String PORT0 = "8983";
   static String COLL0 = "demo_shard1_replica1";
   static String URL0 = "http://" + HOST0 + ":" + PORT0 + "/solr/" + COLL0;
-	  // + "/select?q=*:*&rows=" + ROWS + "&fl=id&wt=json&indent=on"
+  // + "/select?q=*:*&rows=" + ROWS + "&fl=id&wt=json&indent=on"
 
   static String HOST1 = "localhost";
   static String PORT1 = "8984"; // "8983";

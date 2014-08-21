@@ -67,7 +67,7 @@ public class DiffIds /*implements HasDescription*/ {
     while ((line = in.readLine()) != null) {
       // skip completely blank lines, but doesn't do any trimming
       if ( line.length()<1 ) {
-    	continue;
+        continue;
       }
       ids.add( line );
     }
@@ -76,55 +76,55 @@ public class DiffIds /*implements HasDescription*/ {
   }
 
   static void helpAndExit() {
-	helpAndExit( null, 1 );
+    helpAndExit( null, 1 );
   }
   static void helpAndExit( String optionalError, int errorCode ) {
     HelpFormatter formatter = new HelpFormatter();
     if ( null==optionalError ) {
       // log.info( HELP_WHAT_IS_IT );
       System.err.println( HELP_WHAT_IS_IT );
-	}
-	else {
-	  // log.error( optionalError );
-	  System.err.println( optionalError );
-	}
+    }
+    else {
+      // log.error( optionalError );
+      System.err.println( optionalError );
+    }
     // stdout
-	//formatter.printHelp( HELP_USAGE, options, true );
+    //formatter.printHelp( HELP_USAGE, options, true );
     // stderr
     PrintWriter pw = new PrintWriter(System.err);
-	formatter.printHelp( pw, 78, HELP_USAGE, null, options, 1, 1, null, true );
-	pw.flush();
-	System.exit( errorCode );
+    formatter.printHelp( pw, 78, HELP_USAGE, null, options, 1, 1, null, true );
+    pw.flush();
+    System.exit( errorCode );
   }
 
   public static void main( String[] argv ) throws SolrServerException, IOException {
 
     options = new Options();
-	options.addOption( "u", "url_a", true, "URL for first Solr, Eg http://localhost:8983/solr/collection1, OR set host, port and possibly collection" );
-	options.addOption( "h", "host_a", true, "IP address for first Solr, default=localhost" );
-	options.addOption( "p", "port_a", true, "Port for first Solr, default=8983" );
-	options.addOption( "c", "collection_a", true, "Collection/Core for first Solr, Eg: collection1" );
+    options.addOption( "u", "url_a", true, "URL for first Solr, Eg http://localhost:8983/solr/collection1, OR set host, port and possibly collection" );
+    options.addOption( "h", "host_a", true, "IP address for first Solr, default=localhost" );
+    options.addOption( "p", "port_a", true, "Port for first Solr, default=8983" );
+    options.addOption( "c", "collection_a", true, "Collection/Core for first Solr, Eg: collection1" );
 
-	options.addOption( "U", "url_b", true, "URL for second Solr, Eg http://localhost:8983/solr/collection2, OR set host, port and possibly collection" );
-	options.addOption( "H", "host_b", true, "IP address for second Solr, default=localhost" );
-	options.addOption( "P", "port_b", true, "Port for second Solr, default=8983" );
-	options.addOption( "C", "collection_b", true, "Collection/Core for second Solr, Eg: collection1" );
+    options.addOption( "U", "url_b", true, "URL for second Solr, Eg http://localhost:8983/solr/collection2, OR set host, port and possibly collection" );
+    options.addOption( "H", "host_b", true, "IP address for second Solr, default=localhost" );
+    options.addOption( "P", "port_b", true, "Port for second Solr, default=8983" );
+    options.addOption( "C", "collection_b", true, "Collection/Core for second Solr, Eg: collection1" );
 
-	options.addOption( "f", "file_a", true, "Read IDs for A from a text file, one ID per line (skips 0 length lines, not counting newlines)" );
-	options.addOption( "F", "file_b", true, "Read IDs for B from a text file, one ID per line (skips 0 length lines, not counting newlines)" );
+    options.addOption( "f", "file_a", true, "Read IDs for A from a text file, one ID per line (skips 0 length lines, not counting newlines)" );
+    options.addOption( "F", "file_b", true, "Read IDs for B from a text file, one ID per line (skips 0 length lines, not counting newlines)" );
 
-	options.addOption( "o", "output_file", true, "Output file to create for the full report or ID list (default or \"-\" is stdout / standard out)" );
-	options.addOption( "e", "encoding", true, "Character Encoding for reading and writing files (default is UTF-8, which enables cross-platform comparisons)" );
-	options.addOption( "l", "loose_encoding", false, "Disable strict character encoding so that problems don't throw Exceptions (NOT recommended)" );
+    options.addOption( "o", "output_file", true, "Output file to create for the full report or ID list (default or \"-\" is stdout / standard out)" );
+    options.addOption( "e", "encoding", true, "Character Encoding for reading and writing files (default is UTF-8, which enables cross-platform comparisons)" );
+    options.addOption( "l", "loose_encoding", false, "Disable strict character encoding so that problems don't throw Exceptions (NOT recommended)" );
 
-	options.addOption( "m", "mode", true,
-			"What to output:"
-			+ " \"" + MODE_REPORT + "\" means fully formatted report (default)"
-			+ ", \"" + MODE_A_ONLY + "\" bare list of IDs only in A (one per line)"
-			+ ", \"" + MODE_B_ONLY + "\" IDs only in B"
-			+ ", \"" + MODE_INTERSECT + "\" IDs preent in BOTH A AND B"
-			+ ", \"" + MODE_UNION + "\" IDs in A or B or in both (combines all IDs from both, but each ID will only appear once)"
-			);	
+    options.addOption( "m", "mode", true,
+        "What to output:"
+            + " \"" + MODE_REPORT + "\" means fully formatted report (default)"
+            + ", \"" + MODE_A_ONLY + "\" bare list of IDs only in A (one per line)"
+            + ", \"" + MODE_B_ONLY + "\" IDs only in B"
+            + ", \"" + MODE_INTERSECT + "\" IDs preent in BOTH A AND B"
+            + ", \"" + MODE_UNION + "\" IDs in A or B or in both (combines all IDs from both, but each ID will only appear once)"
+        );
     if ( argv.length < 1 ) {
       helpAndExit();
     }
@@ -177,9 +177,9 @@ public class DiffIds /*implements HasDescription*/ {
     // VALID_MODES
     String mode = cmd.getOptionValue( "mode" );
     if ( null!=mode ) {
-   	  mode = mode.toLowerCase().trim();
+      mode = mode.toLowerCase().trim();
       if ( ! VALID_MODES.contains(mode) ) {
-        helpAndExit( "Invalid mode, must be one of: " + VALID_MODES, 5 );    		
+        helpAndExit( "Invalid mode, must be one of: " + VALID_MODES, 5 );
       }
     }
     boolean isNormalReport = (null==mode) || mode.equals( MODE_REPORT );
@@ -208,13 +208,13 @@ public class DiffIds /*implements HasDescription*/ {
 
     PrintWriter out = null;
     if( null!=outputFile && ! outputFile.equals("-") ) {
-        out = new PrintWriter(new OutputStreamWriter(new FileOutputStream(outputFile), encoder), true);
+      out = new PrintWriter(new OutputStreamWriter(new FileOutputStream(outputFile), encoder), true);
     } else {
-        out = new PrintWriter(new OutputStreamWriter(System.out, encoder), true);
+      out = new PrintWriter(new OutputStreamWriter(System.out, encoder), true);
     }
 
     // Init
-	// HttpSolrServer solrA = new HttpSolrServer( URL1 );
+    // HttpSolrServer solrA = new HttpSolrServer( URL1 );
     HttpSolrServer solrA = null;
     if ( null==fileA ) {
       if ( null!=fullUrlA ) {
@@ -227,7 +227,7 @@ public class DiffIds /*implements HasDescription*/ {
       if(isNormalReport) out.println( "First Solr / Solr A = " + solrA.getBaseURL() );
     }
     else {
-      if(isNormalReport) out.println( "First Solr / Solr A read from file = " + fileA );    	
+      if(isNormalReport) out.println( "First Solr / Solr A read from file = " + fileA );
     }
 
     // HttpSolrServer solrB = new HttpSolrServer( URL2 );
@@ -243,18 +243,18 @@ public class DiffIds /*implements HasDescription*/ {
       if(isNormalReport) out.println( "Second Solr / Solr B = " + solrB.getBaseURL() );
     }
     else {
-      if(isNormalReport) out.println( "Second Solr / Solr B read from file = " + fileB );    	
+      if(isNormalReport) out.println( "Second Solr / Solr B read from file = " + fileB );
     }
 
-	Set<String> idsA = (null!=solrA) ? SolrUtils.getAllIds( solrA ) : readIdsFromFile( new File(fileA), decoder );
-	Set<String> idsB = (null!=solrB) ? SolrUtils.getAllIds( solrB ) : readIdsFromFile( new File(fileB), decoder );
- 
+    Set<String> idsA = (null!=solrA) ? SolrUtils.getAllIds( solrA ) : readIdsFromFile( new File(fileA), decoder );
+    Set<String> idsB = (null!=solrB) ? SolrUtils.getAllIds( solrB ) : readIdsFromFile( new File(fileB), decoder );
+
     if ( isNormalReport ) {
       // Use non-destructive here since we use the lists more than once
       Set<String> aOnly = SetUtils.inAOnly_nonDestructive(idsA, idsB);
       Set<String> bOnly = SetUtils.inBOnly_nonDestructive(idsA, idsB);
-	  out.println( "A-only: " + aOnly );
-	  out.println( "B-only: " + bOnly );
+      out.println( "A-only: " + aOnly );
+      out.println( "B-only: " + bOnly );
     }
     else {
       Set<String> ids = null;
@@ -266,20 +266,20 @@ public class DiffIds /*implements HasDescription*/ {
         ids = SetUtils.inBOnly_destructive( idsA, idsB );
       }
       else if ( mode.equals(MODE_INTERSECT) ) {
-      	ids = SetUtils.intersection_destructive( idsA, idsB );  
+        ids = SetUtils.intersection_destructive( idsA, idsB );  
       }
       else if ( mode.equals(MODE_UNION) ) {
-      	ids = SetUtils.union_destructive( idsA, idsB );  
+        ids = SetUtils.union_destructive( idsA, idsB );  
       }
       else {
-    	// This should never happen.
-    	// If it ever does, maybe somebody added to VALID_MODES but didn't add a case here
-    	throw new IllegalStateException( "Unknown mode \"" + mode + "\", check VALID_MODES" );
+        // This should never happen.
+        // If it ever does, maybe somebody added to VALID_MODES but didn't add a case here
+        throw new IllegalStateException( "Unknown mode \"" + mode + "\", check VALID_MODES" );
       }
-      
+
       // Print the results
       for ( String id : ids ) {
-    	out.println( id );
+        out.println( id );
       }
     }
     out.close();
