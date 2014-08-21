@@ -61,58 +61,58 @@ public class DeleteByIds /*implements HasDescription*/ {
     while ((line = in.readLine()) != null) {
       // skip completely blank lines, but doesn't do any trimming
       if ( line.length()<1 ) {
-          continue;
-	  }
-	  ids.add( line );
-	}
-	in.close();
-	return ids;
+        continue;
+      }
+      ids.add( line );
+    }
+    in.close();
+    return ids;
   }
 
   static void helpAndExit() {
-	helpAndExit( null, 1 );
+    helpAndExit( null, 1 );
   }
   static void helpAndExit( String optionalError, int errorCode ) {
     HelpFormatter formatter = new HelpFormatter();
     if ( null==optionalError ) {
       System.err.println( HELP_WHAT_IS_IT );
-	}
-	else {
-	  // log.error( optionalError );
-	  System.err.println( optionalError );
-	}
+    }
+    else {
+      // log.error( optionalError );
+      System.err.println( optionalError );
+    }
     // stdout
-	//formatter.printHelp( HELP_USAGE, options, true );
+    //formatter.printHelp( HELP_USAGE, options, true );
     // stderr
     PrintWriter pw = new PrintWriter(System.err);
-	formatter.printHelp( pw, 78, HELP_USAGE, null, options, 1, 1, null, true );
-	pw.flush();
-	System.exit( errorCode );
+    formatter.printHelp( pw, 78, HELP_USAGE, null, options, 1, 1, null, true );
+    pw.flush();
+    System.exit( errorCode );
   }
 
   public static void main( String [] argv ) throws Exception {
 
-	options = new Options();
-	options.addOption( "u", "url", true, "URL for Solr, OR set host, port and possibly collection" );
-	options.addOption( "h", "host", true, "IP address for Solr, default=localhost but still required of no other args passed" );
-	options.addOption( "p", "port", true, "Port for Solr, default=8983" );
-	options.addOption( "c", "collection", true, "Collection/Core for Solr, Eg: collection1" );
-	options.addOption( "f", "input_file", true, "File to read IDs from, one ID per line (skips 0 length lines, not counting newlines) (Use \"-\" for stdout / standard out)" );
-	options.addOption( "e", "encoding", true, "Character Encoding for reading and writing files (default is UTF-8, which enables cross-platform comparisons)" );
-	options.addOption( "l", "loose_encoding", false, "Disable strict character encoding so that problems don't throw Exceptions (NOT recommended)" );
+    options = new Options();
+    options.addOption( "u", "url", true, "URL for Solr, OR set host, port and possibly collection" );
+    options.addOption( "h", "host", true, "IP address for Solr, default=localhost but still required of no other args passed" );
+    options.addOption( "p", "port", true, "Port for Solr, default=8983" );
+    options.addOption( "c", "collection", true, "Collection/Core for Solr, Eg: collection1" );
+    options.addOption( "f", "input_file", true, "File to read IDs from, one ID per line (skips 0 length lines, not counting newlines) (Use \"-\" for stdout / standard out)" );
+    options.addOption( "e", "encoding", true, "Character Encoding for reading and writing files (default is UTF-8, which enables cross-platform comparisons)" );
+    options.addOption( "l", "loose_encoding", false, "Disable strict character encoding so that problems don't throw Exceptions (NOT recommended)" );
 
-	options.addOption( OptionBuilder.withLongOpt( "batch_size" )
-            .withDescription( "Batch size, 1=doc-by-doc, 0=all-at-once (be careful memory-wise), default="+DEFAULT_BATCH_SIZE )
-            .hasArg()
-            .withType( Number.class ) // NOT Long.class
-            .create( "b" )
-            );
+    options.addOption( OptionBuilder.withLongOpt( "batch_size" )
+        .withDescription( "Batch size, 1=doc-by-doc, 0=all-at-once (be careful memory-wise), default="+DEFAULT_BATCH_SIZE )
+        .hasArg()
+        .withType( Number.class ) // NOT Long.class
+        .create( "b" )
+        );
 
-	options.addOption( OptionBuilder.withLongOpt( "ids" )
-            .withDescription( "Pass one or more IDs on the command line" )
-            .hasArgs()   // PLURAL!
-            .create( "i" )
-            );
+    options.addOption( OptionBuilder.withLongOpt( "ids" )
+        .withDescription( "Pass one or more IDs on the command line" )
+        .hasArgs()   // PLURAL!
+        .create( "i" )
+        );
 
     if ( argv.length < 1 ) {
       helpAndExit( "Must specifify at least url or host", 1 );
@@ -136,7 +136,7 @@ public class DeleteByIds /*implements HasDescription*/ {
       helpAndExit( "Must not specifify both url and host", 4 );
     }
     // Init
-	// HttpSolrServer solr = SolrUtils.getServer( HOST, PORT, COLL );
+    // HttpSolrServer solr = SolrUtils.getServer( HOST, PORT, COLL );
     HttpSolrServer solr;
     if ( null!=fullUrl ) {
       solr = SolrUtils.getServer( fullUrl );
@@ -150,7 +150,7 @@ public class DeleteByIds /*implements HasDescription*/ {
     Long batchObj = (Long) cmd.getParsedOptionValue( "batch_size" );
     if ( null!=batchObj ) {
       if ( batchObj.longValue() < 0L ) {
-    	helpAndExit( "batch_size must be >= 0", 5 );	
+        helpAndExit( "batch_size must be >= 0", 5 );
       }
       batchSize = batchObj.intValue();
     }
@@ -164,14 +164,14 @@ public class DeleteByIds /*implements HasDescription*/ {
     else {
       // But didn't set input file
       if ( null == cmd.getOptionValue( "input_file" ) ) {
-      	helpAndExit( "Encoding only applicable when reading from input file or standard in / stdiin; operating system handles command line argument encoding", 6 );	    	  
+        helpAndExit( "Encoding only applicable when reading from input file or standard in / stdiin; operating system handles command line argument encoding", 6 );
       }
     }
     boolean strictEncoding = true;
     if(cmd.hasOption("loose_encoding")) {
       strictEncoding = false;
       if ( null == cmd.getOptionValue( "input_file" ) ) {
-      	helpAndExit( "loose_encoding only applicable when reading from input file or standard in / stdiin; operating system handles command line argument encoding", 7 );	    	  
+        helpAndExit( "loose_encoding only applicable when reading from input file or standard in / stdiin; operating system handles command line argument encoding", 7 );
       }
     }
     // Setup IO encoding
@@ -181,13 +181,13 @@ public class DeleteByIds /*implements HasDescription*/ {
     if ( strictEncoding ) {
       decoder.onMalformedInput( CodingErrorAction.REPORT );
     }
-    
+
     String inputFile = cmd.getOptionValue( "input_file" );
 
     String [] cmdLineIds = cmd.getOptionValues( "ids" );
 
     if ( null==inputFile && null==cmdLineIds ) {
-      helpAndExit( "Must use at least one of --input_file or --ids ..., OK to use both. For standard in / stdin use --input_file -", 8 );	    	      	
+      helpAndExit( "Must use at least one of --input_file or --ids ..., OK to use both. For standard in / stdin use --input_file -", 8 );
     }
 
     // We use List<String> instead of Set<String> because that's what SolrJ expects in deleteById
@@ -198,22 +198,22 @@ public class DeleteByIds /*implements HasDescription*/ {
     if ( null!=cmdLineIds ) {
       ids.addAll( Arrays.asList( cmdLineIds ) );
     }
-    
+
     if ( batchSize < 1 ) {
       solr.deleteById(ids);
     }
     else if ( batchSize == 1 ) {
       for ( String id : ids ) {
-    	solr.deleteById( id );
+        solr.deleteById( id );
       }
     }
     else {
       for ( int start = 0; start < ids.size(); start += batchSize ) {
-    	int end = start + batchSize;
-    	if ( end > ids.size() ) {
-    	  end = ids.size();
-    	}
-    	List<String> sublist = ids.subList( start, end );
+        int end = start + batchSize;
+        if ( end > ids.size() ) {
+          end = ids.size();
+        }
+        List<String> sublist = ids.subList( start, end );
         solr.deleteById( sublist );
       }
     }

@@ -38,33 +38,33 @@ public class DocCount /*implements HasDescription*/ {
   HttpSolrServer solrServer;
 
   static void helpAndExit() {
-	helpAndExit( null, 1 );
+    helpAndExit( null, 1 );
   }
   static void helpAndExit( String optionalError, int errorCode ) {
     HelpFormatter formatter = new HelpFormatter();
     if ( null==optionalError ) {
       System.err.println( HELP_WHAT_IS_IT );
-	}
-	else {
-	  // log.error( optionalError );
-	  System.err.println( optionalError );
-	}
+    }
+    else {
+      // log.error( optionalError );
+      System.err.println( optionalError );
+    }
     // stdout
-	//formatter.printHelp( HELP_USAGE, options, true );
+    //formatter.printHelp( HELP_USAGE, options, true );
     // stderr
     PrintWriter pw = new PrintWriter(System.err);
-	formatter.printHelp( pw, 78, HELP_USAGE, null, options, 1, 1, null, true );
-	pw.flush();
-	System.exit( errorCode );
+    formatter.printHelp( pw, 78, HELP_USAGE, null, options, 1, 1, null, true );
+    pw.flush();
+    System.exit( errorCode );
   }
 
   public static void main( String [] argv ) throws Exception {
 
-	options = new Options();
-	options.addOption( "u", "url", true, "URL for Solr, OR set host, port and possibly collection" );
-	options.addOption( "h", "host", true, "IP address for Solr, default=localhost but still required of no other args passed" );
-	options.addOption( "p", "port", true, "Port for Solr, default=8983" );
-	options.addOption( "c", "collection", true, "Collection/Core for Solr, Eg: collection1" );
+    options = new Options();
+    options.addOption( "u", "url", true, "URL for Solr, OR set host, port and possibly collection" );
+    options.addOption( "h", "host", true, "IP address for Solr, default=localhost but still required of no other args passed" );
+    options.addOption( "p", "port", true, "Port for Solr, default=8983" );
+    options.addOption( "c", "collection", true, "Collection/Core for Solr, Eg: collection1" );
     if ( argv.length < 1 ) {
       helpAndExit( "Must specifify at least url or host", 1 );
     }
@@ -87,7 +87,7 @@ public class DocCount /*implements HasDescription*/ {
       helpAndExit( "Must not specifify both url and host", 4 );
     }
     // Init
-	// HttpSolrServer solr = SolrUtils.getServer( HOST, PORT, COLL );
+    // HttpSolrServer solr = SolrUtils.getServer( HOST, PORT, COLL );
     HttpSolrServer solr;
     if ( null!=fullUrl ) {
       solr = SolrUtils.getServer( fullUrl );
@@ -99,6 +99,6 @@ public class DocCount /*implements HasDescription*/ {
 
     long count = SolrUtils.getTotalDocCount( solr );
     System.out.println( count );
-  
+
   }
 }

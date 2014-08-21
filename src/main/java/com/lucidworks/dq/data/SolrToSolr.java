@@ -40,12 +40,12 @@ public class SolrToSolr {
   static String HELP_WHAT_IS_IT = "Copy records from one Solr collection or core to another.";
   static String EXTENDED_DESCRIPTION =
     StringUtils.NL
-		+ "Useful for tasks such as copying data to/from Solr clusters"
-		+ ", migrating between Solr versions"
-		+ ", schema debugging"
-		+ ", or synchronizing Solr instances."
+    + "Useful for tasks such as copying data to/from Solr clusters"
+    + ", migrating between Solr versions"
+    + ", schema debugging"
+    + ", or synchronizing Solr instances."
     + " Can ONLY COPY Stored Fields, though this is the default for many fields in Solr."
-		+ " In syntax messages below, SolrA=source and SolrB=destination."
+    + " In syntax messages below, SolrA=source and SolrB=destination."
     + " Will use Solr \"Cursor Marks\", AKA \"Deep Paging\", if available"
     + " which is in Solr version 4.7+"
     + ", see https://cwiki.apache.org/confluence/display/solr/Pagination+of+Results and SOLR-5463"
@@ -68,8 +68,8 @@ public class SolrToSolr {
   static String VERSION_FIELD = "_version_";
   static String ROOT_FIELD = "_root_";
   static List<String> DEFAULT_EXCLUDE_FIELDS = Arrays.asList( new String[]{
-		  VERSION_FIELD,
-		  ROOT_FIELD
+      VERSION_FIELD,
+      ROOT_FIELD
   });
 
   static int COMMIT_DELAY = 30000; // 30k ms: Commit within 30 seconds
@@ -139,17 +139,17 @@ public class SolrToSolr {
     return q;
   }
   public long processAllWithCursors( SolrQuery q ) throws SolrServerException, IOException {
-	  q.setSort( ID_FIELD, SolrQuery.ORDER.asc );
-	  String cursorMark = CursorMarkParams.CURSOR_MARK_START;
-	  boolean done = false;
-	  long docCount = 0L;
-	  while (! done) {
+    q.setSort( ID_FIELD, SolrQuery.ORDER.asc );
+    String cursorMark = CursorMarkParams.CURSOR_MARK_START;
+    boolean done = false;
+    long docCount = 0L;
+    while (! done) {
       // System.out.println( "About to query: cursorMark = \"" + cursorMark + "\", docCount = " + docCount );
-	    q.set( CursorMarkParams.CURSOR_MARK_PARAM, cursorMark );
-	    QueryResponse rsp = solrA.query( q );
-	    String nextCursorMark = rsp.getNextCursorMark();
+      q.set( CursorMarkParams.CURSOR_MARK_PARAM, cursorMark );
+      QueryResponse rsp = solrA.query( q );
+      String nextCursorMark = rsp.getNextCursorMark();
 
-	    Collection<SolrDocument> batch = new LinkedList<SolrDocument>();
+      Collection<SolrDocument> batch = new LinkedList<SolrDocument>();
       for (SolrDocument doc : rsp.getResults()) {
         docCount++;
         batch.add(doc);
@@ -162,8 +162,8 @@ public class SolrToSolr {
       }
       cursorMark = nextCursorMark;
     }
-	  //System.out.println( "Done: cursorMark = \"" + cursorMark + "\", docCount = " + docCount );
-	  return docCount;
+    //System.out.println( "Done: cursorMark = \"" + cursorMark + "\", docCount = " + docCount );
+    return docCount;
   }
 
   public long processAllWithOldPaging(SolrQuery q)

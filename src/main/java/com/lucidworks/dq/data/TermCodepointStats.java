@@ -188,10 +188,10 @@ public class TermCodepointStats /*implements HasDescription*/ {
     }
     if ( getIncludeStoredFields() ) {
       if ( null!=getTargetFields() ) {
-        tabulateStoredFields( getTargetFields() );			
+        tabulateStoredFields( getTargetFields() );
       }
       else {
-        tabulateStoredFields( getFieldsWithStoredValues() );			
+        tabulateStoredFields( getFieldsWithStoredValues() );
       }
     }
 

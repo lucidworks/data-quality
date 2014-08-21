@@ -129,10 +129,10 @@ public class EmptyFieldStats /*implements HasDescription*/ {
     fieldStatsStoredValueDeficits = new LinkedHashMap<>();
     fieldStatsStoredValuePercentages = new LinkedHashMap<>();
     allFieldNames = SolrUtils.getAllDeclaredAndActualFieldNames(solrServer);
-  	lukeIndexedFields = SolrUtils.getLukeFieldsWithIndexedValues( solrServer );
-  	lukeStoredFields = SolrUtils.getLukeFieldsWithStoredValues( solrServer );
-  	lukeIndexedButNotStored = SetUtils.inAOnly_nonDestructive( lukeIndexedFields, lukeStoredFields );
-  	lukeStoredButNotIndexed = SetUtils.inBOnly_nonDestructive( lukeIndexedFields, lukeStoredFields );
+    lukeIndexedFields = SolrUtils.getLukeFieldsWithIndexedValues( solrServer );
+    lukeStoredFields = SolrUtils.getLukeFieldsWithStoredValues( solrServer );
+    lukeIndexedButNotStored = SetUtils.inAOnly_nonDestructive( lukeIndexedFields, lukeStoredFields );
+    lukeStoredButNotIndexed = SetUtils.inBOnly_nonDestructive( lukeIndexedFields, lukeStoredFields );
   }
   // TODO: change to public if we defer from constructor
   void doAllTabulations() throws SolrServerException {
@@ -180,10 +180,10 @@ public class EmptyFieldStats /*implements HasDescription*/ {
   }
 
   public Map<String,Long> getIndexedValueCounts() {
-	  return fieldStatsIndexedValueCounts;
+    return fieldStatsIndexedValueCounts;
   }
   public Map<String,Double> getIndexedValuePercentages() {
-	  return fieldStatsIndexedValuePercentages;
+    return fieldStatsIndexedValuePercentages;
   }
 
   void tabulateAllFields() throws SolrServerException {
@@ -454,7 +454,7 @@ public class EmptyFieldStats /*implements HasDescription*/ {
         percent = 0.0D;
       }
       addStatAndOptionalPercentToReport( out, name, count, percent, "\t" );
-	  
+
       if ( getShowIds() ) {
         // TODO: Only doing doc IDs of docs with no indexed terms
         // but technically we should also include those of missing Stored values

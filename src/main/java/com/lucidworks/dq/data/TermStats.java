@@ -221,10 +221,10 @@ public class TermStats /*implements HasDescription*/ {
     }
     if ( getIncludeStoredFields() ) {
       if ( null!=getTargetFields() ) {
-        tabulateFieldsWithStoredValues( getTargetFields() );			
+        tabulateFieldsWithStoredValues( getTargetFields() );
       }
       else {
-        tabulateFieldsWithStoredValues( getFieldsWithStoredValues() );			
+        tabulateFieldsWithStoredValues( getFieldsWithStoredValues() );
       }
     }
   }
@@ -480,7 +480,7 @@ public class TermStats /*implements HasDescription*/ {
           }
         }
         if ( hadMore ) {
-          out.println( "\t\t\t..." );			
+          out.println( "\t\t\t..." );
         }
       }
       // Overweight
@@ -508,7 +508,7 @@ public class TermStats /*implements HasDescription*/ {
           }
         }
         if ( hadMore ) {
-          out.println( "\t\t\t..." );			
+          out.println( "\t\t\t..." );
         }
       }
     }
@@ -572,7 +572,7 @@ public class TermStats /*implements HasDescription*/ {
           }
         }
         if ( hadMore ) {
-          out.println( "\t\t\t..." );			
+          out.println( "\t\t\t..." );
         }
       }
       // Overweight
@@ -600,7 +600,7 @@ public class TermStats /*implements HasDescription*/ {
           }
         }
         if ( hadMore ) {
-          out.println( "\t\t\t..." );			
+          out.println( "\t\t\t..." );
         }
       }
     }
