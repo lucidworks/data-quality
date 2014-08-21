@@ -31,30 +31,30 @@ public class SchemaFromLocalCore_broken extends SchemaBase implements Schema {
   
   public SchemaFromLocalCore_broken( String path, String optCoreName ) {
     // TODO: currently broken, touble finding info online, postponing for now
-	SolrResourceLoader loader = new SolrResourceLoader( path );
-	String confDir = loader.getConfigDir();
-	String dataDir = loader.getDataDir();
-	String instanceDir = loader.getInstanceDir();
-	Properties props = loader.getCoreProperties();
-	System.out.println( "path = " + path );
-	System.out.println( "confDir = " + confDir );
-	System.out.println( "dataDir = " + dataDir );
-	System.out.println( "instanceDir = " + instanceDir );
-	System.out.println( "props = " + props );
-	ConfigSolr config = ConfigSolr.fromSolrHome( loader, path );
-	CoreContainer container = new CoreContainer( loader, config );
-	if ( container.getCores().isEmpty() ) {
+    SolrResourceLoader loader = new SolrResourceLoader( path );
+    String confDir = loader.getConfigDir();
+    String dataDir = loader.getDataDir();
+    String instanceDir = loader.getInstanceDir();
+    Properties props = loader.getCoreProperties();
+    System.out.println( "path = " + path );
+    System.out.println( "confDir = " + confDir );
+    System.out.println( "dataDir = " + dataDir );
+    System.out.println( "instanceDir = " + instanceDir );
+    System.out.println( "props = " + props );
+    ConfigSolr config = ConfigSolr.fromSolrHome( loader, path );
+    CoreContainer container = new CoreContainer( loader, config );
+    if ( container.getCores().isEmpty() ) {
       throw new IllegalArgumentException( "No cores found at " + path );
-	}
-	String coreName = optCoreName!=null ? optCoreName : ConfigSolrXmlOld.DEFAULT_DEFAULT_CORE_NAME;
-	SolrCore core = container.getCore( coreName );
-	if ( null==core ) {
-      throw new IllegalArgumentException( "Unable to find core \"" + coreName + "\" at " + path );	
-	}
-	// SolrQueryRequest req = new LocalSolrQueryRequest( core, "*:*", null, 0, 0, null );
-	NamedList args = new NamedList();
-	SolrQueryRequest req = new LocalSolrQueryRequest( core, args );
-	schema = req.getSchema();
+    }
+    String coreName = optCoreName!=null ? optCoreName : ConfigSolrXmlOld.DEFAULT_DEFAULT_CORE_NAME;
+    SolrCore core = container.getCore( coreName );
+    if ( null==core ) {
+      throw new IllegalArgumentException( "Unable to find core \"" + coreName + "\" at " + path );
+    }
+    // SolrQueryRequest req = new LocalSolrQueryRequest( core, "*:*", null, 0, 0, null );
+    NamedList args = new NamedList();
+    SolrQueryRequest req = new LocalSolrQueryRequest( core, args );
+    schema = req.getSchema();
   };
 
   public float getSchemaVersion() throws Exception {
@@ -70,7 +70,7 @@ public class SchemaFromLocalCore_broken extends SchemaBase implements Schema {
   }
 
   public String getSimilarityModelClassName() throws Exception {
-	return schema.getSimilarity().getClass().getName();
+    return schema.getSimilarity().getClass().getName();
   }
 
   // TODO: not sure where this comes from
@@ -79,21 +79,21 @@ public class SchemaFromLocalCore_broken extends SchemaBase implements Schema {
   }
 
   public String getDefaultSearchField() throws Exception {
-	return schema.getDefaultSearchFieldName();
+    return schema.getDefaultSearchFieldName();
   }
 
   public Set<String> getAllSchemaFieldNames() throws Exception {
-	Map<String, SchemaField> fields = schema.getFields();
-	return fields.keySet();
-	// return new LinkedHashSet<>( fields.keySet() );
+    Map<String, SchemaField> fields = schema.getFields();
+    return fields.keySet();
+    // return new LinkedHashSet<>( fields.keySet() );
   }
 
   public Set<String> getAllDynamicFieldPatterns() throws Exception {
-	DynamicField[] dynFields = schema.getDynamicFields();
-	Set<String> out = new LinkedHashSet<>();
-	for ( DynamicField df : dynFields ) {
-	  out.add( df.getRegex() );
-	}
+    DynamicField[] dynFields = schema.getDynamicFields();
+    Set<String> out = new LinkedHashSet<>();
+    for ( DynamicField df : dynFields ) {
+      out.add( df.getRegex() );
+    }
     return out;
   }
 
@@ -103,8 +103,8 @@ public class SchemaFromLocalCore_broken extends SchemaBase implements Schema {
   }
 
   public Set<String> getAllCopyFieldSourceNames() throws Exception {
-	Map<String, List<CopyField>> copyMap = schema.getCopyFieldsMap();
-	return copyMap.keySet();
+    Map<String, List<CopyField>> copyMap = schema.getCopyFieldsMap();
+    return copyMap.keySet();
   }
 
   public Set<String> getAllCopyFieldDestinationNames() throws Exception {
@@ -154,7 +154,7 @@ public class SchemaFromLocalCore_broken extends SchemaBase implements Schema {
   // public String generateReport() throws Exception;
 
   public static void main( String[] argv ) throws Exception {
-	Schema schema = new SchemaFromLocalCore_broken( PATH3, null );
-	schema.generateReport();
+    Schema schema = new SchemaFromLocalCore_broken( PATH3, null );
+    schema.generateReport();
   }
 }

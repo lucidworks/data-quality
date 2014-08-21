@@ -45,20 +45,20 @@ public class SchemaFromXml extends SchemaBase implements Schema {
 
 
   public SchemaFromXml() throws ParserConfigurationException, IOException, SAXException {
-	// this( SCHEMA_FILE_NAME );
+    // this( SCHEMA_FILE_NAME );
     // URL schemaPath = this.getClass().getResource( SCHEMA_FILE_NAME );
     // init( schemaPath );
     init( (URL) null );
   }
   public SchemaFromXml( File schemaPath ) throws ParserConfigurationException, SAXException, IOException {
-	  // URI uri = schemaPath.toURI();
-	  // URL url = uri.toURL();
-	  // init( url );
-	  InputStream is = new FileInputStream( schemaPath );
-	  init( is );
+    // URI uri = schemaPath.toURI();
+    // URL url = uri.toURL();
+    // init( url );
+    InputStream is = new FileInputStream( schemaPath );
+    init( is );
   }
   public SchemaFromXml( URL schemaPath ) throws ParserConfigurationException, IOException, SAXException {
-	  init( schemaPath );
+    init( schemaPath );
   }
   void init( URL schemaPath ) throws ParserConfigurationException, IOException, SAXException {
     if ( null==schemaPath ) {
@@ -73,7 +73,7 @@ public class SchemaFromXml extends SchemaBase implements Schema {
     this.document = builder.parse( in );
     xpathFactory = XPathFactory.newInstance();
   }
- 
+
   // Parts copied from Solr's IndexSchema .loadFields
   public Set<String> getAllSchemaFieldNames() throws XPathExpressionException {
     Set<String> out = new LinkedHashSet<>();
@@ -82,10 +82,10 @@ public class SchemaFromXml extends SchemaBase implements Schema {
     // | /schema/field | /schema/dynamicField
     // Note: could remove OR and eliminate node name check, but this is closer to Solr code
     String expression = stepsToPath(SCHEMA, FIELDS, FIELD)
-           + XPATH_OR + stepsToPath(SCHEMA, FIELDS, DYNAMIC_FIELD)
-           + XPATH_OR + stepsToPath(SCHEMA, FIELD)
-           + XPATH_OR + stepsToPath(SCHEMA, DYNAMIC_FIELD)
-           ;
+        + XPATH_OR + stepsToPath(SCHEMA, FIELDS, DYNAMIC_FIELD)
+        + XPATH_OR + stepsToPath(SCHEMA, FIELD)
+        + XPATH_OR + stepsToPath(SCHEMA, DYNAMIC_FIELD)
+        ;
     NodeList nodes = (NodeList)xpath.evaluate(expression, document, XPathConstants.NODESET);
     for (int i=0; i<nodes.getLength(); i++) {
       Node node = nodes.item(i);
@@ -94,9 +94,9 @@ public class SchemaFromXml extends SchemaBase implements Schema {
       // String type = getAttr(attrs, TYPE, "field " + name);
       // TODO: lots more properties
       if (node.getNodeName().equals(FIELD)) {
-    	  out.add( name );
+        out.add( name );
       }
-    }	
+    }
     return out;
   }
   // Parts copied from Solr's IndexSchema .loadFields
@@ -106,10 +106,10 @@ public class SchemaFromXml extends SchemaBase implements Schema {
     // Note: could remove OR and eliminate node name check, but this is closer to Solr code
     // /schema/fields/field | /schema/fields/dynamicField
     String expression = stepsToPath(SCHEMA, FIELDS, FIELD)
-           + XPATH_OR + stepsToPath(SCHEMA, FIELDS, DYNAMIC_FIELD)
-           + XPATH_OR + stepsToPath(SCHEMA, FIELD)
-           + XPATH_OR + stepsToPath(SCHEMA, DYNAMIC_FIELD)
-           ;
+        + XPATH_OR + stepsToPath(SCHEMA, FIELDS, DYNAMIC_FIELD)
+        + XPATH_OR + stepsToPath(SCHEMA, FIELD)
+        + XPATH_OR + stepsToPath(SCHEMA, DYNAMIC_FIELD)
+        ;
     NodeList nodes = (NodeList)xpath.evaluate(expression, document, XPathConstants.NODESET);
     for (int i=0; i<nodes.getLength(); i++) {
       Node node = nodes.item(i);
@@ -118,21 +118,21 @@ public class SchemaFromXml extends SchemaBase implements Schema {
       // String type = getAttr(attrs, TYPE, "field " + name);
       // TODO: lots more properties
       if (node.getNodeName().equals(DYNAMIC_FIELD)) {
-    	  out.add( name );
-    	  // TODO: additional field checks for dynamic fields
+        out.add( name );
+        // TODO: additional field checks for dynamic fields
       }
-    }	
-    return out;	  
+    }
+    return out;
   }
   public Set<String> getAllFieldTypeNames() throws XPathExpressionException {
     Set<String> out = new LinkedHashSet<>();
     XPath xpath = xpathFactory.newXPath();
     // "/schema/types/fieldtype | /schema/types/fieldType"
     String expression = stepsToPath(SCHEMA, TYPES, FIELD_TYPE.toLowerCase(Locale.ROOT))
-          + XPATH_OR + stepsToPath(SCHEMA, TYPES, FIELD_TYPE)
-          + XPATH_OR + stepsToPath(SCHEMA, FIELD_TYPE.toLowerCase(Locale.ROOT))
-          + XPATH_OR + stepsToPath(SCHEMA, FIELD_TYPE)
-          ;
+        + XPATH_OR + stepsToPath(SCHEMA, TYPES, FIELD_TYPE)
+        + XPATH_OR + stepsToPath(SCHEMA, FIELD_TYPE.toLowerCase(Locale.ROOT))
+        + XPATH_OR + stepsToPath(SCHEMA, FIELD_TYPE)
+        ;
     NodeList nodes = (NodeList) xpath.evaluate(expression, document, XPathConstants.NODESET);
     for( int i = 0; i < nodes.getLength(); i++ ) {
       Node node = nodes.item(i);
@@ -159,14 +159,14 @@ public class SchemaFromXml extends SchemaBase implements Schema {
       // TODO: I think copyField can have duplicate source/destination pairs
       // TODO: addtional check: entry.getValue() > 1 && !entry.getKey().multiValued()
       if ( null!=source && null!=dest ) {
-    	  if ( out.containsKey(source) ) {
-    		  out.get( source ).add( dest );
-    	  }
-    	  else {
-    		  Set<String> destList = new LinkedHashSet<>();
-    		  destList.add( dest );
-    		  out.put( source, destList );
-    	  }
+        if ( out.containsKey(source) ) {
+          out.get( source ).add( dest );
+        }
+        else {
+          Set<String> destList = new LinkedHashSet<>();
+          destList.add( dest );
+          out.put( source, destList );
+        }
       }
     }
     return out;
@@ -178,15 +178,15 @@ public class SchemaFromXml extends SchemaBase implements Schema {
       Set<String> oldDestList = pair.getValue(); // AKA: newSourceList
       // for newSource in newSourceList
       for ( String oldDest : oldDestList ) {
-    	if ( out.containsKey(oldDest) ) {
-    	  // newSource .add newDest
+        if ( out.containsKey(oldDest) ) {
+          // newSource .add newDest
           out.get( oldDest ).add( oldSource );
         }
-    	  else {
-    	    Set<String> newDestList = new LinkedHashSet<>();
-    	    newDestList.add( oldSource );
-    	    out.put( oldDest, newDestList );
-    	  }
+        else {
+          Set<String> newDestList = new LinkedHashSet<>();
+          newDestList.add( oldSource );
+          out.put( oldDest, newDestList );
+        }
       }
     }
     return out;
@@ -201,15 +201,15 @@ public class SchemaFromXml extends SchemaBase implements Schema {
     // Slightly less efficient to copy entire dict, but benefit is only 1 code path
     Map<String,Set<String>> invertedHash = invertDictionary( copyFields );
     return invertedHash.keySet(); 
-//	Set<String> out = new LinkedHashSet<>();
-//	for ( Entry<String, Collection<String>> pair : copyFields.entrySet() ) {
-//      String source = pair.getKey();
-//      Collection<String> destList = pair.getValue();
-//      for ( String dest : destList ) {
-//    	  out.add( dest );
-//      }
-//	}
-//  return out;
+    //  Set<String> out = new LinkedHashSet<>();
+    //  for ( Entry<String, Collection<String>> pair : copyFields.entrySet() ) {
+    //      String source = pair.getKey();
+    //      Collection<String> destList = pair.getValue();
+    //      for ( String dest : destList ) {
+    //        out.add( dest );
+    //      }
+    //  }
+    //  return out;
   }
   public Set<String> getCopyFieldDestinationsForSource( String sourceName ) throws XPathExpressionException {
     Map<String,Set<String>> copyFields = getAllCopyFieldsDictionary();
@@ -287,11 +287,11 @@ public class SchemaFromXml extends SchemaBase implements Schema {
     Node nd = (Node) xpath.evaluate(expression, document, XPathConstants.NODE);
     String name = null;
     if ( null!=nd ) {
-    	//name = nd.getNodeValue();
+      //name = nd.getNodeValue();
       name = nd.getTextContent();
     }
     if ( null==name || name.trim().equals("") ) {
-    	name = "org.apache.solr.search.similarities.DefaultSimilarityFactory";
+      name = "org.apache.solr.search.similarities.DefaultSimilarityFactory";
     }
     return name;
   }
@@ -302,7 +302,7 @@ public class SchemaFromXml extends SchemaBase implements Schema {
     Node node = (Node) xpath.evaluate(expression, document, XPathConstants.NODE);
     String defaultSearchFieldName = null;
     if ( null != node ) {
-        defaultSearchFieldName = node.getNodeValue().trim();
+      defaultSearchFieldName = node.getNodeValue().trim();
     }
     return defaultSearchFieldName;
   }
@@ -351,7 +351,7 @@ public class SchemaFromXml extends SchemaBase implements Schema {
 
     try {
       NodeList nodes = (NodeList)xpath.evaluate(xstr, doc,
-                                                XPathConstants.NODESET);
+          XPathConstants.NODESET);
       if (nodes==null || 0 == nodes.getLength() ) {
         if (errIfMissing) {
           throw new RuntimeException(name + " missing "+path);
@@ -362,7 +362,7 @@ public class SchemaFromXml extends SchemaBase implements Schema {
       }
       if ( 1 < nodes.getLength() ) {
         throw new /*Solr*/ Exception( /*SolrException.ErrorCode.SERVER_ERROR,*/
-                                 name + " contains more than one value for config path: " + path);
+            name + " contains more than one value for config path: " + path);
       }
       Node nd = nodes.item(0);
       // log.trace(name + ":" + path + "=" + nd);
@@ -371,8 +371,8 @@ public class SchemaFromXml extends SchemaBase implements Schema {
     } catch (XPathExpressionException e) {
       // SolrException.log(log,"Error in xpath",e);
       throw new /*Solr*/ Exception( /*SolrException.ErrorCode.SERVER_ERROR,*/"Error in xpath:" + xstr + " for " + name,e);
-//    } catch (SolrException e) {
-//      throw(e);
+      //    } catch (SolrException e) {
+      //      throw(e);
     } catch (Throwable e) {
       // SolrException.log(log,"Error in xpath",e);
       throw new /*Solr*/Exception( /*SolrException.ErrorCode.SERVER_ERROR,*/"Error in xpath:" + xstr+ " for " + name,e);
@@ -393,13 +393,13 @@ public class SchemaFromXml extends SchemaBase implements Schema {
     return val;
   }
   public static String getAttrOrNull(NamedNodeMap attrs, String name, String missing_err) {
-	  try {
-		  return getAttr( attrs, name, missing_err );
-	  }
-	  catch( RuntimeException e ) {
-		  System.err.println( e );
-		  return null;
-	  }
+    try {
+      return getAttr( attrs, name, missing_err );
+    }
+    catch( RuntimeException e ) {
+      System.err.println( e );
+      return null;
+    }
   }
 
 
@@ -427,23 +427,23 @@ public class SchemaFromXml extends SchemaBase implements Schema {
 
     Set<String> typeNames = s.getAllFieldTypeNames();
     System.out.println( "Types: " + typeNames );
-    
+
     Set<String> sourceNames = s.getAllCopyFieldSourceNames();
     System.out.println( "Copy Sources: " + sourceNames );
     for ( String source : sourceNames ) {
-    	Set<String> tmpDests = s.getCopyFieldDestinationsForSource(source);
-    	System.out.println( "\tFrom: '"+ source + "' To " + tmpDests );
+      Set<String> tmpDests = s.getCopyFieldDestinationsForSource(source);
+      System.out.println( "\tFrom: '"+ source + "' To " + tmpDests );
     }
 
     Set<String> destNames = s.getAllCopyFieldDestinationNames();
     System.out.println( "Copy Destinations: " + destNames );
     for ( String dest : destNames ) {
-    	Set<String> tmpSrcs = s.getCopyFieldSourcesForDestination( dest );
-    	System.out.println( "\tDest: '"+ dest + "' From " + tmpSrcs );
+      Set<String> tmpSrcs = s.getCopyFieldSourcesForDestination( dest );
+      System.out.println( "\tDest: '"+ dest + "' From " + tmpSrcs );
     }
 
   }
-  
+
   // Copied from Solr's IndexSchema.java
   public static final String COPY_FIELD = "copyField";
   public static final String DEFAULT_OPERATOR = "defaultOperator";

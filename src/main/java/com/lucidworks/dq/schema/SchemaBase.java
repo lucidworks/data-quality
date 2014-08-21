@@ -43,47 +43,47 @@ public abstract class SchemaBase implements Schema {
     out.println();
     out.println( "Copy Sources: " + sourceNames );
     for ( String source : sourceNames ) {
-    	Set<String> tmpDests = getCopyFieldDestinationsForSource(source);
-    	out.println( "\tFrom: '"+ source + "' To " + tmpDests );
+      Set<String> tmpDests = getCopyFieldDestinationsForSource(source);
+      out.println( "\tFrom: '"+ source + "' To " + tmpDests );
     }
 
     Set<String> destNames = getAllCopyFieldDestinationNames();
     out.println();
     out.println( "Copy Destinations: " + destNames );
     for ( String dest : destNames ) {
-    	Set<String> tmpSrcs = getCopyFieldSourcesForDestination( dest );
-    	out.println( "\tDest: '"+ dest + "' From " + tmpSrcs );
+      Set<String> tmpSrcs = getCopyFieldSourcesForDestination( dest );
+      out.println( "\tDest: '"+ dest + "' From " + tmpSrcs );
     }
 
     String outStr = sw.toString();
     return outStr;
   }
 
-	@Override
-	public abstract float getSchemaVersion() throws Exception;
-	@Override
-	public abstract String getSchemaName() throws Exception;
-	@Override
-	public abstract String getUniqueKeyFieldName() throws Exception;
-	@Override
-	public abstract String getSimilarityModelClassName() throws Exception;
-	@Override
-	public abstract String getDefaultOperator() throws Exception;
-	@Override
-	public abstract String getDefaultSearchField() throws Exception;
-	@Override
-	public abstract Set<String> getAllSchemaFieldNames() throws Exception;
-	@Override
-	public abstract Set<String> getAllDynamicFieldPatterns() throws Exception;
-	@Override
-	public abstract Set<String> getAllFieldTypeNames() throws Exception;
-	@Override
-	public abstract Set<String> getAllCopyFieldSourceNames() throws Exception;
-	@Override
-	public abstract Set<String> getAllCopyFieldDestinationNames() throws Exception;
-	@Override
-	public abstract Set<String> getCopyFieldDestinationsForSource(String sourceName) throws Exception;
-	@Override
-	public abstract Set<String> getCopyFieldSourcesForDestination(String destName) throws Exception;
-	
+  @Override
+  public abstract float getSchemaVersion() throws Exception;
+  @Override
+  public abstract String getSchemaName() throws Exception;
+  @Override
+  public abstract String getUniqueKeyFieldName() throws Exception;
+  @Override
+  public abstract String getSimilarityModelClassName() throws Exception;
+  @Override
+  public abstract String getDefaultOperator() throws Exception;
+  @Override
+  public abstract String getDefaultSearchField() throws Exception;
+  @Override
+  public abstract Set<String> getAllSchemaFieldNames() throws Exception;
+  @Override
+  public abstract Set<String> getAllDynamicFieldPatterns() throws Exception;
+  @Override
+  public abstract Set<String> getAllFieldTypeNames() throws Exception;
+  @Override
+  public abstract Set<String> getAllCopyFieldSourceNames() throws Exception;
+  @Override
+  public abstract Set<String> getAllCopyFieldDestinationNames() throws Exception;
+  @Override
+  public abstract Set<String> getCopyFieldDestinationsForSource(String sourceName) throws Exception;
+  @Override
+  public abstract Set<String> getCopyFieldSourcesForDestination(String destName) throws Exception;
+
 }
