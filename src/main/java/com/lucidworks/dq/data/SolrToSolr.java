@@ -2,6 +2,7 @@ package com.lucidworks.dq.data;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -30,6 +31,7 @@ import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.SolrInputDocument;
 import org.apache.solr.common.params.CursorMarkParams;
 
+import com.lucidworks.dq.util.DateUtils;
 import com.lucidworks.dq.util.SetUtils;
 import com.lucidworks.dq.util.SolrUtils;
 import com.lucidworks.dq.util.StringUtils;
@@ -153,6 +155,7 @@ public class SolrToSolr {
         batch.add(doc);
       }
       processBatch(batch);
+      logIntermediateProgressIfApplicable( batch.size(), docCount );
 
       if (cursorMark.equals(nextCursorMark)) {
         done = true;
@@ -180,6 +183,7 @@ public class SolrToSolr {
         batch.add(doc);
       }
       processBatch(batch);
+      logIntermediateProgressIfApplicable( batch.size(), docCount );
       long numFound = docs.getNumFound();
       // done = getBatchSize()<1 || start + getBatchSize() >= numFound;
       done = getBatchSize() < 1 || docCount >= numFound;
@@ -200,8 +204,29 @@ public class SolrToSolr {
       destinationDocs.add( dstDoc );
     }
     solrB.add( destinationDocs, COMMIT_DELAY );
+    //System.out.println( "Submitted " + destinationDocs.size() + " docs." );
   }
 
+  void logIntermediateProgressIfApplicable( long currentBatch, long totalCount ) {
+    // TODO: add command line flag and object property to suppress this
+    // though very handy by default, to see if *anything* is happening
+
+    String currTimeStr = DateUtils.getLocalTimestamp();
+    String currentBatchStr = NumberFormat.getNumberInstance().format( currentBatch );
+    String totalCountStr = NumberFormat.getNumberInstance().format( totalCount );
+
+    System.out.print( currTimeStr );
+    if ( currentBatch > 0L ) {
+      System.out.print( " Submitted " + currentBatchStr + " docs" );
+    }
+    if ( totalCount > 0L ) {
+      System.out.print( " (total = " + totalCountStr + ")" );
+    }
+    if ( currentBatch <= 0L && totalCount <=0L ) {
+      System.out.print( " WARNING: Not passed any stats to log!" );
+    }
+    System.out.println();
+  }
   SolrInputDocument convertSolrResultsDocToSolrIndexingDoc( SolrDocument sourceDoc ) {
     SolrInputDocument destinationDoc = new SolrInputDocument();
     for( Entry<String, Object> srcEntry : sourceDoc.entrySet() ) {
