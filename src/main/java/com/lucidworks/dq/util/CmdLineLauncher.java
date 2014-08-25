@@ -38,14 +38,14 @@ public class CmdLineLauncher {
 
         String desc = null;
         try {
-			Method descMeth = clazz.getMethod( "getShortDescription" );
-			desc = (String) descMeth.invoke( null, (Object[]) null );
-        	// Field f = clazz.getDeclaredField( "HELP_WHAT_IS_IT" );
-        	// desc = (String) f.get(null);
-		} catch (SecurityException | IllegalArgumentException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+          Method descMeth = clazz.getMethod( "getShortDescription" );
+          desc = (String) descMeth.invoke( null, (Object[]) null );
+          // Field f = clazz.getDeclaredField( "HELP_WHAT_IS_IT" );
+          // desc = (String) f.get(null);
+        } catch (SecurityException | IllegalArgumentException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+          // TODO Auto-generated catch block
+          e.printStackTrace();
+        }
         
         // System.out.println( cmdName + ": " + desc );
         System.out.printf( "%20s: %s\n", cmdName, desc );

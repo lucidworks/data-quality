@@ -54,20 +54,20 @@ public class CharUtils {
 
   static final Map<String,String> ALIASES_SHORT_TO_LONG = new HashMap<String,String>() {{
     // Custom
-	put( "Qm", QUESTION_MARK_NAME );
+    put( "Qm", QUESTION_MARK_NAME );
 
-	// Script
-	put( "Com", "COMMON" );
-	put( "Lat", "LATIN" );
+    // Script
+    put( "Com", "COMMON" );
+    put( "Lat", "LATIN" );
 
-	// Block
-	put( "Basic", "BASIC_LATIN" );
-	put( "L1Sup", "LATIN_1_SUPPLEMENT" );
-	put( "GenPunct", "GENERAL_PUNCTUATION" );
-	put( "LetterSym", "LETTERLIKE_SYMBOLS" );
-	
-	// Types
-	put( "UPPER", "Lu_UPPERCASE_LETTER" );
+    // Block
+    put( "Basic", "BASIC_LATIN" );
+    put( "L1Sup", "LATIN_1_SUPPLEMENT" );
+    put( "GenPunct", "GENERAL_PUNCTUATION" );
+    put( "LetterSym", "LETTERLIKE_SYMBOLS" );
+
+    // Types
+    put( "UPPER", "Lu_UPPERCASE_LETTER" );
     put( "lower", "Ll_LOWERCASE_LETTER" );
     put( "Title", "Lt_TITLECASE_LETTER" );
     put( "ModL", "Lm_MODIFIER_LETTER" );
@@ -97,7 +97,7 @@ public class CharUtils {
     put( "StartQ", "Pi_INITIAL_QUOTE_PUNCTUATION" );
     put( "EndQ", "Pf_FINAL_QUOTE_PUNCTUATION" );
   }};
- 
+
   static final Map<String,String> ALIASES_LONG_TO_SHORT = new HashMap<String,String>();
   static {
     for ( Entry<String,String> entry : ALIASES_SHORT_TO_LONG.entrySet() ) {
@@ -110,21 +110,21 @@ public class CharUtils {
   // Compound Aliases
   // Note: reversed order of initialization here
   static final Map<String,String> COMPOUND_ALIASES_LONG_TO_SHORT = new HashMap<String,String>() {{
-	put( "Com-Basic-Space", "space" );
-	put( "Lat-Basic-UPPER", "UPPER" );
-	put( "Lat-Basic-lower", "lower" );
-	put( "Com-Basic-Conn", "Connector" );
-	put( "Com-Basic-Currency", "Currency" );
-	put( "Com-Basic-Digit", "Digit" );
-	put( "Com-Basic-OtherP", "OtherPunct" );
-	put( "Com-L1Sup-OtherSym", "OtherSym" );
-	put( "Com-Basic-Start", "Start" );
-	put( "Com-Basic-End", "Stop" );
-	put( "Com-Basic-Math", "Math" );
-	put( "Com-Basic-Dash", "Dash1" );
-	put( "Com-GenPunct-Dash", "Dash2" );
-	put( "Com-LetterSym-OtherSym", "LetterSymbol" );
-	put( "Com-Basic-Qm", "QuestionMark" );  // add suffix 1 when needed
+    put( "Com-Basic-Space", "space" );
+    put( "Lat-Basic-UPPER", "UPPER" );
+    put( "Lat-Basic-lower", "lower" );
+    put( "Com-Basic-Conn", "Connector" );
+    put( "Com-Basic-Currency", "Currency" );
+    put( "Com-Basic-Digit", "Digit" );
+    put( "Com-Basic-OtherP", "OtherPunct" );
+    put( "Com-L1Sup-OtherSym", "OtherSym" );
+    put( "Com-Basic-Start", "Start" );
+    put( "Com-Basic-End", "Stop" );
+    put( "Com-Basic-Math", "Math" );
+    put( "Com-Basic-Dash", "Dash1" );
+    put( "Com-GenPunct-Dash", "Dash2" );
+    put( "Com-LetterSym-OtherSym", "LetterSymbol" );
+    put( "Com-Basic-Qm", "QuestionMark" );  // add suffix 1 when needed
   }};
   static final Map<String,String> COMPOUND_ALIASES_SHORT_TO_LONG = new HashMap<String,String>();
   static {
@@ -136,7 +136,7 @@ public class CharUtils {
   }
 
   static String generateReport() {
-	return generateReportForRange( 0, 255 );
+    return generateReportForRange( 0, 255 );
   }
   static String generateReportForRange( int min, int max ) {
     StringWriter sw = new StringWriter();
@@ -161,134 +161,134 @@ public class CharUtils {
     return outStr;
   }
   static void addCharInfoToReport( PrintWriter out, int codePoint ) {
-	out.print( "" + codePoint );
-	out.print( ", " );
-	out.print( String.format("%X", codePoint) );
-	out.print( ": " );
-	if ( codePoint >= 32 ) {
-	  Character c = new Character( (char)codePoint );
-	  if ( ! Character.isSupplementaryCodePoint( codePoint ) ) {
-	    out.print( " c='"+c+"'" );
-	  }
-	  // Extended / Supplmental Unicode
-	  else {
-		// also StringBuffer appendCodePoint(int cp)
-		char[] chars = Character.toChars( codePoint );
-		out.print( " c='" );
-		for ( char cS : chars ) {
-		  out.print( cS );
-		}
-		out.print( "'" );
-	  }
-	}
+    out.print( "" + codePoint );
+    out.print( ", " );
+    out.print( String.format("%X", codePoint) );
+    out.print( ": " );
+    if ( codePoint >= 32 ) {
+      Character c = new Character( (char)codePoint );
+      if ( ! Character.isSupplementaryCodePoint( codePoint ) ) {
+        out.print( " c='"+c+"'" );
+      }
+      // Extended / Supplmental Unicode
+      else {
+        // also StringBuffer appendCodePoint(int cp)
+        char[] chars = Character.toChars( codePoint );
+        out.print( " c='" );
+        for ( char cS : chars ) {
+          out.print( cS );
+        }
+        out.print( "'" );
+      }
+    }
     boolean isDef = Character.isDefined( codePoint );
-	out.print( " isDef="+isDef );
+    out.print( " isDef="+isDef );
     boolean isValid = Character.isValidCodePoint( codePoint );
-	out.print( " isValid="+isValid );
-	boolean isCtrl = Character.isISOControl( codePoint );
-	out.print( " isCtrl="+isCtrl );
+    out.print( " isValid="+isValid );
+    boolean isCtrl = Character.isISOControl( codePoint );
+    out.print( " isCtrl="+isCtrl );
     boolean isBmp = Character.isBmpCodePoint( codePoint );
-	out.print( " isBmp="+isBmp );
+    out.print( " isBmp="+isBmp );
     boolean isSupp = Character.isSupplementaryCodePoint( codePoint );
-	out.print( " isSupp="+isSupp );
+    out.print( " isSupp="+isSupp );
     boolean isAlpha = Character.isAlphabetic( codePoint );
-	out.print( " isAlpha="+isAlpha );
+    out.print( " isAlpha="+isAlpha );
     boolean isLetter = Character.isLetter( codePoint );
-	out.print( " isLetter="+isLetter );
+    out.print( " isLetter="+isLetter );
     boolean isDigit = Character.isDigit( codePoint );
-	out.print( " isDigit="+isDigit );
+    out.print( " isDigit="+isDigit );
     int type = Character.getType( codePoint );
-	String typeStr = "" + type;
-	if ( TYPES.containsKey(type) ) {
-	  typeStr += " " + TYPES.get(type);
-	}
-	else {
-	  typeStr += " (no-TYPES-entry)";
-	}
-	out.print( " type="+typeStr );
+    String typeStr = "" + type;
+    if ( TYPES.containsKey(type) ) {
+      typeStr += " " + TYPES.get(type);
+    }
+    else {
+      typeStr += " (no-TYPES-entry)";
+    }
+    out.print( " type="+typeStr );
     String block = null;
     String script = null;
     try {
-    	block = UnicodeBlock.of( codePoint ).toString();
-    	script = UnicodeScript.of( codePoint ).toString();
+      block = UnicodeBlock.of( codePoint ).toString();
+      script = UnicodeScript.of( codePoint ).toString();
     }
     catch( Exception e ) { }
-	out.print( " script="+script );
-	out.print( " block="+block );
+    out.print( " script="+script );
+    out.print( " block="+block );
     String name = Character.getName( codePoint );
-	out.print( " name="+name );
-	out.println();
+    out.print( " name="+name );
+    out.println();
   }
 
   public static String getScriptName_LongForm( int codePoint ) {
     String script = "Unknown_Unicode_Script";
     try {
-    	script = UnicodeScript.of( codePoint ).toString();
+      script = UnicodeScript.of( codePoint ).toString();
     }
     catch( Exception e ) { }
-	return script;
+    return script;
   }
   public static String getScriptName_ShortForm( int codePoint ) {
-	String longName = getScriptName_LongForm( codePoint );
-	if ( ALIASES_LONG_TO_SHORT.containsKey(longName) ) {
-	  return ALIASES_LONG_TO_SHORT.get(longName);
-	}
-	else {
-	  return longName;
-	}
+    String longName = getScriptName_LongForm( codePoint );
+    if ( ALIASES_LONG_TO_SHORT.containsKey(longName) ) {
+      return ALIASES_LONG_TO_SHORT.get(longName);
+    }
+    else {
+      return longName;
+    }
   }
   public static String getBlockName_LongForm( int codePoint ) {
     String block = "Unknown_Unicode_Block";
     try {
-    	block = UnicodeBlock.of( codePoint ).toString();
+      block = UnicodeBlock.of( codePoint ).toString();
     }
     catch( Exception e ) { }
-    return block;	
+    return block;
   }
   public static String getBlockName_ShortForm( int codePoint ) {
     String longName = getBlockName_LongForm( codePoint );
-	if ( ALIASES_LONG_TO_SHORT.containsKey(longName) ) {
-	  return ALIASES_LONG_TO_SHORT.get(longName);
-	}
-	else {
-	  return longName;
-	}
+    if ( ALIASES_LONG_TO_SHORT.containsKey(longName) ) {
+      return ALIASES_LONG_TO_SHORT.get(longName);
+    }
+    else {
+      return longName;
+    }
   }
   public static String getTypeName_LongForm( int codePoint ) {
-	int type = Character.getType( codePoint );
-	String typeStr = "";
-	if ( codePoint == QUESTION_MARK_CODEPOINT ) {
-	  typeStr = QUESTION_MARK_NAME;
-	}
-	else if ( TYPES.containsKey(type) ) {
-	  typeStr = TYPES.get(type);
-	}
-	else {
-	  typeStr = "" + type + "_No_TYPES_Entry";
-	}
-	return typeStr;
+    int type = Character.getType( codePoint );
+    String typeStr = "";
+    if ( codePoint == QUESTION_MARK_CODEPOINT ) {
+      typeStr = QUESTION_MARK_NAME;
+    }
+    else if ( TYPES.containsKey(type) ) {
+      typeStr = TYPES.get(type);
+    }
+    else {
+      typeStr = "" + type + "_No_TYPES_Entry";
+    }
+    return typeStr;
   }
   public static String getTypeName_ShortForm( int codePoint ) {
     String longName = getTypeName_LongForm( codePoint );
-	if ( ALIASES_LONG_TO_SHORT.containsKey(longName) ) {
-	  return ALIASES_LONG_TO_SHORT.get(longName);
-	}
-	else {
-	  return longName;
-	}
+    if ( ALIASES_LONG_TO_SHORT.containsKey(longName) ) {
+      return ALIASES_LONG_TO_SHORT.get(longName);
+    }
+    else {
+      return longName;
+    }
   }
   // returns "script-block-type"
   public static String getCompoundClassifier_LongForm( int codePoint ) {
-    return    getScriptName_LongForm(codePoint)
-      + "-" + getBlockName_LongForm(codePoint)
-      + "-" + getTypeName_LongForm(codePoint)
-      ;
+    return      getScriptName_LongForm(codePoint)
+        + "-" + getBlockName_LongForm(codePoint)
+        + "-" + getTypeName_LongForm(codePoint)
+        ;
   }
   public static String getCompoundClassifier_ShortForm( int codePoint ) {
     String candidate = getScriptName_ShortForm(codePoint)
-               + "-" + getBlockName_ShortForm(codePoint)
-               + "-" + getTypeName_ShortForm(codePoint)
-               ;
+        + "-" + getBlockName_ShortForm(codePoint)
+        + "-" + getTypeName_ShortForm(codePoint)
+        ;
     if ( COMPOUND_ALIASES_LONG_TO_SHORT.containsKey(candidate) ) {
       return COMPOUND_ALIASES_LONG_TO_SHORT.get( candidate );
     }
@@ -296,79 +296,79 @@ public class CharUtils {
       return candidate;
     }
   }
-  
+
   public static Map<String,Long> classifyString_LongForm( String inStr ) {
-	return classifyString_LongForm( inStr, null );
+    return classifyString_LongForm( inStr, null );
   }
   public static Map<String,Long> classifyString_LongForm( String inStr, Map<String,Long> stats ) {
-	// Automatically sorts by key-order
-	if ( null==stats ) {
-	  // In order by key, easier for overall tabulation
-	  stats = new TreeMap<>();
-	}
-	if ( null==inStr || inStr.isEmpty() ) {
-	  return stats;
-	}
-	// Special looping to allow for Supplementary Unicode Characters (> 65k)
-	int length = inStr.length();
-	for (int offset = 0; offset < length; ) {
-	  int codePoint = inStr.codePointAt( offset );
-	  String charKey = getCompoundClassifier_LongForm( codePoint );
-	  // Tabulate
-	  long count = 0L;
-	  if ( stats.containsKey(charKey) ) {
-		count = stats.get( charKey );
-	  }
-	  count++;
-	  stats.put( charKey, count );
-	  // Advance
-	  offset += Character.charCount( codePoint );
+    // Automatically sorts by key-order
+    if ( null==stats ) {
+      // In order by key, easier for overall tabulation
+      stats = new TreeMap<>();
     }
-	return stats;
+    if ( null==inStr || inStr.isEmpty() ) {
+      return stats;
+    }
+    // Special looping to allow for Supplementary Unicode Characters (> 65k)
+    int length = inStr.length();
+    for (int offset = 0; offset < length; ) {
+      int codePoint = inStr.codePointAt( offset );
+      String charKey = getCompoundClassifier_LongForm( codePoint );
+      // Tabulate
+      long count = 0L;
+      if ( stats.containsKey(charKey) ) {
+        count = stats.get( charKey );
+      }
+      count++;
+      stats.put( charKey, count );
+      // Advance
+      offset += Character.charCount( codePoint );
+    }
+    return stats;
   }
   public static Map<String,Long> classifyString_ShortForm( String inStr ) {
-	return classifyString_ShortForm( inStr, null );
+    return classifyString_ShortForm( inStr, null );
   }
   // TODO: code very similar to LongForm, combine
   public static Map<String,Long> classifyString_ShortForm( String inStr, Map<String,Long> stats ) {
-	// Automatically sorts by key-order
-	if ( null==stats ) {
-	  // In order by key, easier for overall tabulation
-	  stats = new TreeMap<>();
-	}
-	if ( null==inStr || inStr.isEmpty() ) {
-	  return stats;
-	}
-	// Special looping to allow for Supplementary Unicode Characters (> 65k)
-	int length = inStr.length();
-	for (int offset = 0; offset < length; ) {
-	  int codePoint = inStr.codePointAt( offset );
-	  String charKey = getCompoundClassifier_ShortForm( codePoint );
-	  // Tabulate
-	  long count = 0L;
-	  if ( stats.containsKey(charKey) ) {
-		count = stats.get( charKey );
-	  }
-	  count++;
-	  stats.put( charKey, count );
-	  // Advance
-	  offset += Character.charCount( codePoint );
+    // Automatically sorts by key-order
+    if ( null==stats ) {
+      // In order by key, easier for overall tabulation
+      stats = new TreeMap<>();
     }
-	return stats;
+    if ( null==inStr || inStr.isEmpty() ) {
+      return stats;
+    }
+    // Special looping to allow for Supplementary Unicode Characters (> 65k)
+    int length = inStr.length();
+    for (int offset = 0; offset < length; ) {
+      int codePoint = inStr.codePointAt( offset );
+      String charKey = getCompoundClassifier_ShortForm( codePoint );
+      // Tabulate
+      long count = 0L;
+      if ( stats.containsKey(charKey) ) {
+        count = stats.get( charKey );
+      }
+      count++;
+      stats.put( charKey, count );
+      // Advance
+      offset += Character.charCount( codePoint );
+    }
+    return stats;
   }
-  
-  public static void main( String [] argv ) {
-	// U+306E, dec:12398
-	System.out.println( "Japanese \"no\": '\u306e'" );
-	// U+4e00 19968, U+4e8c 20108, U+4e09 19977
-	System.out.println( "Chinese 1 2 3: '\u4e00\u4e8c\u4e09'" );
-	// U+1D11E, dec:119070
-	System.out.println( "Extended: Musical G-clef: '\uD834\uDD1E'" );
-	// U+1F37A, dec:127866
-	System.out.println( "Extended: Beer Mug: '\uD83C\uDF7A'" );
 
-	// String report = generateReportForRange( 0, 255 );
-	String report = generateReportForPoints( 12398, 19968, 20108, 19977, 119070, 127866 );
-	System.out.print( report );
+  public static void main( String [] argv ) {
+    // U+306E, dec:12398
+    System.out.println( "Japanese \"no\": '\u306e'" );
+    // U+4e00 19968, U+4e8c 20108, U+4e09 19977
+    System.out.println( "Chinese 1 2 3: '\u4e00\u4e8c\u4e09'" );
+    // U+1D11E, dec:119070
+    System.out.println( "Extended: Musical G-clef: '\uD834\uDD1E'" );
+    // U+1F37A, dec:127866
+    System.out.println( "Extended: Beer Mug: '\uD83C\uDF7A'" );
+
+    // String report = generateReportForRange( 0, 255 );
+    String report = generateReportForPoints( 12398, 19968, 20108, 19977, 119070, 127866 );
+    System.out.print( report );
   }
 }

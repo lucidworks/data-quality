@@ -38,14 +38,14 @@ public class LLR {
   long plogp_counter = 0L;
 
   public LLR( Map<String,Long> wordsA, Map<String,Long> wordsB /*, Long optThreshold*/ ) {
-	this.wordsA = wordsA;
-	this.wordsB = wordsB;
-	//if ( null!=optThreshold && optThreshold.longValue() > 0L ) {
-	//  this.minWordsThreshold = optThreshold.longValue();
-	//}
-	doInitialCalculations();
-	calcAllWords();
-	sortWords();
+    this.wordsA = wordsA;
+    this.wordsB = wordsB;
+    //if ( null!=optThreshold && optThreshold.longValue() > 0L ) {
+    //  this.minWordsThreshold = optThreshold.longValue();
+    //}
+    doInitialCalculations();
+    calcAllWords();
+    sortWords();
   }
 
   public void doInitialCalculations() {
@@ -54,11 +54,11 @@ public class LLR {
     // -------------
     // sumA = sumWithThreshold( wordsA.values() );
     // sumB = sumWithThreshold( wordsB.values() );
-	sumA = new Double( StatsUtils.sumList_Longs(wordsA.values()) ).doubleValue();
-	sumB = new Double( StatsUtils.sumList_Longs(wordsB.values()) ).doubleValue();
-	if ( sumA<=0.0 || sumB<=0.0 ) {
+    sumA = new Double( StatsUtils.sumList_Longs(wordsA.values()) ).doubleValue();
+    sumB = new Double( StatsUtils.sumList_Longs(wordsB.values()) ).doubleValue();
+    if ( sumA<=0.0 || sumB<=0.0 ) {
       throw new IllegalArgumentException( "Must have non-zero word counts: A=" + sumA + ", B=" + sumB );
-	}
+    }
 
     // K Total
     grandTotal = sumA + sumB;
@@ -76,10 +76,10 @@ public class LLR {
   }
 
   public void calcAllWords() {
-	for ( String word : allWords ) {
-	  // double g2 = calcG2_viaDunning( word );
-	  double g2 = calcG2_viaTraditional( word );
-	  scoresByWord.put( word, g2 );
+    for ( String word : allWords ) {
+      // double g2 = calcG2_viaDunning( word );
+      double g2 = calcG2_viaTraditional( word );
+      scoresByWord.put( word, g2 );
     }
   }
 
@@ -131,9 +131,9 @@ public class LLR {
   // n = total words in corpus (non-unique)
   // p = k/n, BUT might use different k and n
   static double L( double p, double k, double n ) {
-	double part1 = Math.pow( p, k );
-	double part2 = Math.pow( (1.0-p), (n-k) );
-	return part1 * part2;
+    double part1 = Math.pow( p, k );
+    double part2 = Math.pow( (1.0-p), (n-k) );
+    return part1 * part2;
   }
 
   // TODO: confirm meaning of +/-
@@ -158,7 +158,7 @@ public class LLR {
     boolean debug = false;
     if(debug) System.out.println( "\n=== Calculating G2 via Dunning Entropy formula for \"" + word + "\" ===" );
     // Calc H_rowSums
-	// ---------------
+    // ---------------
     double row1Total = rowTotals.get(word);
     double row2Total = grandTotal - row1Total;
     if(debug) System.out.println( "Row Totals: " + row1Total + "  " + row2Total );
@@ -234,41 +234,41 @@ public class LLR {
   // but returns 0.0 if p is 0
   // TODO: maybe some implementitons just add 1 to all counts?
   double plogp( double prob ) {
-	if ( prob > 0.0 ) {
-	  plogp_counter++;
-	  return prob * Math.log( prob );
-	}
-	else {
-	  return 0.0;
-	}
+    if ( prob > 0.0 ) {
+      plogp_counter++;
+      return prob * Math.log( prob );
+    }
+    else {
+      return 0.0;
+    }
   }
 
   void sortWords() {
-	//  Map<String,Double> scoresByWord = new TreeMap<>();
-	//  Map<String,Double> sortedScoresByWord = new TreeMap<>();
+    //Map<String,Double> scoresByWord = new TreeMap<>();
+    //Map<String,Double> sortedScoresByWord = new TreeMap<>();
     sortedScoresByWord = SetUtils.sortMapByValues( scoresByWord );
   }
 
 //  double pLogP_KOverallWordA( String word ) {
-//	double prob = probKOverallWordA( word );
-//	if ( prob > 0.0 ) {
+//    double prob = probKOverallWordA( word );
+//    if ( prob > 0.0 ) {
 //      return prob * Math.log( prob );
-//	}
-//	else {
-//	  return 0.0;
-//	}
+//    }
+//    else {
+//      return 0.0;
+//    }
 //  }
 //  double pLogP_KOverallWordB( String word ) {
-//	double prob = probKOverallWordB( word );
-//	if ( prob > 0.0 ) {
+//    double prob = probKOverallWordB( word );
+//    if ( prob > 0.0 ) {
 //      return prob * Math.log( prob );
-//	}
-//	else {
-//	  return 0.0;
-//	}
+//    }
+//    else {
+//      return 0.0;
+//    }
 //  }
 //  double probKOverallWordA( String word ) {
-//	return probKOverallWord( word, wordsA );
+//    return probKOverallWord( word, wordsA );
 //  }
 //  double probKOverallWordB( String word ) {
 //    return probKOverallWord( word, wordsB );
@@ -281,22 +281,22 @@ public class LLR {
 
 //  double sumWithThreshold( Collection<Long> counts ) {
 //    double out = 0.0;
-//	for ( Long c : counts ) {
+//    for ( Long c : counts ) {
 //      if ( c >= minWordsThreshold ) {
-//    	out += c;
+//        out += c;
 //      }
 //    }
 //    return out;
 //  }
 
   public String generateReport( String optLabel ) {
-	StringWriter sw = new StringWriter();
+    StringWriter sw = new StringWriter();
     PrintWriter out = new PrintWriter(sw);
 
     int sampleSize = 5;
 
     if ( null!=optLabel ) {
-    	out.println( "----------- " + optLabel + " -----------" );
+      out.println( "----------- " + optLabel + " -----------" );
     }
 
     out.println();
@@ -329,30 +329,30 @@ public class LLR {
   }
   
   public static void main( String[] argv ) throws SolrServerException {
-//	Map<String,Long> corpusA = new LinkedHashMap<String,Long>() {{
-//      // 100k docs total
-//	  put( "blog",        25L );  // test word
-//	  put( "computer",  3200L );  // other words
-//	  put( "internet", 96775L );  // other words
-//	}};
-//	Map<String,Long> corpusB = new LinkedHashMap<String,Long>() {{
-//      // 200k docs total
-//      put( "blog",       2500L ); // test word
-//      put( "computer",   6000L ); // other words
-//      put( "internet", 191500L ); // other words
-//    }};
+//  Map<String,Long> corpusA = new LinkedHashMap<String,Long>() {{
+//    // 100k docs total
+//    put( "blog",        25L );  // test word
+//    put( "computer",  3200L );  // other words
+//    put( "internet", 96775L );  // other words
+//  }};
+//  Map<String,Long> corpusB = new LinkedHashMap<String,Long>() {{
+//    // 200k docs total
+//    put( "blog",       2500L ); // test word
+//    put( "computer",   6000L ); // other words
+//    put( "internet", 191500L ); // other words
+//  }};
 
-//    // Example posted online
-//	Map<String,Long> corpusA = new LinkedHashMap<String,Long>() {{
-//	  // 100k docs total
-//      put( "spam",        40000L );  // test word
-//      put( "other words", 60000L );  // other words
-//    }};
-//    Map<String,Long> corpusB = new LinkedHashMap<String,Long>() {{
-//      // 200k docs total
-//      put( "spam",        120000L ); // test word
-//      put( "other words",  80000L ); // other words
-//    }};
+//  // Example posted online
+//  Map<String,Long> corpusA = new LinkedHashMap<String,Long>() {{
+//    // 100k docs total
+//    put( "spam",        40000L );  // test word
+//    put( "other words", 60000L );  // other words
+//  }};
+//  Map<String,Long> corpusB = new LinkedHashMap<String,Long>() {{
+//    // 200k docs total
+//    put( "spam",        120000L ); // test word
+//    put( "other words",  80000L ); // other words
+//  }};
 
   Map<String,Long> corpusA = new LinkedHashMap<String,Long>() {{
     put( "apples",   25L );
@@ -376,7 +376,7 @@ public class LLR {
 //    Map<String, Long> corpusA = SolrUtils.getAllTermsAndCountsForField_ViaTermsRequest( solrA, fieldName );
 //    Map<String, Long> corpusB = SolrUtils.getAllTermsAndCountsForField_ViaTermsRequest( solrB, fieldName );
 
-	LLR llr = new LLR( corpusA, corpusB );
+  LLR llr = new LLR( corpusA, corpusB );
     String report = llr.generateReport( "A -> B" );
     System.out.print( report );
 

@@ -53,48 +53,48 @@ public class SolrUtils {
   // host + port (int or String) + collection name
   
   public static HttpSolrServer getServer() {
-	  return getServer( DEFAULT_HOST, DEFAULT_PORT );
+    return getServer( DEFAULT_HOST, DEFAULT_PORT );
   }
   public static HttpSolrServer getServer( String serverUrl ) {
-	  return new HttpSolrServer( serverUrl );
+    return new HttpSolrServer( serverUrl );
   }
   public static HttpSolrServer getServer( URL serverUrl ) {
-	  return getServer( serverUrl.toExternalForm()  );
+    return getServer( serverUrl.toExternalForm()  );
   }
   public static HttpSolrServer getServer( String host, int port ) {
-	  return getServer( host, ""+port );
+    return getServer( host, ""+port );
   }
   public static HttpSolrServer getServer( String host, int port, String collection ) {
-	  return getServer( host, ""+port, collection );
+    return getServer( host, ""+port, collection );
   }
   public static HttpSolrServer getServer( String host, String port ) {
-	  String url = "http://" + host + ":" + port + "/solr";
-	  return getServer( url );
+    String url = "http://" + host + ":" + port + "/solr";
+    return getServer( url );
   }
   public static HttpSolrServer getServer( String host, String port, String collection ) {
     if ( null==host ) {
       host = DEFAULT_HOST;
     }
     if ( null==port ) {
-      port = "" + DEFAULT_PORT;		  
+      port = "" + DEFAULT_PORT;
     }
     String url = null;
     if ( null==collection ) {
       url = "http://" + host + ":" + port + "/solr";
     }
     else {
-      url = "http://" + host + ":" + port + "/solr/" + collection;		  
+      url = "http://" + host + ":" + port + "/solr/" + collection;
     }
     return getServer( url );
   }
-  
-  
+
+
   // Basic Queries and Stats
   // -------------------------------
 
   // Alias
   public static Set<String> getDeclaredFieldNames( HttpSolrServer server ) throws SolrServerException {
-	  return getAllSchemaFieldNames( server );
+    return getAllSchemaFieldNames( server );
   }
   // Makes multiple calls to server
   public static Set<String> getUnusedDeclaredFieldNames( HttpSolrServer server ) throws SolrServerException {
@@ -159,7 +159,7 @@ public class SolrUtils {
       if ( null!=schemaFlags && schemaFlags.length() >= 3 ) {
         String flag = schemaFlags.substring( 2, 3 );
         if ( flag.equalsIgnoreCase("S") ) {
-          out.add( name );    		
+          out.add( name );
         }
       }
     }
@@ -198,7 +198,7 @@ public class SolrUtils {
       if ( null!=schemaFlags && schemaFlags.length() >= 1 ) {
         String flag = schemaFlags.substring( 0, 1 );
         if ( flag.equalsIgnoreCase("I") ) {
-          out.add( name );    		
+          out.add( name );
         }
       }
     }
@@ -231,17 +231,17 @@ public class SolrUtils {
 
   // TODO: lookup actual ID field via getUniqueKeyFieldName / getIdFieldName
   public static Set<String> getAllIds( HttpSolrServer server ) throws SolrServerException {
-	  Set<String> out = new LinkedHashSet<>();
-	  SolrQuery q = new SolrQuery( "*:*" );
-	  // TODO: use proper ID
-	  q.addField( ID_FIELD );
-	  q.setRows( ALL_ROWS );
-	  QueryResponse res = server.query( q );
-	  for ( SolrDocument doc : res.getResults() ) {
-		  String id = (String) doc.get( ID_FIELD );
-		  out.add( id );
-	  }
-	  return out;
+    Set<String> out = new LinkedHashSet<>();
+    SolrQuery q = new SolrQuery( "*:*" );
+    // TODO: use proper ID
+    q.addField( ID_FIELD );
+    q.setRows( ALL_ROWS );
+    QueryResponse res = server.query( q );
+    for ( SolrDocument doc : res.getResults() ) {
+      String id = (String) doc.get( ID_FIELD );
+      out.add( id );
+    }
+    return out;
   }
 
   public static Set<String> getClusters( HttpSolrServer server, Integer optLimit ) throws SolrServerException {
@@ -251,11 +251,11 @@ public class SolrUtils {
     // List<String>myList = Arrays.asList( new String[] { titleField } );
     Set<String> titleFields = new LinkedHashSet<>();
     if ( null!=titleField ) {
-    	titleFields.add( titleField );
+      titleFields.add( titleField );
     }
     Set<String> contentFields = new LinkedHashSet<>();
     if ( null!=contentField ) {
-    	contentFields.add( contentField );
+      contentFields.add( contentField );
     }
     return getClusters( server, titleFields, contentFields, optLimit );
   }
@@ -367,7 +367,7 @@ public class SolrUtils {
   }
 
   public static long getTotalDocCount( HttpSolrServer server ) throws SolrServerException {
-	  return getDocCountForQuery( server, "*:*" );
+    return getDocCountForQuery( server, "*:*" );
   }
   public static long getDocCountForField( HttpSolrServer server, String fieldName ) throws SolrServerException {
     // NullPointerException for location
@@ -380,7 +380,7 @@ public class SolrUtils {
     catch( Exception e ) {
       // TODO: will this wildcard expand to all terms?
       queryStr = fieldName + ":*";
-      return getDocCountForQuery( server, queryStr );		  
+      return getDocCountForQuery( server, queryStr );
     }
   }
   public static long getStoredDocCountForField( HttpSolrServer server, String fieldName ) throws SolrServerException {
@@ -402,40 +402,40 @@ public class SolrUtils {
     return out;
   }
   public static Set<String> getEmptyFieldDocIds( HttpSolrServer server, String fieldName ) throws SolrServerException {
-	  // NullPointerException for location
-	  // com.spatial4j.core.io.ParseUtils.parsePoint(ParseUtils.java:42)
-	  String queryStr = "-" + fieldName + ":[* TO *]";
-	  Set<String> out = new LinkedHashSet<>();
-	  SolrQuery q = new SolrQuery( queryStr );
-	  q.addField( ID_FIELD );
-	  q.setRows( ALL_ROWS );
-	  QueryResponse res = server.query( q );
-	  for ( SolrDocument doc : res.getResults() ) {
-		  String id = (String) doc.get( ID_FIELD );
-		  out.add( id );
-	  }
-	  return out;
-//	  try {
-//		  return getDocCountForQuery( server, queryStr );
-//	  }
-//	  catch( Exception e ) {
-//		  // TODO: will this wildcard expand to all terms?
-//		  queryStr = fieldName + ":*";
-//		  return getDocCountForQuery( server, queryStr );		  
-//	  }
+    // NullPointerException for location
+    // com.spatial4j.core.io.ParseUtils.parsePoint(ParseUtils.java:42)
+    String queryStr = "-" + fieldName + ":[* TO *]";
+    Set<String> out = new LinkedHashSet<>();
+    SolrQuery q = new SolrQuery( queryStr );
+    q.addField( ID_FIELD );
+    q.setRows( ALL_ROWS );
+    QueryResponse res = server.query( q );
+    for ( SolrDocument doc : res.getResults() ) {
+      String id = (String) doc.get( ID_FIELD );
+      out.add( id );
+    }
+    return out;
+//    try {
+//      return getDocCountForQuery( server, queryStr );
+//    }
+//    catch( Exception e ) {
+//      // TODO: will this wildcard expand to all terms?
+//      queryStr = fieldName + ":*";
+//      return getDocCountForQuery( server, queryStr );
+//    }
   }
   public static long getDocCountForQuery( HttpSolrServer server, String query ) throws SolrServerException {
-	  SolrQuery q = new SolrQuery( query );
-	  return getDocCountForQuery( server, q );
+    SolrQuery q = new SolrQuery( query );
+    return getDocCountForQuery( server, q );
   }
   // TODO: lookup actual ID field via getUniqueKeyFieldName / getIdFieldName
   public static long getDocCountForQuery( HttpSolrServer server, SolrQuery query ) throws SolrServerException {
-	  query.addField( ID_FIELD );    // Minimize data
-	  query.setRows( 0 );            // Minimize data
-	  QueryResponse res = server.query( query );
-	  SolrDocumentList docs = res.getResults();
-	  long count = docs.getNumFound();
-	  return count;
+    query.addField( ID_FIELD );    // Minimize data
+    query.setRows( 0 );            // Minimize data
+    QueryResponse res = server.query( query );
+    SolrDocumentList docs = res.getResults();
+    long count = docs.getNumFound();
+    return count;
   }
 
   // http://localhost:8985/solr/collection1/terms
@@ -600,7 +600,7 @@ public class SolrUtils {
       }
     }
     else {
-      q.addField( "*" );	
+      q.addField( "*" );
     }
     if ( optLimitRows > 0 ) {
       q.setRows( optLimitRows );
@@ -756,7 +756,7 @@ public class SolrUtils {
     return out;
   }
 
-  
+
   // Info From REST API Calls
   // -------------------------------------------------------------------------------
 
@@ -787,7 +787,7 @@ public class SolrUtils {
   // Alias
   // Common Name
   public static String getIdFieldName( HttpSolrServer server ) throws SolrServerException {
-	  return getUniqueKeyFieldName( server );
+    return getUniqueKeyFieldName( server );
   }
   // REST Name
   public static String getUniqueKeyFieldName( HttpSolrServer server ) throws SolrServerException {
@@ -823,32 +823,32 @@ public class SolrUtils {
   // Solr "Cursor Marks", AKA "Deep Paging" only in Solr version 4.7+
   // see https://cwiki.apache.org/confluence/display/solr/Pagination+of+Results and SOLR-5463
   public static boolean checkCursorMarkPagingSupport( HttpSolrServer server ) throws SolrServerException {
-	  SolrQuery q = new SolrQuery( "*:*" );
-	  q.addField( ID_FIELD );
-	  q.setRows( 0 );
-	  q.setSort( ID_FIELD, SolrQuery.ORDER.asc );
-	  String cursorMark = CursorMarkParams.CURSOR_MARK_START;
-	  // Ignored by older versions of Solr
-	  q.set( CursorMarkParams.CURSOR_MARK_PARAM, cursorMark );
-	  QueryResponse rsp = server.query( q );
-	  String nextCursorMark = rsp.getNextCursorMark();
-	  return null != nextCursorMark;
+    SolrQuery q = new SolrQuery( "*:*" );
+    q.addField( ID_FIELD );
+    q.setRows( 0 );
+    q.setSort( ID_FIELD, SolrQuery.ORDER.asc );
+    String cursorMark = CursorMarkParams.CURSOR_MARK_START;
+    // Ignored by older versions of Solr
+    q.set( CursorMarkParams.CURSOR_MARK_PARAM, cursorMark );
+    QueryResponse rsp = server.query( q );
+    String nextCursorMark = rsp.getNextCursorMark();
+    return null != nextCursorMark;
   }
 
   public static Set<String> getAllSchemaFieldNames( HttpSolrServer server ) throws SolrServerException {
-	  Set<String> out = new LinkedHashSet<>();
-	  SolrQuery q = new SolrQuery();
-	  q.setRequestHandler("/schema/fields");
-	  QueryResponse res = server.query( q );
-	  NamedList<Object> res2 = res.getResponse();
-	  Collection<SimpleOrderedMap> fields = (Collection<SimpleOrderedMap>)res2.get("fields");
-	  //System.out.println( "fields=" + fields );
-	  for ( SimpleOrderedMap f : fields ) {
-	    //System.out.println( "f=" + f );
-	    String name = (String)f.get( "name" );
-	    out.add( name );
-	  }
-	  return out;
+    Set<String> out = new LinkedHashSet<>();
+    SolrQuery q = new SolrQuery();
+    q.setRequestHandler("/schema/fields");
+    QueryResponse res = server.query( q );
+    NamedList<Object> res2 = res.getResponse();
+    Collection<SimpleOrderedMap> fields = (Collection<SimpleOrderedMap>)res2.get("fields");
+    //System.out.println( "fields=" + fields );
+    for ( SimpleOrderedMap f : fields ) {
+      //System.out.println( "f=" + f );
+      String name = (String)f.get( "name" );
+      out.add( name );
+    }
+    return out;
   }
   public static Set<String> getAllDynamicFieldPatterns( HttpSolrServer server ) throws SolrServerException {
     Set<String> out = new LinkedHashSet<>();
@@ -1045,68 +1045,68 @@ public class SolrUtils {
       System.out.println( l );
     }
 
-//	// getStatsForField( s, "releaseDate" );
-//	// getHistogramForDateField( s, "startDate", "NOW-30YEARS", "NOW", "+5YEARS" );
-//	Map<java.util.Date,Long> histo = getHistogramForDateField( s, "startDate", 5 );
-//	System.out.println( "Histogram: " + histo );
-//	for ( Entry<java.util.Date, Long> entry : histo.entrySet() ) {
-//		java.util.Date dateRaw = entry.getKey();
-//	  // String dateFmt = DateUtils.javaDefault2SolrXmlZulu_str2str( dateRaw );
-//	  // String dateFmt = DateUtils.solrXmlZulu2JavaDefault_str2str( dateRaw );
-//	  Long count = entry.getValue();
-//	  System.out.println( "\t" + dateRaw + ": " + count );
-//	  // System.out.println( "\t" + dateFmt + ": " + count );
-//	}
+//  // getStatsForField( s, "releaseDate" );
+//  // getHistogramForDateField( s, "startDate", "NOW-30YEARS", "NOW", "+5YEARS" );
+//  Map<java.util.Date,Long> histo = getHistogramForDateField( s, "startDate", 5 );
+//  System.out.println( "Histogram: " + histo );
+//  for ( Entry<java.util.Date, Long> entry : histo.entrySet() ) {
+//    java.util.Date dateRaw = entry.getKey();
+//    // String dateFmt = DateUtils.javaDefault2SolrXmlZulu_str2str( dateRaw );
+//    // String dateFmt = DateUtils.solrXmlZulu2JavaDefault_str2str( dateRaw );
+//    Long count = entry.getValue();
+//    System.out.println( "\t" + dateRaw + ": " + count );
+//    // System.out.println( "\t" + dateFmt + ": " + count );
+//  }
 
-//	Map<String,String> fieldTypes = getLukeFieldTypes(s);
-//	System.out.println( "Field -> Type:" );
-//	for ( Entry<String, String> entry : fieldTypes.entrySet() ) {
-//	  String fieldName = entry.getKey();
-//	  String typeName = entry.getValue();
-//	  System.out.println( "\t" + fieldName + ": " + typeName );
-//	}
+//  Map<String,String> fieldTypes = getLukeFieldTypes(s);
+//  System.out.println( "Field -> Type:" );
+//  for ( Entry<String, String> entry : fieldTypes.entrySet() ) {
+//    String fieldName = entry.getKey();
+//    String typeName = entry.getValue();
+//    System.out.println( "\t" + fieldName + ": " + typeName );
+//  }
 
-//	Set<String> storedFields = getLukeFieldsWithStoredValues( s );
-//	System.out.println( "storedFields = " + storedFields );
+//  Set<String> storedFields = getLukeFieldsWithStoredValues( s );
+//  System.out.println( "storedFields = " + storedFields );
 //
-//	Set<String> indexedFields = getLukeFieldsWithIndexedValues( s );
-//	System.out.println( "indexedFields = " + storedFields );
-//	
-//	Set<String> storedButNotIndexed = SetUtils.inAOnly_nonDestructive( storedFields, indexedFields );
-//	Set<String> indexedButNotStored = SetUtils.inBOnly_nonDestructive( storedFields, indexedFields );
-//	System.out.println( "storedButNotIndexed = " + storedButNotIndexed );
-//	System.out.println( "indexedButNotStored = " + indexedButNotStored );
-//	
-//	Set<String> allFields = getAllDeclaredAndActualFieldNames(s);
-//	Set<String> indexedAndOrStored = SetUtils.union_nonDestructive( storedFields, indexedFields );
-//	Set<String> neitherIndexedNorStored = SetUtils.inAOnly_nonDestructive( allFields, indexedAndOrStored );
-//	System.out.println( "Sanity Check: neitherIndexedNorStored = " + neitherIndexedNorStored );
-
-	// String fieldName = "name";
-	// String fieldName = "color";
-	// color, condition, department, format, genre, manufacturer, mpaaRating
-	// class, subclass, studio, softwareGrade, mpaaRating, albumLabel
-	// categoryIds, categoryNames
-	// Set<String> terms = getAllTermsForField_ViaTermsRequest( s, fieldName );
-	// System.out.println( "Field " + fieldName + " has " + terms.size() + " terms" );
-//    System.out.println( "Terms for field " + fieldName + " = " + terms );
-//	Map<String,Set<String>> terms = getTermsForFields( s, getActualFieldNames(s) );
-//    System.out.println( "Terms = " + terms );
-
-//	Set<String> declFields = getDeclaredFieldNames( s );
-//    System.out.println( "Declared Fields = " + declFields );
-//	Set<String> patterns = getDeclaredDynamicFieldPatterns( s );
-//    System.out.println( "Dynamic Patterns = " + patterns );
-//    Set<String> dynFields = getActualDynamicFieldNames( s );
-//    System.out.println( "Dynamic fields = " + dynFields );
+//  Set<String> indexedFields = getLukeFieldsWithIndexedValues( s );
+//  System.out.println( "indexedFields = " + storedFields );
 //
-//    // Experiment
-//    Set<String> declaredFields = getDeclaredFieldNames( s );
-//    Set<String> actualFields = getActualFieldNames( s );
-//    Set<String> schemaOnlyFields = SetUtils.inBOnly_destructive( actualFields, declaredFields );
-//    System.out.println( "Experiment: Schema-Only fields = " + schemaOnlyFields );
+//  Set<String> storedButNotIndexed = SetUtils.inAOnly_nonDestructive( storedFields, indexedFields );
+//  Set<String> indexedButNotStored = SetUtils.inBOnly_nonDestructive( storedFields, indexedFields );
+//  System.out.println( "storedButNotIndexed = " + storedButNotIndexed );
+//  System.out.println( "indexedButNotStored = " + indexedButNotStored );
+//
+//  Set<String> allFields = getAllDeclaredAndActualFieldNames(s);
+//  Set<String> indexedAndOrStored = SetUtils.union_nonDestructive( storedFields, indexedFields );
+//  Set<String> neitherIndexedNorStored = SetUtils.inAOnly_nonDestructive( allFields, indexedAndOrStored );
+//  System.out.println( "Sanity Check: neitherIndexedNorStored = " + neitherIndexedNorStored );
 
-//	HttpSolrServer s1 = new HttpSolrServer( URL1 );
+  // String fieldName = "name";
+  // String fieldName = "color";
+  // color, condition, department, format, genre, manufacturer, mpaaRating
+  // class, subclass, studio, softwareGrade, mpaaRating, albumLabel
+  // categoryIds, categoryNames
+  // Set<String> terms = getAllTermsForField_ViaTermsRequest( s, fieldName );
+  // System.out.println( "Field " + fieldName + " has " + terms.size() + " terms" );
+//  System.out.println( "Terms for field " + fieldName + " = " + terms );
+//  Map<String,Set<String>> terms = getTermsForFields( s, getActualFieldNames(s) );
+//  System.out.println( "Terms = " + terms );
+
+//  Set<String> declFields = getDeclaredFieldNames( s );
+//  System.out.println( "Declared Fields = " + declFields );
+//  Set<String> patterns = getDeclaredDynamicFieldPatterns( s );
+//  System.out.println( "Dynamic Patterns = " + patterns );
+//  Set<String> dynFields = getActualDynamicFieldNames( s );
+//  System.out.println( "Dynamic fields = " + dynFields );
+//
+//  // Experiment
+//  Set<String> declaredFields = getDeclaredFieldNames( s );
+//  Set<String> actualFields = getActualFieldNames( s );
+//  Set<String> schemaOnlyFields = SetUtils.inBOnly_destructive( actualFields, declaredFields );
+//  System.out.println( "Experiment: Schema-Only fields = " + schemaOnlyFields );
+
+//  HttpSolrServer s1 = new HttpSolrServer( URL1 );
 //    HttpSolrServer s2 = new HttpSolrServer( URL2 );
 //
 //    float versA = getSchemaVersion( s1 );
@@ -1146,8 +1146,8 @@ public class SolrUtils {
 //
 //    // getCopyFieldDestinationsForSource
 //    for ( String source : sourceNamesA ) {
-//    	Set<String> tmpDests = getCopyFieldDestinationsForSource( s1, source );
-//    	System.out.println( "\tFrom: '"+ source + "' To " + tmpDests );
+//      Set<String> tmpDests = getCopyFieldDestinationsForSource( s1, source );
+//      System.out.println( "\tFrom: '"+ source + "' To " + tmpDests );
 //    }
 //
 //    // getAllCopyFieldDestinationNames
@@ -1158,8 +1158,8 @@ public class SolrUtils {
 //
 //    // getCopyFieldSourcesForDestination
 //    for ( String dest : destNamesA ) {
-//    	Set<String> tmpSrcs = getCopyFieldSourcesForDestination( s1, dest );
-//    	System.out.println( "\tDest: '"+ dest + "' From " + tmpSrcs );
+//      Set<String> tmpSrcs = getCopyFieldSourcesForDestination( s1, dest );
+//      System.out.println( "\tDest: '"+ dest + "' From " + tmpSrcs );
 //    }
 
   }
@@ -1169,7 +1169,7 @@ public class SolrUtils {
   static String PORT0 = "8983";
   static String COLL0 = "demo_shard1_replica1";
   static String URL0 = "http://" + HOST0 + ":" + PORT0 + "/solr/" + COLL0;
-	  // + "/select?q=*:*&rows=" + ROWS + "&fl=id&wt=json&indent=on"
+  // + "/select?q=*:*&rows=" + ROWS + "&fl=id&wt=json&indent=on"
 
   static String HOST1 = "localhost";
   static String PORT1 = "8984"; // "8983";

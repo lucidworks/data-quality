@@ -36,7 +36,7 @@ public class StringUtils {
     }
     return new String( out );
   }
-		  
+
   // Handy for comma separated field names list, etc
   public static Set<String> splitCsv( String inStr ) {
     String[] fieldsAry = inStr.split( ",\\s*" );
