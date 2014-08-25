@@ -33,7 +33,7 @@ import org.xml.sax.SAXException;
 public class SchemaFromXml extends SchemaBase implements Schema {
   // get from resources folder
   static String SCHEMA_FILE_NAME = "schema-481.xml";
-  
+
   Document document;
   XPathFactory xpathFactory = XPathFactory.newInstance();
   private final String prefix = null;
