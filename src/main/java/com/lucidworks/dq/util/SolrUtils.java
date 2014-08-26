@@ -576,6 +576,11 @@ public class SolrUtils {
     SolrQuery q = new SolrQuery( "*:*" );
     boolean forcedId = false;
     boolean sawWildcard = false;
+    // This is the only way to get invalid field names
+    // with spaces and colons (or at least with spaces)
+    // Escaping doesn't work...
+    // Even DOUBLE escaping doesn't work...
+    boolean forceAll = false;
     if ( null!=fieldNames && ! fieldNames.isEmpty() ) {
       boolean haveSeenId = false;
       for ( String fieldName : fieldNames ) {
@@ -584,14 +589,31 @@ public class SolrUtils {
         // escapeFieldName does NOT escape the asterisk, which we wouldn't want
         // q.addField( escapeFieldName(fieldName) );
         // try double escaping
-        q.addField( escapeFieldName(escapeFieldName(fieldName)) );
-        if ( fieldName.equals("*") ) {
-          sawWildcard = true;
-          haveSeenId = true;
+        // q.addField( escapeFieldName(escapeFieldName(fieldName)) );
+        // Workaround if we skipped any invalid field names, Part 1 of 2
+        String escName = escapeFieldName(fieldName);
+        if ( ! escName.equals(fieldName) ) {
+          forceAll = true;
+          System.out.println( "WARNING: Asked to get stored values for invalid Solr field name \"" + fieldName + "\""
+              + "; can't request fields with that name so requesting all fields instead." );
         }
-        else if ( fieldName.equals(ID_FIELD) ) {
-          haveSeenId = true;
+        else {
+          //q.addField( escapeFieldName(escapeFieldName(fieldName)) );
+          q.addField( fieldName );
+          if ( fieldName.equals("*") ) {
+            sawWildcard = true;
+            haveSeenId = true;
+          }
+          else if ( fieldName.equals(ID_FIELD) ) {
+            haveSeenId = true;
+          }
         }
+      }
+      // Workaround if we skipped any invalid field names, Part 2 of 2
+      if ( forceAll && ! sawWildcard ) {
+        q.addField( "*" );
+        sawWildcard = true;
+        haveSeenId = true;
       }
       if ( ! haveSeenId ) {
         // TODO: lookup real ID field
@@ -604,6 +626,9 @@ public class SolrUtils {
     }
     if ( optLimitRows > 0 ) {
       q.setRows( optLimitRows );
+    }
+    else {
+      q.setRows( ALL_ROWS );
     }
     if ( optStartOffset > 0 ) {
       q.setStart( optStartOffset );
