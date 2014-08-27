@@ -1,5 +1,6 @@
 package com.lucidworks.dq.schema;
 
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -80,6 +81,12 @@ public class SchemaFromLocalCore_broken extends SchemaBase implements Schema {
 
   public String getDefaultSearchField() throws Exception {
     return schema.getDefaultSearchFieldName();
+  }
+
+  public Map<String, Set<String>> getAllDeclaredAndDynamicFieldsByType() {
+    Map<String, Set<String>> out = new LinkedHashMap<>();
+    return out;
+    //return null;
   }
 
   public Set<String> getAllSchemaFieldNames() throws Exception {
