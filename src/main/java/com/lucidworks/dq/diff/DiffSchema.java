@@ -3,6 +3,7 @@ package com.lucidworks.dq.diff;
 import java.io.File;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.cli.CommandLine;
@@ -93,7 +94,12 @@ public class DiffSchema /*implements HasDescription*/ {
     Set<String> typeNamesA = schemaA.getAllFieldTypeNames();
     Set<String> typeNamesB = schemaB.getAllFieldTypeNames();
     addSetComparisonToReport( out, typeNamesA, typeNamesB, "Types" );
-    
+
+    // Types to Fields
+    Map<String, Set<String>> typeToFieldsA = schemaA.getAllDeclaredAndDynamicFieldsByType();
+    Map<String, Set<String>> typeToFieldsB = schemaB.getAllDeclaredAndDynamicFieldsByType();
+    addMapOfSetsComparisonToReport( out, typeToFieldsA, typeToFieldsB, "Type -> Fields: (declared and dynamic patterns)" );
+
     // TODO: For common fields, compare types for each field (need lookuip method)
     // TODO: For common fileds, compare other attrs (not yet visibile here)
 
@@ -137,6 +143,7 @@ public class DiffSchema /*implements HasDescription*/ {
       out.println( " None!" );
     }
     else {
+      // finish previous line
       out.println();
       if ( ! inBoth.isEmpty() ) {
         if ( ! checkOrder ) {
@@ -168,6 +175,95 @@ public class DiffSchema /*implements HasDescription*/ {
 
   }
 
+  static void addMapOfSetsComparisonToReport( PrintWriter out, Map<String, Set<String>> mapA, Map<String, Set<String>> mapB, String attrLabel ) {
+    Set<String> keysInBoth = SetUtils.intersection_nonDestructive( mapA.keySet(), mapB.keySet() );
+    Set<String> keysInAOnly = SetUtils.inAOnly_nonDestructive( mapA.keySet(), mapB.keySet() );
+    Set<String> keysInBOnly = SetUtils.inBOnly_nonDestructive( mapA.keySet(), mapB.keySet() );
+    out.println();
+    out.print( attrLabel + ":" );
+    if ( keysInBoth.isEmpty() && keysInAOnly.isEmpty() && keysInBOnly.isEmpty() ) {
+      out.println( " None!" );
+    }
+    else {
+      // finish previous line
+      out.println();
+      
+      if ( ! keysInBoth.isEmpty() ) {
+        out.println( "Types in both A and B:" );
+        out.println( "\t(" + keysInBoth.size() + " A/B common types)" );
+        for ( String type : keysInBoth ) {
+          out.println( "\tType: " + type );
+
+          Set<String> typeAFields = mapA.get( type );
+          Set<String> typeBFields = mapB.get( type );
+          Set<String> fieldsInBoth = SetUtils.intersection_nonDestructive( typeAFields, typeBFields );
+          Set<String> fieldsInAOnly = SetUtils.inAOnly_nonDestructive( typeAFields, typeBFields );
+          Set<String> fieldsInBOnly = SetUtils.inBOnly_nonDestructive( typeAFields, typeBFields );
+
+          // A and B
+          if ( ! fieldsInBoth.isEmpty() ) {
+            out.println( "\t\tFields of type \"" + type + "\" in both A and B:" );
+            out.println( "\t\t\t(" + fieldsInBoth.size() + " fields)" );
+            for ( String field : fieldsInBoth ) {
+              out.println( "\t\t\t" + field );            
+            }
+          }
+          // A-only fields
+          if ( ! fieldsInAOnly.isEmpty() ) {
+            out.println( "\t\tFields of type \"" + type + "\" only in A:" );
+            out.println( "\t\t\t(" + fieldsInAOnly.size() + " fields)" );
+            for ( String field : fieldsInAOnly ) {
+              out.println( "\t\t\t" + field );            
+            }
+          }
+          // B-only fields
+          if ( ! fieldsInBOnly.isEmpty() ) {
+            out.println( "\t\tFields of type \"" + type + "\" only in B:" );
+            out.println( "\t\t\t(" + fieldsInBOnly.size() + " fields)" );
+            for ( String field : fieldsInBOnly ) {
+              out.println( "\t\t\t" + field );            
+            }
+          }
+        }        
+      }
+      // A-only Types
+      if ( ! keysInAOnly.isEmpty() ) {
+        out.println( "A only:" );
+        // + inAOnly + "'" );
+        out.println( "\t(" + keysInAOnly.size() + " A-only types)" );
+        for ( String type : keysInAOnly ) {
+          out.println( "\tType: " + type );
+
+          // out.println( "\t\t" + type + ":" );
+          Set<String> typeFields = mapA.get( type );
+          out.println( "\t\t(" + typeFields.size() + " fields of this type only in A)" );
+          for ( String field : typeFields ) {
+            out.println( "\t\t" + field );        
+          }
+        }
+      }
+      // B-only Types
+      if ( ! keysInBOnly.isEmpty() ) {
+        out.println( "B only:" );
+        out.println( "\t(" + keysInBOnly.size() + " B-only types)" );
+        for ( String type : keysInBOnly ) {
+          out.println( "\tType: " + type );
+          //out.println( "\t\t" + type + ":" );
+          Set<String> typeFields = mapB.get( type );
+          out.println( "\t\t(" + typeFields.size() + " fields of this type only in B)" );
+          for ( String field : typeFields ) {
+            out.println( "\t\t" + field );        
+          }
+        }
+      }
+    
+    }
+  }
+
+  
+  
+  
+  
   static void helpAndExit() {
     helpAndExit( null, 1 );
   }
