@@ -3,7 +3,9 @@ package com.lucidworks.dq.schema;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.solr.client.solrj.SolrQuery;
@@ -92,6 +94,9 @@ public class SchemaFromRestAdHock extends SchemaBase implements Schema {
     // TODO: REST Call for this?
   }
 
+  public Map<String, Set<String>> getAllDeclaredAndDynamicFieldsByType() throws SolrServerException {
+    return _getAllDeclaredAndDynamicFieldsByType( server );
+  }
   public Set<String> getAllSchemaFieldNames() throws SolrServerException {
     return getAllSchemaFieldNames( server );
   }
@@ -178,6 +183,37 @@ public class SchemaFromRestAdHock extends SchemaBase implements Schema {
     String op = (String) res2.get("defaultOperator");
     // float version = (float) res.getResponse().get("version");
     return op;
+  }
+
+  public Map<String, Set<String>> _getAllDeclaredAndDynamicFieldsByType( HttpSolrServer server ) throws SolrServerException {
+    Map<String, Set<String>> out = new LinkedHashMap<>();
+
+    // Declared Field Names
+    SolrQuery q1 = new SolrQuery();
+    q1.setRequestHandler("/schema/fields"); 
+    QueryResponse res1a = server.query( q1 );
+    NamedList<Object> res1b = res1a.getResponse();
+    Collection<SimpleOrderedMap> fields1 = (Collection<SimpleOrderedMap>)res1b.get("fields");
+    for ( SimpleOrderedMap f : fields1 ) {
+      String name = (String)f.get( "name" );
+      String type = (String)f.get( "type" );
+      utilTabulateFieldTypeAndName( out, type, name );
+    }
+
+    // Dynamic Fields
+    SolrQuery q2 = new SolrQuery();
+    q2.setRequestHandler("/schema/dynamicfields"); 
+    QueryResponse res2a = server.query( q2 );
+    NamedList<Object> res2b = res2a.getResponse();
+    Collection<SimpleOrderedMap> fields2 = (Collection<SimpleOrderedMap>)res2b.get("dynamicFields");
+    // System.out.println( "fields=" + fields );
+    for ( SimpleOrderedMap f : fields2 ) {
+      // System.out.println( "f=" + f );
+      String name = (String)f.get( "name" );
+      String type = (String)f.get( "type" );
+      utilTabulateFieldTypeAndName( out, type, name );
+    }
+    return out;
   }
 
   public static Set<String> getAllSchemaFieldNames( HttpSolrServer server ) throws SolrServerException {
@@ -304,62 +340,6 @@ public class SchemaFromRestAdHock extends SchemaBase implements Schema {
     String report2 = s2.generateReport();
     System.out.println( "====== Report: " + URL2 + " =============");
     System.out.println( report2 );
-
-    //    HttpSolrServer s1 = new HttpSolrServer( URL1 );
-    //    HttpSolrServer s2 = new HttpSolrServer( URL2 );
-    //
-    //    float versA = getSchemaVersion( s1 );
-    //    // float versB = getSchemaVersion( s2 );
-    //    System.out.println( "Schema Version A: " + versA );
-    //    String nameA = getSchemaName( s1 );
-    //    System.out.println( "Schema Name A: " + nameA );
-    //    String keyA = getUniqueKeyFieldName( s1 );
-    //    System.out.println( "Key Field A: " + keyA );
-    //    String defOpA = getDefaultOperator( s1 );
-    //    System.out.println( "Default Operator A: " + defOpA );
-    //    String simA = getSimilarityModelClassName( s1 );
-    //    System.out.println( "Similarity Class Name A: " + simA + ", is-a " + simA.getClass().getName() );
-    //    
-    //    // getAllSchemaFieldNames
-    //    Set<String> fieldsA = getAllSchemaFieldNames( s1 );
-    //    // Set<String> fieldsB = getAllSchemaFieldNames( s2 );
-    //    System.out.println( "Fields A: " + fieldsA );
-    //    // System.out.println( "Feilds B: " + fieldsB );
-    //
-    //    Set<String> dynFieldsA = getAllDynamicFieldPatterns( s1 );
-    //    // Set<String> dynFieldsB = getAllDynamicFieldPatterns( s2 );
-    //    System.out.println( "Dynamic field Patterns A: " + dynFieldsA );
-    //    // System.out.println( "Dynamic feild Patterns B: " + dynFieldsB );
-    //  
-    //    // getAllFieldTypeNames
-    //    Set<String> typeNamesA = getAllFieldTypeNames( s1 );
-    //    // Set<String> typeNamesB = getAllFieldTypeNames( s2 );
-    //    System.out.println( "Types A: " + typeNamesA );
-    //    // System.out.println( "Types B: " + typeNamesB );
-    //    
-    //    // getAllCopyFieldSourceNames
-    //    Set<String> sourceNamesA = getAllCopyFieldSourceNames( s1 );
-    //    // Set<String> sourceNamesB = getAllCopyFieldSourceNames( s2 );
-    //    System.out.println( "Copy Sources A: " + sourceNamesA );
-    //    // System.out.println( "Copy Sources B: " + sourceNamesB );
-    //
-    //    // getCopyFieldDestinationsForSource
-    //    for ( String source : sourceNamesA ) {
-    //      Set<String> tmpDests = getCopyFieldDestinationsForSource( s1, source );
-    //      System.out.println( "\tFrom: '"+ source + "' To " + tmpDests );
-    //    }
-    //
-    //    // getAllCopyFieldDestinationNames
-    //    Set<String> destNamesA = getAllCopyFieldDestinationNames( s1 );
-    //    // Set<String> destNamesB = getAllCopyFieldDestinationNames( s2 );
-    //    System.out.println( "Copy Destinations A: " + destNamesA );
-    //    // System.out.println( "Copy Destinations B: " + destNamesB );
-    //
-    //    // getCopyFieldSourcesForDestination
-    //    for ( String dest : destNamesA ) {
-    //      Set<String> tmpSrcs = getCopyFieldSourcesForDestination( s1, dest );
-    //      System.out.println( "\tDest: '"+ dest + "' From " + tmpSrcs );
-    //    }
 
   }
 

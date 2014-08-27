@@ -2,6 +2,8 @@ package com.lucidworks.dq.schema;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Set;
 
 public abstract class SchemaBase implements Schema {
@@ -39,6 +41,20 @@ public abstract class SchemaBase implements Schema {
     out.println();
     out.println( "Types: " + typeNames );
 
+    Map<String, Set<String>> typesAndNames = getAllDeclaredAndDynamicFieldsByType();
+    out.println();
+    out.println( "Type -> Fields: (declared and dynamic patterns)" );
+    out.println( "\t(" + typesAndNames.size() + " types)" );
+    for ( String type : typesAndNames.keySet() ) {
+      out.println( "\t" + type + ":" );
+      Set<String> typeFields = typesAndNames.get( type );
+      out.println( "\t\t(" + typeFields.size() + " fields)" );
+      for ( String field : typeFields ) {
+        out.println( "\t\t" + field );        
+      }
+    }
+    
+    
     Set<String> sourceNames = getAllCopyFieldSourceNames();
     out.println();
     out.println( "Copy Sources: " + sourceNames );
@@ -57,6 +73,17 @@ public abstract class SchemaBase implements Schema {
 
     String outStr = sw.toString();
     return outStr;
+  }
+  
+  static void utilTabulateFieldTypeAndName( Map<String, Set<String>> map, String type, String name ) {
+    if ( map.containsKey(type) ) {
+      map.get(type).add( name );
+    }
+    else {
+      Set<String> vector = new LinkedHashSet<>();
+      vector.add( name );
+      map.put( type, vector );
+    }   
   }
 
   @Override

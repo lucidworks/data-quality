@@ -1,5 +1,6 @@
 package com.lucidworks.dq.schema;
 
+import java.util.Map;
 import java.util.Set;
 
 public interface Schema {
@@ -18,6 +19,8 @@ public interface Schema {
   public String getDefaultOperator() throws Exception;
 
   public String getDefaultSearchField() throws Exception;
+
+  public Map<String, Set<String>> getAllDeclaredAndDynamicFieldsByType() throws Exception;
 
   public Set<String> getAllSchemaFieldNames() throws Exception;
 

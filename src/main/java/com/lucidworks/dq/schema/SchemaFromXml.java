@@ -75,6 +75,38 @@ public class SchemaFromXml extends SchemaBase implements Schema {
   }
 
   // Parts copied from Solr's IndexSchema .loadFields
+  public Map<String, Set<String>> getAllDeclaredAndDynamicFieldsByType() throws XPathExpressionException {
+    Map<String, Set<String>> out = new LinkedHashMap<>();
+
+    // Fields and dynamic types
+    XPath xpath = xpathFactory.newXPath();
+    // /schema/fields/field | /schema/fields/dynamicField
+    // | /schema/field | /schema/dynamicField
+    // Note: could remove OR and eliminate node name check, but this is closer to Solr code
+    String expression = stepsToPath(SCHEMA, FIELDS, FIELD)
+        + XPATH_OR + stepsToPath(SCHEMA, FIELDS, DYNAMIC_FIELD)
+        + XPATH_OR + stepsToPath(SCHEMA, FIELD)
+        + XPATH_OR + stepsToPath(SCHEMA, DYNAMIC_FIELD)
+        ;
+    
+    NodeList nodes = (NodeList)xpath.evaluate(expression, document, XPathConstants.NODESET);
+    for (int i=0; i<nodes.getLength(); i++) {
+      Node node = nodes.item(i);
+      NamedNodeMap attrs = node.getAttributes();
+      // "name" is actually the pattern if it's a dynamic field
+      String name = getAttr(attrs, NAME, "field definition");
+      // TODO: lots more properties
+      if (node.getNodeName().equals(FIELD) || node.getNodeName().equals(DYNAMIC_FIELD)) {
+        String type = getAttr(attrs, TYPE, "field definition");
+        utilTabulateFieldTypeAndName( out, type, name );
+      }
+    }
+    return out;
+  }
+
+  
+  
+  // Parts copied from Solr's IndexSchema .loadFields
   public Set<String> getAllSchemaFieldNames() throws XPathExpressionException {
     Set<String> out = new LinkedHashSet<>();
     XPath xpath = xpathFactory.newXPath();
@@ -405,43 +437,8 @@ public class SchemaFromXml extends SchemaBase implements Schema {
 
   public static void main( String[] argv ) throws Exception {
     SchemaFromXml s = new SchemaFromXml();
-
-    float version = s.getSchemaVersion();
-    System.out.println( "Version = " + version );
-    String name = s.getSchemaName();
-    System.out.println( "Schema Name: " + name );
-    String key = s.getUniqueKeyFieldName();
-    System.out.println( "Key Field: " + key );
-    String defOp = s.getDefaultOperator();
-    System.out.println( "Default Operator: " + defOp );
-    String sim = s.getSimilarityModelClassName();
-    System.out.println( "Similarity Class Name: " + sim );
-    String defField = s.getDefaultSearchField();
-    System.out.println( "Default Search Field: " + defField );
-
-    Set<String> fields = s.getAllSchemaFieldNames();
-    System.out.println( "Fields: " + fields );
-
-    Set<String> dynFields = s.getAllDynamicFieldPatterns();
-    System.out.println( "Dynamic field Patterns: " + dynFields );
-
-    Set<String> typeNames = s.getAllFieldTypeNames();
-    System.out.println( "Types: " + typeNames );
-
-    Set<String> sourceNames = s.getAllCopyFieldSourceNames();
-    System.out.println( "Copy Sources: " + sourceNames );
-    for ( String source : sourceNames ) {
-      Set<String> tmpDests = s.getCopyFieldDestinationsForSource(source);
-      System.out.println( "\tFrom: '"+ source + "' To " + tmpDests );
-    }
-
-    Set<String> destNames = s.getAllCopyFieldDestinationNames();
-    System.out.println( "Copy Destinations: " + destNames );
-    for ( String dest : destNames ) {
-      Set<String> tmpSrcs = s.getCopyFieldSourcesForDestination( dest );
-      System.out.println( "\tDest: '"+ dest + "' From " + tmpSrcs );
-    }
-
+    String report = s.generateReport();
+    System.out.println( report );
   }
 
   // Copied from Solr's IndexSchema.java
