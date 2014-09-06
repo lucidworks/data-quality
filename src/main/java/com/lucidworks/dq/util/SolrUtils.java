@@ -1,5 +1,6 @@
 package com.lucidworks.dq.util;
 
+import java.io.IOException;
 import java.net.URL;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -15,6 +16,8 @@ import java.util.Set;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.HttpSolrServer;
+import org.apache.solr.client.solrj.request.CoreAdminRequest;
+import org.apache.solr.client.solrj.response.CoreAdminResponse;
 import org.apache.solr.client.solrj.response.FacetField;
 import org.apache.solr.client.solrj.response.FacetField.Count;
 import org.apache.solr.client.solrj.response.FieldStatsInfo;
@@ -25,6 +28,7 @@ import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.client.solrj.response.RangeFacet;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
+import org.apache.solr.common.params.CoreAdminParams.CoreAdminAction;
 import org.apache.solr.common.params.CursorMarkParams;
 import org.apache.solr.common.util.NamedList;
 import org.apache.solr.common.util.SimpleOrderedMap;
@@ -61,6 +65,8 @@ public class SolrUtils {
   public static HttpSolrServer getServer( URL serverUrl ) {
     return getServer( serverUrl.toExternalForm()  );
   }
+  // TODO: all these versions assume Solr is under "/solr", maybe make more flexible
+  // Workaround is to use version of the method that takes URL (above)
   public static HttpSolrServer getServer( String host, int port ) {
     return getServer( host, ""+port );
   }
@@ -68,6 +74,12 @@ public class SolrUtils {
     return getServer( host, ""+port, collection );
   }
   public static HttpSolrServer getServer( String host, String port ) {
+    if ( null==host ) {
+      host = DEFAULT_HOST;
+    }
+    if ( null==port ) {
+      port = "" + DEFAULT_PORT;
+    }
     String url = "http://" + host + ":" + port + "/solr";
     return getServer( url );
   }
@@ -88,7 +100,19 @@ public class SolrUtils {
     return getServer( url );
   }
 
-
+  // some Admin functions
+  // --------------------
+  public static Set<String> getCoreNames( HttpSolrServer server ) throws SolrServerException, IOException {
+    Set<String> out = new LinkedHashSet<String>();
+    CoreAdminRequest request = new CoreAdminRequest();
+    request.setAction(CoreAdminAction.STATUS);
+    CoreAdminResponse cores = request.process( server );
+    for (int i = 0; i < cores.getCoreStatus().size(); i++) {
+      out.add( cores.getCoreStatus().getName(i) );
+    }
+    return out;
+  }
+  
   // Basic Queries and Stats
   // -------------------------------
 
