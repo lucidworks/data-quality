@@ -1,14 +1,135 @@
 package com.lucidworks.dq.util;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class StringUtils {
 
   public static String NL = System.getProperty("line.separator");
+
+  public static String parseAndCatchGroupAsStringOrNull( String patternStr, String sourceText, int groupNumber ) {
+    // Java caches pattern compilations
+    Pattern pattern = Pattern.compile( patternStr );
+    Matcher matcher = pattern.matcher( sourceText );   
+    if ( matcher.find() ) {
+      return matcher.group( groupNumber );
+    }
+    else {
+      return null;
+    }
+  }
+
+  public static Long parseAndCatchGroupAsLongOrNull( String patternStr, String sourceText, int groupNumber ) {
+    String matchStr = parseAndCatchGroupAsStringOrNull( patternStr, sourceText, groupNumber );
+    if ( null!=matchStr ) {
+      // Java caches valueOf object results
+      return Long.valueOf( matchStr );
+    }
+    else {
+      return null;
+    }
+  }
+
+  /*
+   * Convert:
+   *  color=red&fruit=apple&fruit=banana&desert=&lone+string
+   * into:
+   *  { color: [red], fruit: [apple, banana], desert: [""], content: [pizza] }
+   * TODO: feels like reinventing the wheel, though want very specific rules applied...
+   */
+  public static Map<String,Collection<String>> parseCgiParameters( String rawText ) {
+
+    // picky options we might expose later on
+    boolean maintainInsertionOrder = false;
+    boolean isCaseSensitiveKeys = true;
+    boolean trimKeys = true;
+    String defaultParamName = "content";
+    String encoding = "UTF-8";
+    // Value normalization might vary by parameter name
+    // TODO: separate method to look for CSV and space delimited values
+    // TODO: separate method to perhaps provide default values
+
+    // Map<String,Collection<String>> outMap = maintainInsertionOrder ? new LinkedHashMap<>() : new TreeMap<>();
+    Map<String,Collection<String>> outMap = null;
+    if ( maintainInsertionOrder ) {
+      outMap = new LinkedHashMap<>();
+    }
+    else {
+      outMap = new TreeMap<>();
+    }
+
+    // Break on & and ? (usually just &)
+    String [] args = rawText.split( "[?&]" );
+    for ( int i=0; i<args.length; i++ ) {
+
+      String arg = args[i];
+      // Skip empty entries
+      if ( arg.isEmpty() ) {
+        continue;
+      }
+
+      // Break on FIRST equals sign with arg
+      int equalsAt = arg.indexOf( '=' );
+      String key = "";
+      String value = "";
+      if ( equalsAt >= 0 ) {
+        if ( equalsAt > 0 ) {
+          key = arg.substring( 0, equalsAt );
+        }
+        if ( equalsAt < arg.length() ) {
+          value = arg.substring( equalsAt + 1 );
+        }
+      }
+      else {
+        key = arg;
+      }
+
+      // Normalize key and value
+      try {
+        key = URLDecoder.decode( key, encoding );
+      } catch (UnsupportedEncodingException e) {
+        e.printStackTrace();
+      }
+      if ( trimKeys ) {
+        key = key.trim();
+      }
+      if ( key.isEmpty() ) {
+        key = defaultParamName;
+      }
+      if ( ! isCaseSensitiveKeys ) {
+        key = key.toLowerCase();
+      }
+      // normalization of values can be handled via additioanl methods
+      try {
+        value = URLDecoder.decode( value, encoding );
+      } catch (UnsupportedEncodingException e) {
+        e.printStackTrace();
+      }
+
+      // Tabulate
+      Collection<String> values = null;
+      if ( outMap.containsKey(key) ) {
+        values = outMap.get(key);
+      }
+      else {
+        values = new ArrayList<>();
+        outMap.put( key, values );
+      }
+      values.add( value );
+      
+    }
+  
+    return outMap;
+  }
 
   // AKA multiplyString
   // TODO: Or use org.apache.commons.lang.StringUtils.repeat(...) ???

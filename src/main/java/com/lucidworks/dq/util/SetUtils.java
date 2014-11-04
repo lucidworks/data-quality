@@ -15,6 +15,56 @@ import java.util.TreeSet;
 
 public class SetUtils {
 
+  public static void incrementMapCounter( Map<String,Long> tabulationMap, String key ) {
+    Long value = 0L;
+    if ( tabulationMap.containsKey(key) ) {
+      value = tabulationMap.get(key);
+    }
+    value += 1L;
+    tabulationMap.put( key, value );
+  }
+
+/***
+  public static void incrementMapCounter( Map<Object,Number> tabulationMap, Object key ) {
+    incrementMapCounter( tabulationMap, key, 1 );
+  }
+  public static void incrementMapCounter( Map<Object,Number> tabulationMap, Object key, Number increment ) {
+    Number value = 0;
+    if ( tabulationMap.containsKey(key) ) {
+      value = tabulationMap.get(key);
+    }
+    // value += increment;
+    // value = value + increment;
+    value = value.doubleValue() + increment.doubleValue();
+    tabulationMap.put( key, value );
+  }
+***/
+
+/***
+  // posted to http://stackoverflow.com/questions/26551403/method-call-doesnt-match-method-signature-even-though-method-is-using-more-gene
+  public static void incrementMapCounter( Map<Object,Number> tabulationMap, Object key ) {
+    Number value = 0;
+    if ( tabulationMap.containsKey(key) ) {
+      value = tabulationMap.get(key);
+    }
+    value = value.doubleValue() + new Double(1);
+    tabulationMap.put( key, value );
+  }
+***/
+/***
+  // public static void incrementMapCounter( Map<?,? extends Number> tabulationMap, Object key )
+  public static <K,V extends Number> void incrementMapCounter( Map<K,V> tabulationMap, K key )
+  // public static void incrementMapCounter( Map<?,? extends Number> tabulationMap, <? extends Object> key )
+  {
+    Number value = 0;
+    if ( tabulationMap.containsKey(key) ) {
+      value = tabulationMap.get(key);
+    }
+    value = value.doubleValue() + new Double(1);
+    tabulationMap.put( key, value );
+  }
+***/
+
   /**
    * @deprecated use {@link StringUtils#join(Collection)} instead.  
    */
