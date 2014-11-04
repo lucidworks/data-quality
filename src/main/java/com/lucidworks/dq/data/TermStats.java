@@ -151,7 +151,7 @@ public class TermStats /*implements HasDescription*/ {
     return uniqueTermLengths_byField_max.get( fieldName );
   }
   public Set<String> getFieldNamesWithTerms() {
-    Set<String> out = new LinkedHashSet( uniqueTermCounts.keySet() );
+    Set<String> out = new LinkedHashSet<>( uniqueTermCounts.keySet() );
     return out;
   }
 
@@ -172,7 +172,7 @@ public class TermStats /*implements HasDescription*/ {
     return uniqueValueLengths_byField_max.get( fieldName );
   }
   public Set<String> getFieldNamesWithValues() {
-    Set<String> out = new LinkedHashSet( uniqueValueCounts.keySet() );
+    Set<String> out = new LinkedHashSet<>( uniqueValueCounts.keySet() );
     return out;
   }
 
