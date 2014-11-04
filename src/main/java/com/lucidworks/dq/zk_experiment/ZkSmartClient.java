@@ -7,6 +7,8 @@ import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.CloudSolrServer;
+import org.apache.solr.client.solrj.request.CollectionAdminRequest;
+import org.apache.solr.client.solrj.request.CoreAdminRequest;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrInputDocument;
@@ -62,10 +64,46 @@ public class ZkSmartClient {
     }
   }
 
+  // Similar to using REST call:
+  // http://localhost:8983/solr/admin/collections?action=CREATE&name=MyColl&numShards=1&maxShardsPerNode=1&replicationFactor=1&collection.configName=MyConfig
+
+  static void createCollection( String zooKeeperConnectString, String newCollectionName ) {
+    CloudSolrServer server = new CloudSolrServer( zooKeeperConnectString );
+    // server.setDefaultCollection( newCollectionName );
+    server.connect();
+    try {
+      // CoreAdminRequest.Create req = new CoreAdminRequest.Create();
+      // It's Collections, not Cores!  Cores are old-school
+      CollectionAdminRequest.Create req = new CollectionAdminRequest.Create();
+
+      // req.setCoreName( newCollectionName );
+      req.setCollectionName( newCollectionName );
+
+      // Don't use this stuff for Collections, only for Cores
+      //req.setInstanceDir( "/home/solr_data/solr/" );
+      //req.setDataDir( newCollectionName );
+      //req.setIsTransient( true );
+
+      //req.setNumShards( 2 );
+      req.setNumShards( 1 );
+
+      req.setConfigName( "MyConf" );
+      //req.setConfigSet( "MyConf" );
+
+      req.process( server );
+    } catch (SolrServerException | IOException e) {
+      e.printStackTrace();
+    }
+
+  }
+
   public static void main(String[] args) throws SolrServerException, IOException {
-    SolrServer server = openServer();
-    addDoc( server, 4 );
-    testSearch( server );
+//    SolrServer server = openServer();
+//    addDoc( server, 4 );
+//    testSearch( server );
+
+    createCollection( ZK_ENSEMBLE, "MyColl4" );
+  
   }
 
 }
