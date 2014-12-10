@@ -27,6 +27,7 @@ import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.PosixParser;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.HttpSolrServer;
@@ -43,20 +44,23 @@ import com.lucidworks.dq.util.SolrUtils;
 import com.lucidworks.dq.util.StringUtils;
 
 public class SolrToCsv {
+  // TODO: Could this be done by using wt=csv and cursor-markes?  Would need to map options...
+
   static String HELP_WHAT_IS_IT = "Export records from Solr collection or core to delimited file, such as CSV.";
   static String EXTENDED_DESCRIPTION =
     StringUtils.NL
-    + "Useful for quickly exporting data from standalone Solr or SolrCloud."
-    + " WARNING: Early prototype: Use the query parameter to insure that all your fields have values"
-    + "; this version doesn't output placeholder fields for missing values!"
+    + "Useful for quickly exporting large amounts of data from standalone Solr or SolrCloud to a flat file."
     + " Can ONLY export STORED Fields, though this is the default for many fields in Solr."
+    + "May be faster for large result sets than Solr's built-in CSV output, see http://wiki.apache.org/solr/CSVResponseWriter"
+    + ", and a bit more convenient."
+    + "Has some options for RFC-4180, see https://tools.ietf.org/html/rfc4180"
     + " Will use Solr \"Cursor Marks\", AKA \"Deep Paging\", if available"
     + " which is in Solr version 4.7+"
     + ", see https://cwiki.apache.org/confluence/display/solr/Pagination+of+Results and SOLR-5463"
     + StringUtils.NL
     + "Options:"
     ;
-  static String HELP_USAGE = "SolrToSolr --url_a http://localhost:8983/collection1 --url_b http://localhost:8983/collection2";
+  static String HELP_USAGE = "SolrToCsv --url http://localhost:8983/collection1 --output_file results.csv";
 
   public static String getShortDescription() {
     return HELP_WHAT_IS_IT;
@@ -64,6 +68,11 @@ public class SolrToCsv {
 
   // See batch size comments at bottom of file
   static int DEFAULT_BATCH_SIZE = 1000;
+
+  public static String DEFAULT_FIELD_DELIMITER = ",";
+  public static String DEFAULT_MULTIVALUE_DELIMITER = ", ";
+  public static String DEFAULT_RECORD_DELIMITER = "\n";    // RFC-4180 says \r\n
+  public static String DEFAULT_NEWLINE_REPLACEMENT = " ";
   
   static String DEFAULT_QUERY = "*:*";
 
@@ -82,9 +91,10 @@ public class SolrToCsv {
 
   HttpSolrServer solr;
   int batchSize = DEFAULT_BATCH_SIZE;
+  int limitTotalRows;
+  int _startOffset;
   String query = DEFAULT_QUERY;
   boolean ignoreCase = false;
-  boolean _outputLowercase = false;
 
   // leave these null by default
   Set<String> includeFields;
@@ -93,14 +103,20 @@ public class SolrToCsv {
   Set<String> excludeFields;
   Set<String> excludeLiterals;
   Set<Pattern> excludePatterns;
+  // This is the master list for every output record
+  List<String> outputFields;
 
   boolean supportsCursorMarks;
   private String encodingStr;
   private boolean useStrictEncoding;
-  private boolean keepTroublesomeRecords;
   private String outputFile;
   private PrintWriter out;
-  private String delimiter;
+  private String fieldDelimiter;
+  private String recordDelimiter;
+  private String multivalueDelimiter;
+  private String newlineReplacement;
+  private boolean forceQuotes;
+  private boolean includeHeader;
 
   public SolrToCsv( HttpSolrServer source ) throws SolrServerException {
     this.solr = source;
@@ -110,8 +126,11 @@ public class SolrToCsv {
 
   public long processAll() throws SolrServerException, IOException {
     setupOutputFile();
-
+    calcOutputFields();
     SolrQuery q = prepInitialQuery();
+
+    String header = generateHeaderLine();
+    out.write( header );
 
     long submittedCount = 0L;
     // Finish up depending on whether we support modern cursors or not
@@ -125,11 +144,45 @@ public class SolrToCsv {
 
     return submittedCount;
   }
+
+  // We use this for consistent positioning within the CSV records
+  // but the search request has slightly different logic and
+  // may just request "*", in prepInitialQuery()
+  void calcOutputFields() throws SolrServerException {
+    outputFields = new ArrayList<>();
+    // Give priority order to specific fields they've requested
+    if ( null!=includeLiterals ) {
+      for ( String candidateField : includeLiterals ) {
+        // We DO allow duplicate field names here
+        // Odd, but they may have some reason for requesting it
+        if ( checkFieldName( candidateField ) ) {
+          outputFields.add( candidateField );
+        }
+      }
+    }
+    // try to at least get ID first
+    else {
+      if ( checkFieldName(ID_FIELD) ) {
+        outputFields.add( ID_FIELD );
+      }
+    }
+    // Add any others, if applicable
+    // TODO: could cache this, in a few cases we might be asking Solr twice for the same info
+    // TODO: in other cases, they might only be wanting a couple specific fields
+    Set<String> storedFields = SolrUtils.getLukeFieldsWithStoredValues(solr);
+    for ( String candidateField : storedFields ) {
+      // Don't allow repeats here
+      if ( checkFieldName(candidateField) && ! outputFields.contains(candidateField) ) {
+        outputFields.add( candidateField );
+      }
+    }
+  }
   SolrQuery prepInitialQuery() throws SolrServerException {
     // TODO: could put query as fq/filter query to bypass Relevancy sorting
     SolrQuery q = new SolrQuery(getQuery());
     System.out.println( "Fetching rows that match query " + getQuery() );
     // If any restriction on fields, then faster to only fetch fields that we need
+    // see also slightly different logic in calcOutputFields()
     if (null != getIncludeFields() || null != getExcludeFields()) {
       Set<String> storedFields = SolrUtils.getLukeFieldsWithStoredValues(solr);
       storedFields = filterFields(storedFields);
@@ -166,6 +219,10 @@ public class SolrToCsv {
       for (SolrDocument doc : rsp.getResults()) {
         docCount++;
         batch.add(doc);
+        // Limit can be less than one batch-size increment
+        if ( getLimitTotalRows() > 0 && docCount >= getLimitTotalRows() ) {
+          break;
+        }
       }
       processBatch(batch);
       logIntermediateProgressIfApplicable( batch.size(), docCount );
@@ -174,6 +231,10 @@ public class SolrToCsv {
         done = true;
       }
       cursorMark = nextCursorMark;
+
+      if ( getLimitTotalRows() > 0 && docCount >= getLimitTotalRows() ) {
+        done = true;
+      }
     }
     //System.out.println( "Done: cursorMark = \"" + cursorMark + "\", docCount = " + docCount );
     return docCount;
@@ -194,6 +255,10 @@ public class SolrToCsv {
       for (SolrDocument doc : docs) {
         docCount++;
         batch.add(doc);
+        // Limit can be less than one batch-size increment
+        if ( getLimitTotalRows() > 0 && docCount >= getLimitTotalRows() ) {
+          break;
+        }
       }
       processBatch(batch);
       logIntermediateProgressIfApplicable( batch.size(), docCount );
@@ -203,6 +268,9 @@ public class SolrToCsv {
       if (getBatchSize() > 0) {
         start += getBatchSize();
       }
+      if ( getLimitTotalRows() > 0 && docCount >= getLimitTotalRows() ) {
+        done = true;
+      }
     }
     return docCount;
   }
@@ -211,14 +279,9 @@ public class SolrToCsv {
     if ( null==sourceDocs || sourceDocs.isEmpty() ) {
       return;
     }
-    //Collection<SolrInputDocument> destinationDocs = new ArrayList<SolrInputDocument>();
     for ( SolrDocument srcDoc : sourceDocs ) {
       outputSolrResultsDocToCsv( srcDoc );
-      //SolrInputDocument dstDoc = convertSolrResultsDocToSolrIndexingDoc( srcDoc );      
-      //destinationDocs.add( dstDoc );
     }
-    //solrB.add( destinationDocs, COMMIT_DELAY );
-    //System.out.println( "Submitted " + destinationDocs.size() + " docs." );
   }
 
   void logIntermediateProgressIfApplicable( long currentBatch, long totalCount ) {
@@ -241,74 +304,117 @@ public class SolrToCsv {
     }
     System.out.println();
   }
-  SolrInputDocument _convertSolrResultsDocToSolrIndexingDoc( SolrDocument sourceDoc ) {
-    SolrInputDocument destinationDoc = new SolrInputDocument();
-    for( Entry<String, Object> srcEntry : sourceDoc.entrySet() ) {
-      String fieldName = srcEntry.getKey();
-      // Skip internal fields like _version_
-      // We still need to check fields here
-      // Although we call filterFields when preparing the query
-      // sometimes we just use fl=* so need to check here
-      if ( ! checkFieldName(fieldName) ) {
-        continue;
-      }
-      Object fieldValue = srcEntry.getValue();
-//      if ( isOutputLowercase() ) {
-//        fieldName = fieldName.toLowerCase();
-//      }
-      destinationDoc.addField( fieldName, fieldValue );
-    }
-    return destinationDoc;
-  }
-  // TODO: this doesn't maintain record position when intermediate fields are missing
-  // So put id first, which will always have a value
-  // Put fields that may be missing values at the end
-  // If you have more than one of them, you'll have problems
+
   void outputSolrResultsDocToCsv( SolrDocument sourceDoc ) {
-    // SolrInputDocument _destinationDoc = new SolrInputDocument();
+    String destDoc = convertSolrResultsDocToCsvString( sourceDoc );
+    if ( null!=destDoc ) {
+      out.write( destDoc );
+    }
+  }
+
+  String convertSolrResultsDocToCsvString( SolrDocument sourceDoc ) {
     StringBuffer recordBuff = new StringBuffer();
-    boolean sawBadField = false;
-    // Foreach Field
-    for( Entry<String, Object> srcEntry : sourceDoc.entrySet() ) {
-      String fieldName = srcEntry.getKey();
-      // Skip internal fields like _version_
-      // We still need to check fields here
-      // Although we call filterFields when preparing the query
-      // sometimes we just use fl=* so need to check here
-      if ( ! checkFieldName(fieldName) ) {
-        continue;
+    // Foreach called-for field
+    for ( int i=0; i<outputFields.size(); i++ ) {
+      String fieldName = outputFields.get(i);
+      if ( i>0 ) {
+        recordBuff.append( getFieldDelimiter() );
       }
-      Object fieldValue = srcEntry.getValue();
-      String fieldValueStr = null;
-      // System.out.println( "field name =" + fieldName );
-      if ( fieldValue instanceof Collection ) {
-        StringBuffer fieldBuff = new StringBuffer();
-        Collection<?> values = (Collection) fieldValue;
-        for ( Object v : values ) {
-          if ( fieldBuff.length() > 0 ) {
-            fieldBuff.append( " " );
-          }
-          fieldBuff.append( v.toString() );
+      Object fieldValue = sourceDoc.getFieldValue( fieldName );
+      // Handles nulls, should always return at least ""
+      String fieldValueStr = convertSolrFieldToCsvString( fieldValue );
+      if ( null!=fieldValueStr && fieldValueStr.length() > 0 ) {
+        recordBuff.append( fieldValueStr );
+      }
+      // TODO: could look for and Warn about any fields returned by Solr that are acceptable but weren't called for here, though that shoudln't be possible
+    }
+    recordBuff.append( getRecordDelimiter() );
+    return new String( recordBuff );
+  }
+
+  // Worst case: Outputs an empty string (vs. null)
+  // Some options for RFC-4180
+  // TODO: option for comma to \, (nonstandard, but Solr's CSV output does it in some cases)
+  String convertSolrFieldToCsvString( Object fieldValue ) {
+    if ( null==fieldValue ) {
+      return "";
+    }
+    String fieldValueStr = null;
+    // Get the raw text
+    if ( fieldValue instanceof Collection ) {
+      StringBuffer fieldBuff = new StringBuffer();
+      Collection<?> values = (Collection) fieldValue;
+      for ( Object v : values ) {
+        String tmpValueStr = v.toString();
+        if ( null!=tmpValueStr && null!=getNewlineReplacement() ) {
+          tmpValueStr = tmpValueStr.replaceAll( "\n", getNewlineReplacement() );
         }
-        fieldValueStr = new String( fieldBuff );
+        if ( fieldBuff.length() > 0 ) {
+          fieldBuff.append( getMultivalueDelimiter() );
+        }
+        fieldBuff.append( tmpValueStr );
       }
-      else {
-        fieldValueStr = fieldValue.toString();
+      fieldValueStr = new String( fieldBuff );
+    }
+    else {
+      String tmpValueStr = fieldValue.toString();
+      if ( null!=tmpValueStr && null!=getNewlineReplacement() ) {
+        tmpValueStr = tmpValueStr.replaceAll( "\n", getNewlineReplacement() );
       }
-      if ( fieldValueStr.indexOf(getDelimiter())>=0 ) {
-        sawBadField = true;
-      }
-      if ( recordBuff.length()>0 ) {
-        recordBuff.append( getDelimiter() );
-      }
-      recordBuff.append( fieldValueStr );
-      // destinationDoc.addField( fieldName, fieldValue );
-    }  // End Foreach Field
-    if ( getKeepTroublesomeRecords() || ! sawBadField ) {
-      out.write( new String(recordBuff) + "\n" );
+      fieldValueStr = tmpValueStr;
+    }
+    // be paranoid
+    if ( null==fieldValueStr ) {
+      fieldValueStr = "";
     }
 
-    //return destinationDoc;
+    // Cleanup and Escaping
+    // Various reasons to need quotes
+    boolean needsQuotes = false;
+
+    // Newline check
+    if ( fieldValueStr.indexOf('\n') > 0 ) {
+      needsQuotes = true;
+    }
+
+    // Comma check
+    if ( fieldValueStr.indexOf( getFieldDelimiter() ) > 0 ) {
+      needsQuotes = true;
+    }
+
+    // Handle embedded quotes
+    String origString = fieldValueStr;
+    fieldValueStr = fieldValueStr.replaceAll( "\"", "\"\"" );
+    if ( ! fieldValueStr.equals(origString) ) {
+      needsQuotes = true;
+    }
+
+    // Foce quotes option overrides everything
+    needsQuotes |= getForceQuotes();
+
+    if ( needsQuotes ) {
+      return "\"" + fieldValueStr + "\"";
+    }
+    else {
+      return fieldValueStr;
+    }
+  }
+
+  String generateHeaderLine() {
+    StringBuffer recordBuff = new StringBuffer();
+    // Foreach called-for field
+    for ( int i=0; i<outputFields.size(); i++ ) {
+      String fieldName = outputFields.get(i);
+      if ( i>0 ) {
+        recordBuff.append( getFieldDelimiter() );
+      }
+      String fieldValueStr = convertSolrFieldToCsvString( fieldName );
+      if ( null!=fieldValueStr && fieldValueStr.length() > 0 ) {
+        recordBuff.append( fieldValueStr );
+      }
+    }
+    recordBuff.append( getRecordDelimiter() );
+    return new String( recordBuff );
   }
 
   void setupOutputFile() throws FileNotFoundException {
@@ -335,13 +441,25 @@ public class SolrToCsv {
   void closeOutputFile() {
     out.close();
   }
-  
+
   public int getBatchSize() {
     return batchSize;
   }
-
   public void setBatchSize(int batchSize) {
     this.batchSize = batchSize;
+  }
+
+  public int getLimitTotalRows() {
+    return limitTotalRows;
+  }
+  public void setLimitTotalRows(int numberOfRows) {
+    this.limitTotalRows = numberOfRows;
+  }
+  public int _getStartOffset() {
+    return _startOffset;
+  }
+  public void _setStartOffset(int offset) {
+    this._startOffset = offset;
   }
 
   public String getQuery() {
@@ -394,18 +512,43 @@ public class SolrToCsv {
     return this.encodingStr;
   }
 
-  public void setDelimiter(String delimiter) {
-    this.delimiter = delimiter;
+  public void setFieldDelimiter(String delimiter) {
+    this.fieldDelimiter = delimiter;
   }
-  public String getDelimiter() {
-    return this.delimiter;
+  public String getFieldDelimiter() {
+    return this.fieldDelimiter;
+  }
+  public void setRecordDelimiter(String delimiter) {
+    this.recordDelimiter = delimiter;
+  }
+  public String getRecordDelimiter() {
+    return this.recordDelimiter;
+  }
+  public void setMultivalueDelimiter(String delimiter) {
+    this.multivalueDelimiter = delimiter;
+  }
+  public String getMultivalueDelimiter() {
+    return this.multivalueDelimiter;
+  }
+  public void setNewlineReplacement(String substStr) {
+    this.newlineReplacement = substStr;
+  }
+  public String getNewlineReplacement() {
+    return this.newlineReplacement;
   }
 
-  public void setKeepTroublesomeRecords(boolean flag) {
-    this.keepTroublesomeRecords = flag;
+  public void setForceQuotes(boolean flag) {
+    this.forceQuotes = flag;
   }
-  public boolean getKeepTroublesomeRecords() {
-    return this.keepTroublesomeRecords;
+  public boolean getForceQuotes() {
+    return this.forceQuotes;
+  }
+
+  public void setIncludeHeader(boolean flag) {
+    this.includeHeader = flag;
+  }
+  public boolean getIncludeHeader() {
+    return this.includeHeader;
   }
 
   private void analyzePatterns( Set<String> inCandidates, Set<String> outLiternals, Set<Pattern> outPatterns ) {
@@ -503,13 +646,6 @@ public class SolrToCsv {
     this.ignoreCase = ignoreCase;
   }
 
-  public boolean _isOutputLowercase() {
-    return _outputLowercase;
-  }
-  public void _setOutputLowercase(boolean outputLowercase) {
-    this._outputLowercase = outputLowercase;
-  }
-
   public boolean isSupportsCursorMarks() {
     return supportsCursorMarks;
   }
@@ -547,7 +683,40 @@ public class SolrToCsv {
     options.addOption( "p", "port", true, "Port for Solr source, default=8983");
     options.addOption( "c", "collection", true, "Collection/Core for Solr source, Eg: collection1");
 
+    options.addOption( "x", "xml", false,
+        "Use XML transport (XMLResponseParser) instead of default javabin; useful when working with older versions of Solr, though slightly slower."
+            + " Helps fix errors \"RuntimeException: Invalid version or the data in not in 'javabin' format\""
+            + ", \"org.apache.solr.common.util.JavaBinCodec.unmarshal\", or similar errors.");
+
     options.addOption( "q", "query", true, "Query to select which records will be copied; by default all records are copied.");
+
+    options.addOption(
+        OptionBuilder.withLongOpt("batch_size")
+          .withDescription(
+            "Batch size from Solr, 1=doc-by-doc."
+            + " 0=all-at-once but be careful memory-wise and 0 also disables deep paging cursors."
+            + " Default=" + DEFAULT_BATCH_SIZE
+            + " Does NOT affect size of output data file, which just puts everything into one giant file (in this early version)."
+            ).hasArg().withType(Number.class) // NOT Long.class
+          .create("b"));
+
+    // rows and start
+    options.addOption(
+        OptionBuilder
+          .withLongOpt("rows")
+          .withDescription( "Limit total number of rows to export, useful for testing small batches." )  // See also --start" )
+          .hasArg()
+          .withType(Number.class) // NOT Long.class
+          .create()
+          );
+//    options.addOption(
+//        OptionBuilder
+//          .withLongOpt("_start")
+//          .withDescription( "Offset of row to start exporting from, useful for testing small batches. See also --rows" )
+//          .hasArg()
+//          .withType(Number.class) // NOT Long.class
+//          .create()
+//          );
 
     options.addOption( "f", "include_fields", true,
             "Fields to copy, Eg: include_fields=id,name,category"
@@ -580,39 +749,40 @@ public class SolrToCsv {
                 + "; the original form of the fieldname will still be output to the destination collection"
                 + " unless output_lowercase_names is used");
 
-    options.addOption( "d", "delimiter", true, "Field separator for output records, default is a comma.");
-
     options.addOption( "o", "output_file", true, "Output file to export data to (default or \"-\" is stdout / standard out)" );
     options.addOption( "e", "encoding", true, "Character Encoding for writing files (default is UTF-8, which enables cross-platform operation)" );
     options.addOption( "l", "loose_encoding", false, "Disable strict character encoding so that problems don't throw Exceptions (NOT recommended)" );
 
-    
-    options.addOption( "k", "keep_troublesome_records", false,
-            "Normally we skip the entire record if any field contains your delimiter character."
-            + " Why? This quickie version doesn't have proper CSV encoding support."
-            + " Therefore, if a field value contains your delimiter character, it would NOT be handled correctly."
-            + " Mutli-value fields are concatenated with spaces."
-            + " Newlines are replaced with spaces.");
+    options.addOption( "d", "field_delimiter", true, "Field separator for output records"
+        + ", supports Java escape sequences but be careful with your OS shell."
+        + " For example, for a TAB, you can try \"\\\\t\" or \"\\t\" "
+        + " Default is \"" + DEFAULT_FIELD_DELIMITER + "\"" );
+    options.addOption( "m", "multivalue_delimiter", true, "Separator for individual multi-value fields"
+        + ", supports Java escape sequences but be careful with your OS shell."
+        + " Default is \"" + DEFAULT_MULTIVALUE_DELIMITER + "\"" );
+    options.addOption( "r", "record_delimiter", true, "Separator for complete records"
+        + ", supports Java escape sequences but be careful with your OS shell."
+        + " Default is newline"
+        + ", although RFC-4180 suggests using \"\\r\\n\""
+        + ", set with either \"\\r\\n\" or \"\\\\r\\\\n\""
+        );
+    options.addOption( "n", "newline_replacement", true,
+        "If a newline appears within a value, what should it be replaced with."
+        + " Default is \"" + DEFAULT_NEWLINE_REPLACEMENT + "\""
+        + ", although RFC-4180 suggests using a bare newline which you can set with \"\\n\""
+        + " To get an actual \"\\n\" try using \"\\\\n\" or \"\\\\\\\\n\""
+        + " Does not replace newlines added via multivalue_delimiter"
+        + "; if you don't want those either, then change that other setting."
+        );
 
-    options.addOption( "x", "xml", false,
-            "Use XML transport (XMLResponseParser) instead of default javabin; useful when working with older versions of Solr, though slightly slower."
-                + " Helps fix errors \"RuntimeException: Invalid version or the data in not in 'javabin' format\""
-                + ", \"org.apache.solr.common.util.JavaBinCodec.unmarshal\", or similar errors.");
+    options.addOption( "s", "skip_header", false,
+        "Normally we output the field names as the first line of the output CSV; turn this feature off." );
+    options.addOption( "f", "force_quotes", false,
+        "Normally only values with commas, quotes or newlines are wrapped with quotes; this forces all values to be quoted." );
 
-    // TODO: Multivalue options?
-    // TODO: start at a certain offset or limit total number of records
+    // TODO: start at a certain offset (would be difficult)
     // TODO: sort options?
-    // TODO: commit options
-
-    options.addOption(
-        OptionBuilder.withLongOpt("batch_size")
-          .withDescription(
-            "Batch size from Solr, 1=doc-by-doc."
-            + " 0=all-at-once but be careful memory-wise and 0 also disables deep paging cursors."
-            + " Default=" + DEFAULT_BATCH_SIZE
-            + " Does NOT affect size of output data file, which just puts everything into one giant file (in this early version)."
-            ).hasArg().withType(Number.class) // NOT Long.class
-          .create("b"));
+    // TODO: Escape Commas option, currently we don't do it, just add quotes
 
     if (argv.length < 1) {
       helpAndExit();
@@ -656,6 +826,7 @@ public class SolrToCsv {
 
     // Additional options
 
+    // Batch size (retrieval)
     Long batchObj = (Long) cmd.getParsedOptionValue("batch_size");
     if (null != batchObj) {
       if (batchObj.longValue() < 0L) {
@@ -664,13 +835,39 @@ public class SolrToCsv {
       solr2csv.setBatchSize(batchObj.intValue());
     }
 
-    // ignore_case
+    // Limit output rows, handy for debugging
+    int rows = 0;
+    // Don't use Integer
+    Long rowsObj = (Long) cmd.getParsedOptionValue("rows");
+    if (null != rowsObj) {
+      if (rowsObj.intValue() <= 0) {
+        helpAndExit("rows must be > 0", 5);
+      }
+      rows = rowsObj.intValue();
+      solr2csv.setLimitTotalRows( rows );
+    }
+
+//    // Won't work with cursors
+//    // and complication even with older batching
+//    int start = 0;
+//    // Don't use Integer
+//    Long startObj = (Long) cmd.getParsedOptionValue("start");
+//    if (null != startObj) {
+//      if (startObj.intValue() <= 0) {
+//        helpAndExit("start must be > 0", 6);
+//      }
+//      start = startObj.intValue();
+//      solr2csv._setStartOffset( start );
+//    }
+
+    // ignore_case for field matching
     // Important! Set this BEFORE calling setIncludeFields or setExcludeFields
     // TODO: revisit this, some way to enforce it or do a final check
     if (cmd.hasOption("ignore_case")) {
       solr2csv.setIgnoreCase(true);
     }
 
+    // Include Fields and Patterns
     String includeFieldsStr = cmd.getOptionValue("include_fields");
     if (null != includeFieldsStr) {
       Set<String> fields = StringUtils.splitCsv(includeFieldsStr);
@@ -679,6 +876,7 @@ public class SolrToCsv {
       }
     }
 
+    // Exclude Fields and Patterns
     String excludeFieldsStr = cmd.getOptionValue("exclude_fields");
     if (null != excludeFieldsStr) {
       Set<String> fields = StringUtils.splitCsv(excludeFieldsStr);
@@ -687,18 +885,61 @@ public class SolrToCsv {
       }
     }
 
-    if (cmd.hasOption("keep_troublesome_records")) {
-      solr2csv.setKeepTroublesomeRecords(true);
-    }
-
-    String delim = cmd.getOptionValue("delimiter");
-    if (null != delim) {
-      solr2csv.setDelimiter(delim);
+    // Field Delim, usually Comma or Tab
+    String fieldDelim = cmd.getOptionValue("field_delimiter");
+    if (null != fieldDelim) {
+      fieldDelim = StringEscapeUtils.unescapeJava( fieldDelim );
+      solr2csv.setFieldDelimiter( fieldDelim );
     }
     else {
-      solr2csv.setDelimiter(",");
+      solr2csv.setFieldDelimiter( DEFAULT_FIELD_DELIMITER );
     }
 
+    // Multivalue Field Delim
+    String mvDelim = cmd.getOptionValue("multivalue_delimiter");
+    if (null != mvDelim) {
+      mvDelim = StringEscapeUtils.unescapeJava( mvDelim );
+      solr2csv.setMultivalueDelimiter( mvDelim );
+    }
+    else {
+      solr2csv.setMultivalueDelimiter( DEFAULT_MULTIVALUE_DELIMITER );
+    }
+
+    // Record Delim, usually newline
+    String recordDelim = cmd.getOptionValue("record_delimiter");
+    if (null != recordDelim) {
+      recordDelim = StringEscapeUtils.unescapeJava( recordDelim );
+      solr2csv.setRecordDelimiter( recordDelim );
+    }
+    else {
+      solr2csv.setRecordDelimiter( DEFAULT_RECORD_DELIMITER );
+    }
+
+    // Newline Replacement
+    String newline = cmd.getOptionValue("newline_replacement");
+    if (null != newline) {
+      newline = StringEscapeUtils.unescapeJava( newline );
+      solr2csv.setNewlineReplacement( newline );
+    }
+    else {
+      solr2csv.setNewlineReplacement( DEFAULT_NEWLINE_REPLACEMENT );
+    }
+
+    // Force Quotes
+    if (cmd.hasOption("force_quotes")) {
+      solr2csv.setForceQuotes(true);
+    }
+
+    // Include Header field names or not
+    // Note: reverse logic here, skip vs. include
+    if (cmd.hasOption("skip_header")) {
+      solr2csv.setIncludeHeader(false);
+    }
+    else {
+      solr2csv.setIncludeHeader(true);
+    }
+
+    // Query, limit records
     String queryStr = cmd.getOptionValue("query");
     if (null != queryStr) {
       solr2csv.setQuery(queryStr);
@@ -720,34 +961,13 @@ public class SolrToCsv {
     }
     solr2csv.setUseStrictEncoding(strictEncoding);
 
-    // now handled in setupOutput(), called at top of processAll()
-    /***
-    // Setup IO encoding
-    Charset charset = Charset.forName( encodingStr );
-    // Input uses Decoder
-    //CharsetDecoder decoder = charset.newDecoder();
-    // Output uses Encoder
-    CharsetEncoder encoder = charset.newEncoder();
-    if ( strictEncoding ) {
-      //decoder.onMalformedInput( CodingErrorAction.REPORT );
-      encoder.onMalformedInput( CodingErrorAction.REPORT );
-    }
-
-    PrintWriter out = null;
-    if( null!=outputFile && ! outputFile.equals("-") ) {
-      out = new PrintWriter(new OutputStreamWriter(new FileOutputStream(outputFile), encoder), true);
-    } else {
-      out = new PrintWriter(new OutputStreamWriter(System.out, encoder), true);
-    }
-    ***/
-    
     
     // Do it!
-    long start = System.currentTimeMillis();
+    long startTime = System.currentTimeMillis();
     long submittedCount = solr2csv.processAll();
-    long end = System.currentTimeMillis();
-    long diff = end - start;
-    System.out.println( "Exported " + submittedCount + " in " + diff + " ms" );
+    long endTime = System.currentTimeMillis();
+    long diffTime = endTime - startTime;
+    System.out.println( "Exported " + submittedCount + " in " + diffTime + " ms" );
     //System.out.println( "Reminder: COMMIT_DELAY = " + COMMIT_DELAY + " ms" );
 
   }
