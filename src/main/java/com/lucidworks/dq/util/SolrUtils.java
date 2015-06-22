@@ -14,6 +14,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.solr.client.solrj.SolrQuery;
+import org.apache.solr.client.solrj.SolrRequest.METHOD;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.HttpSolrServer;
 import org.apache.solr.client.solrj.request.CoreAdminRequest;
@@ -657,7 +658,8 @@ public class SolrUtils {
     if ( optStartOffset > 0 ) {
       q.setStart( optStartOffset );
     }
-    QueryResponse res = server.query( q );
+    // Use POST to avoid oejh.HttpParser ... URI is too large >8192 ... badMessage: 414 for HttpChannelOverHttp
+    QueryResponse res = server.query( q, METHOD.POST );
     for ( SolrDocument doc : res.getResults() ) {
       // TODO: lookup real ID field
       String id = doc.getFirstValue( ID_FIELD ).toString();
