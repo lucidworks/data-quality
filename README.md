@@ -21,6 +21,10 @@ Preliminary DQ / Data Quality experiments and related utilities.
 * ```dump_ids``` - Dump all the IDs from a collection to standard out / stdout _(com.lucidworks.dq.data.DumpIds)_
 * ```delete_by_ids``` - Delete documents by their ID, either passed on the command line, or from a file, or from standard in / stdin _(com.lucidworks.dq.data.DeleteByIds)_
 * ```solr_to_solr``` - Copy records from one Solr collection or core to another, can control which fields and records _(com.lucidworks.dq.data.SolrToSolr)_
+* ```solr_to_csv``` - Export records from Solr collection or core to delimited file, such as CSV. _(com.lucidworks.dq.data.SolrToCsv)_
+
+## Debugging Utilities:
+* ```hash_and_shard``` - Calculate hash and shard for a document ID _(com.lucidworks.dq.util.HashAndShard)_
 
 
 ## Sample Reports
@@ -30,7 +34,7 @@ See ```src/main/resources/sample-reports/```
 
 Fully runnable jar is available here:
 
-* https://github.com/LucidWorks/data-quality/releases/tag/0.4
+* https://github.com/LucidWorks/data-quality/releases/tag/0.5
 * Click the **green button** with ```data-quality-java-1.0-SNAPSHOT.jar``` and the download will start
 
 # Building From Source
@@ -132,6 +136,8 @@ Pass a command name on the command line to see help for that class:
             dump_ids: Dump all the IDs from a collection to standard out / stdout.
        delete_by_ids: Delete documents by their ID, either passed on the command line, or from a file, or from standard in / stdin.
         solr_to_solr: Copy records from one Solr collection or core to another.
+         solr_to_csv: Export records from Solr collection or core to delimited file, such as CSV.
+      hash_and_shard: Calculate hash and shard for a document ID
 ```
 
 Example: Show the syntax for a specific command, for example ```empty_fields```:
@@ -360,6 +366,116 @@ Options:
                            "org.apache.solr.common.util.JavaBinCodec.unmarshal
                            ", or similar errors.
 ```
+
+# Collection Debugging: Hash Values and Shard Routing
+
+Have you ever wondered which shard a document will wind up in?
+This can be useful when testing if you suspect your shards are not equally fully.
+This could happen, for example, if document keys happen to be generated with a hash algorithm similar to that used by Solr (MurmurHash3).
+
+As you may know, once indexed, you can always find out which shards documents were put in by including ```[shard]``` in the field list:
+
+`http://localhost:8983/solr/collection1/select?q=*&fl=*,[shard]`
+
+Or more compact output:
+
+`http://localhost:8983/solr/collection1/select?q=*&fl=id,[shard]&wt=csv`
+
+But you can also use a utility that's included in this toolkit, `hash_and_shard`, to view the hash of a document ID, and then which shard it would be routed to.
+To figure out the 32-bit hash value, it only needs the document ID.
+But to figure out which shard it would be routed to, it also needs to know the total number of shards.  And this is only an approximation; if you've split shards this output won't be correct.
+
+Here's how to find out the hash for "doc1", and how it'll be routed in a 4-shard system:
+
+```java -jar data-quality.jar hash_and_shard doc1 4```
+
+This gives the output:
+
+```
+docId: "doc1"
+32-bit Hash (signed decimal int): -657533388
+32-bit Hash (unsigned dec int): 3637433908
+32-bit Hash (hex): 0xd8ced634
+32-bit Hash (binary): 11011000110011101101011000110100
+Number of Shards: 4
+Shard # 1
+    Range: 0x80000000 to 0xbfffffff
+Shard # 2
+    Range: 0xc0000000 to 0xffffffff
+    contains 0xd8ced634
+Shard # 3
+    Range: 0x00000000 to 0x3fffffff
+Shard # 4
+    Range: 0x40000000 to 0x7fffffff
+```
+
+Shard boundaries are **inclusive**.  Running with 3 shards instead of 4 gives more interesting output for shard boundaries:
+
+```java -jar data-quality.jar hash_and_shard doc1 3```
+
+```
+docId: "doc1"
+32-bit Hash (signed decimal int): -657533388
+32-bit Hash (unsigned dec int): 3637433908
+32-bit Hash (hex): 0xd8ced634
+32-bit Hash (binary): 11011000110011101101011000110100
+Number of Shards: 3
+Shard # 1
+    Range: 0x80000000 to 0xd554ffff
+Shard # 2
+    Range: 0xd5550000 to 0x2aa9ffff
+    contains 0xd8ced634
+Shard # 3
+    Range: 0x2aaa0000 to 0x7fffffff
+```
+
+The ranges might look a bit confusing:
+
+* Remember that Java uses only signed integers, so that hex numbers starting with 8 or above are actually negative numbers, so the shards ARE sorted numerically from smallest to largest.
+* Further, Solr likes to put shard boundaries at certain powers of 2, vs. random integer division.
+
+If you only give the utility a document ID, but not the number of shards, it'll just show the 32-bit hash.
+
+You can include the ```-q``` option along with the number of shards, you'll get a very compact output;
+this is useful for scripting!  (Unlike other DQ utilities, the -q must come last)
+
+Here's a script to check the simple doc ID's "1" through "10":
+
+**calc-shards.sh**
+```
+#!/bin/bash
+
+JAR=data-quality.jar
+SHARDS=3   # try values like 2, 3, 4, 7, 23!
+
+echo
+echo Predicting final shard for $SHARDS shards
+echo
+for (( i = 1; i <= 10; i++ ))
+do
+    java -jar "$JAR" hash_and_shard $i $SHARDS -q
+done
+
+echo
+echo Reminder: Those predictions were for $SHARDS shards
+```
+
+Summary of output:
+
+```
+    id hash       shard
+    1  0x9416ac93 1
+    2  0x0129e217 2
+    3  0x0fc7a1b4 2
+    4  0xe131cc88 2
+    5  0x531a35e4 3
+    6  0x27fa7cc0 2
+    7  0x23ea8628 2
+    8  0xbd920017 1
+    9  0x248be6a1 2
+    10 0x86e4093f 1
+```
+
 
 # Developers: Bonus Utilities, SolrJ wrappers, etc!
 

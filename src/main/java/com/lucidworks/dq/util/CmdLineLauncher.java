@@ -26,6 +26,7 @@ public class CmdLineLauncher {
     put( "delete_by_ids",     com.lucidworks.dq.data.DeleteByIds.class         );
     put( "solr_to_solr",      com.lucidworks.dq.data.SolrToSolr.class          );
     put( "solr_to_csv",       com.lucidworks.dq.data.SolrToCsv.class           );
+    put( "hash_and_shard",    com.lucidworks.dq.util.HashAndShard.class        );
   }};
   public static void main( String[] argv ) {
     if( argv.length < 1 ) {
