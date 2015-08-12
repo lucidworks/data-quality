@@ -35,7 +35,7 @@ See ```src/main/resources/sample-reports/```
 Fully runnable jar is available here:
 
 * https://github.com/LucidWorks/data-quality/releases/tag/0.5
-* Click the **green button** with ```data-quality-java-1.0-SNAPSHOT.jar``` and the download will start
+* Click the link for ```data-quality-java-1.0-SNAPSHOT.jar``` and the download will start
 
 # Building From Source
 
