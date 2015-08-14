@@ -436,8 +436,11 @@ The ranges might look a bit confusing:
 
 If you only give the utility a document ID, but not the number of shards, it'll just show the 32-bit hash.
 
-You can include the ```-q``` option along with the number of shards, you'll get a very compact output;
-this is useful for scripting!  (Unlike other DQ utilities, the -q must come last)
+You can include the ```-q``` option along with the number of shards, you'll get a very compact output.
+With -q you'll get just the docID, then a space, a checksum, and **if** you added the number of shards,
+then a final space and the shard number it would be routed to.
+This compact output is useful for scripting!
+(Unlike other DQ utilities, the -q **must come last**)
 
 Here's a script to check the simple doc ID's "1" through "10":
 

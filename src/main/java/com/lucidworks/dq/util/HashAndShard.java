@@ -128,6 +128,7 @@ public class HashAndShard {
       System.out.println( "32-bit Hash (binary): " + String.format("%32s", Integer.toBinaryString(signedHash)).replace(' ', '0') );
     }
     else {
+      System.out.print( docId + " " );
       System.out.print( String.format("0x%8s", Integer.toHexString(signedHash)).replace(' ', '0') );      
     }
 
