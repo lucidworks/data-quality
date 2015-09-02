@@ -3,6 +3,7 @@ Data Quality
 
 Preliminary DQ / Data Quality experiments and related utilities.
 
+Note: these tools have evolved beyond just "Data Quality", read the various other sections below.
 
 # Download Prebuilt Binary
 
@@ -13,6 +14,16 @@ Fully runnable "uber" jar is available here:
 
 See also **Building From Source** below.
 
+# Warnings / Caveats / Disclaimers
+
+* Not an official Lucidworks product; not maintained in product release cycles
+* Not officially supported by Lucidworks Support
+* No pretty doc (other than this README file, some included examples, syntax messages if you don't pass any command line args, and source code comments)
+* Very little / no unit tests; see the main code for some helpful notes
+* See the TODO section at the end for additional shortcominges :-)
+
+Despite these caveats, I find the tool very useful and pretty darn fast,
+and many featurs were added as a direct result of trying to get work done.
 
 # Commands and Class Names
 
@@ -531,6 +542,7 @@ All under ```src/main/java/com/lucidworks/dq/util/```
 
 # TODO:
 
+* Doesn't yet support ZK ensemble syntax
 * Blog posts w/ code snippets
 * Pre-Built downloadable .jar
 * Add Java 7 specific parameters to pom.xml ?
