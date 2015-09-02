@@ -3,6 +3,17 @@ Data Quality
 
 Preliminary DQ / Data Quality experiments and related utilities.
 
+
+# Download Prebuilt Binary
+
+Fully runnable "uber" jar is available here:
+
+* https://github.com/LucidWorks/data-quality/releases/tag/0.5
+* Click the link for ```data-quality-java-1.0-SNAPSHOT.jar``` and the download will start
+
+See also **Building From Source** below.
+
+
 # Commands and Class Names
 
 ## Individual Solr Cores / Collections:
@@ -30,14 +41,10 @@ Preliminary DQ / Data Quality experiments and related utilities.
 ## Sample Reports
 See ```src/main/resources/sample-reports/```
 
-# Download Prebuilt Binary
-
-Fully runnable jar is available here:
-
-* https://github.com/LucidWorks/data-quality/releases/tag/0.5
-* Click the link for ```data-quality-java-1.0-SNAPSHOT.jar``` and the download will start
 
 # Building From Source
+
+See also **Download Prebuilt Binary** above.
 
 This project assumes Java 7 (aka Java 1.7)
 
